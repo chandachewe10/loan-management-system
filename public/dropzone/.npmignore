@@ -1,0 +1,10 @@
+.github
+.sass-cache
+.idea
+cypress
+cypress.json
+tool
+test
+babel.config.js
+webpack.config.js
+CONTRIBUTING.md
