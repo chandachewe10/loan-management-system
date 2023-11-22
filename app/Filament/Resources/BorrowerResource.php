@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\BorrowerResource\Pages;
 use App\Filament\Resources\BorrowerResource\RelationManagers;
 use App\Models\Borrower;
@@ -134,7 +134,7 @@ class BorrowerResource extends Resource
                 Forms\Components\TextInput::make('mobile_money_number')
                     ->label('Mobile Money Number')
                     ->tel(),
-                Forms\Components\FileUpload::make('attachment')
+                    SpatieMediaLibraryFileUpload::make('attachment')
                     ->disk('borrowers')
                     ->visibility('public')
                     ->multiple()
@@ -158,8 +158,7 @@ class BorrowerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gender')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('dob')
-                    ->searchable(),
+             
                 Tables\Columns\TextColumn::make('occupation')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('identification')
@@ -168,22 +167,16 @@ class BorrowerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('city')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('province')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('zipcode')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->searchable(),
+              
+               
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+               
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -194,6 +187,10 @@ class BorrowerResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
+
+
+
+    
 
     public static function getRelations(): array
     {
@@ -207,6 +204,7 @@ class BorrowerResource extends Resource
         return [
             'index' => Pages\ListBorrowers::route('/'),
             'create' => Pages\CreateBorrower::route('/create'),
+            'view' => Pages\ViewBorrower::route('/{record}'),
             'edit' => Pages\EditBorrower::route('/{record}/edit'),
         ];
     }
