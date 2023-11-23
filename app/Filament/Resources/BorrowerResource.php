@@ -1,6 +1,12 @@
 <?php
 
 namespace App\Filament\Resources;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Navigation\NavigationGroup;
+use Filament\Panel;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\BorrowerResource\Pages;
 use App\Filament\Resources\BorrowerResource\RelationManagers;
@@ -17,7 +23,90 @@ class BorrowerResource extends Resource
 {
     protected static ?string $model = Borrower::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationLabel = 'Borrowers';
+   
+    protected static ?string $navigationGroup = 'Customers';
+
+   
+   
+//     public static function infolist(Infolist $infolist): Infolist
+//     {
+
+// // Fetch existing files associated with the borrower (assuming you have a $borrower variable available)
+// $borrowerFiles = $borrower->getMedia('attachments'); // Adjust the collection name as per your setup
+
+// $existingFilesInfo = $borrowerFiles->map(function (Media $file) {
+//     return [
+//         'name' => $file->file_name,
+//         'url' => $file->getFullUrl(),
+//     ];
+// });
+
+
+
+//         return $infolist
+//             ->schema([
+//                 Section::make('Personal Details')
+//                     ->description('Borrower Personal Details')
+//                     ->schema([
+//                         TextEntry::make('first_name'),
+//                         TextEntry::make('last_name'),
+//                         TextEntry::make('gender'),
+//                         TextEntry::make('dob'),
+//                         TextEntry::make('occupation'),
+//                         TextEntry::make('identification'),
+//                         TextEntry::make('mobile'),
+//                         TextEntry::make('email'),
+//                         TextEntry::make('address'),
+//                         TextEntry::make('city'),
+//                         TextEntry::make('province'),
+//                         TextEntry::make('zipcode'),
+//                     ])
+//                     ->columns(2),
+//                 Section::make('Next of Kin Details')
+//                     ->description('Borrower Next Of Kin Details')
+//                     ->schema([
+//                         TextEntry::make('next_of_kin_first_name'),
+//                         TextEntry::make('next_of_kin_last_name'),
+//                         TextEntry::make('phone_next_of_kin'),
+//                         TextEntry::make('address_next_of_kin'),
+//                         TextEntry::make('relationship_next_of_kin'),
+//                     ])
+//                     ->columns(2),
+//                     Section::make('Bank Details')
+//                     ->description('Borrower Bank Details')
+//                     ->schema([
+//                         TextEntry::make('bank_name'),
+//                         TextEntry::make('bank_branch'),
+//                         TextEntry::make('bank_sort_code'),
+//                         TextEntry::make('bank_account_number'),
+//                         TextEntry::make('bank_account_name'),
+//                         TextEntry::make('mobile_money_name'),
+//                         TextEntry::make('mobile_money_number'),
+//                     ])
+//                     ->columns(2),
+
+//                     Section::make('Borrower Files')
+//                     ->description('Borrower Attached Files')
+//                     ->schema([
+//                         TextEntry::make('existing_files')
+//                             ->label('Existing Files')
+//                             ->value($existingFilesInfo->implode('<br>'))
+//                             ->multiline() // Adjust if needed for multiline display
+//                     ])
+//                     ->columns(2),
+
+//             ]);
+//     }
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
+
 
     public static function form(Form $form): Form
     {
@@ -171,7 +260,12 @@ class BorrowerResource extends Resource
                
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('gender')
+                ->options([
+                    'male' => 'Male',
+                    'female' => 'Female',
+                    
+                ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
