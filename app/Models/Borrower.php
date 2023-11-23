@@ -40,8 +40,15 @@ class Borrower extends Model implements HasMedia
 
     public function files()
     {
-        // Primary id in parent table and the Foreign key in child table
+        
         return $this->hasMany(BorrowerFiles::class, 'id','borrower_id');
+    }
+
+
+    public function loan()
+    {
+        
+        return $this->hasMany(Loan::class, 'id','borrower_id');
     }
 
 

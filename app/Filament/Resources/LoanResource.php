@@ -29,18 +29,37 @@ class LoanResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('loan_type_id')
-                ->prefixIcon('heroicon-o-wallet')
-                ->relationship('loan_type', 'loan_name')
-                ->required(),
+                    ->prefixIcon('heroicon-o-wallet')
+                    ->relationship('loan_type', 'loan_name')
+                    ->searchable()
+                    ->preload()     
+
+                    ->required(),
+                Forms\Components\Select::make('borrower_id')
+                    ->prefixIcon('heroicon-o-user')
+                    ->relationship('borrower', 'full_name')
+                    ->preload()
+
+                    ->required(),
+                Forms\Components\Select::make('loan_status')
+                    ->label('Loan Status')
+                    ->prefixIcon('fas-dollar-sign')
+                    ->options([
+                        'requested' => 'Requested',
+                        'processing' => 'Processing',
+                        'approved' => 'Approved',
+                        'denied' => 'Denied',
+                        'defaulted' => 'Defaulted',
+
+                    ])
+                    ->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-               
-            ])
+            ->columns([])
             ->filters([
                 //
             ])
@@ -57,14 +76,14 @@ class LoanResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -73,5 +92,5 @@ class LoanResource extends Resource
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),
         ];
-    }    
+    }
 }
