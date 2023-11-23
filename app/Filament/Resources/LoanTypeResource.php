@@ -31,15 +31,18 @@ class LoanTypeResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('loan_name')
                 ->label('Loan Name')
+                ->prefixIcon('fas-dollar-sign')
                 ->required()
                 ->maxLength(255),
                 Forms\Components\TextInput::make('interest_rate')
                 ->label('Interest Rate')
+                ->prefixIcon('fas-percentage')
                 ->required()
                 ->numeric()
                ,
             Forms\Components\Select::make('interest_cycle')
                 ->label('Interest Cycle')
+                ->prefixIcon('fas-sync-alt')
                 ->options([
                     'daily' => 'Daily',
                     'weekly' => 'Weekly',
