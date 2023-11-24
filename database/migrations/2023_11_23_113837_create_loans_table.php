@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('loan_release_date');
             $table->string('loan_duration');
             $table->string('duration_period');
-            $table->string('transaction_reference');
+            $table->string('transaction_reference')->nullable();
             $table->timestamps();
             $table->foreign('borrower_id')->references('id')->on('borrowers')->onDelete('cascade');
             $table->foreign('loan_type_id')->references('id')->on('loan_types')->onDelete('cascade');
