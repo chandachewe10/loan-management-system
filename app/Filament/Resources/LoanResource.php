@@ -163,6 +163,11 @@ class LoanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal_amount')
                     ->label('Principle Amount')
+                    ->money('ZMW')
+                    ->sortable()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('loan_due_date')
+                    ->label('Due Date')
                     ->searchable(),
 
 

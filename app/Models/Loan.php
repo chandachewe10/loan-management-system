@@ -21,4 +21,9 @@ class Loan extends Model
         return $this->belongsTo(Borrower::class, 'borrower_id','id');
     }
 
+    public function getLoanDueDateAttribute($value) {
+        return date('d,F Y', strtotime($value));
+    }
+
+
 }
