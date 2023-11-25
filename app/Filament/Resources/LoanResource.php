@@ -208,8 +208,11 @@ class LoanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'active' => Pages\ActiveLoans::route('/active'),
+           
+           
             'index' => Pages\ListLoans::route('/'),
+            'active' => Pages\ActiveLoans::route('/active'),
+            'pending' => Pages\PendingLoans::route('/pending'),
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),

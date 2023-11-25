@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Filament\Resources\LoanResource\Pages;
+
 use App\Models\Shop\Product;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -14,30 +16,31 @@ use Illuminate\Contracts\View\View;
 use App\Models\Loan;
 use Filament\Resources\Pages\Page;
 
-class ActiveLoans extends Page implements HasForms, HasTable
+class PendingLoans extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
-   
+
     protected static string $resource = LoanResource::class;
 
-    protected static string $view = 'filament.resources.loan-resource.pages.active-loans';
-    protected static ?string $navigationIcon = 'fas-wallet';
-    protected static ?string $navigationLabel = 'Active Loans';
+    protected static string $view = 'filament.resources.loan-resource.pages.pending-loans';
+    protected static ?string $navigationIcon = 'fas-clock';
+    protected static ?string $navigationLabel = 'Pending Loans';
     
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('loan_status',"=",'approved')->count();
+        return static::getModel()::where('loan_status',"=",'processing')->count();
     }
+
     public function getBreadcrumb(): ?string
     {
-        return static::$breadcrumb ?? __('Active Loans');
+        return static::$breadcrumb ?? __('Pending Loans');
     }
 
     public function table(Table $table): Table
     {
         return $table
-        ->query(Loan::query()->where('loan_status', 'approved'))
+        ->query(Loan::query()->where('loan_status', 'processing'))
         ->columns([
             Tables\Columns\TextColumn::make('borrower.full_name')
             ->searchable(),
@@ -65,13 +68,4 @@ class ActiveLoans extends Page implements HasForms, HasTable
         ]);
     }
 
-
-//     public function table(Table $table): Table
-// {
-//     return $table
-//         ->columns([
-//             TextColumn::make('loan_duration'),
-            
-//         ]);
-// }
 }

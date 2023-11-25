@@ -34,10 +34,21 @@ class AdminPanelProvider extends PanelProvider
                 ->icon('fas-coins')
                 ->group('Loans')
                 ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.loans.active'))
+                ->sort(4),
+                
+                
+          ])
+          ->navigationItems([
+            NavigationItem::make('Pending Loans')
+                ->url('pending')
+                ->icon('fas-clock')
+                ->group('Loans')
+                ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.pending-loans'))
                 ->sort(3),
                 
                 
-        ])
+          ])
+        
        
         ->
           default()
