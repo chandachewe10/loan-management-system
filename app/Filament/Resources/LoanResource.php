@@ -20,8 +20,8 @@ class LoanResource extends Resource
 {
     protected static ?string $model = Loan::class;
     
-    protected static ?string $navigationIcon = 'heroicon-o-wallet';
     protected static ?string $navigationGroup = 'Loans';
+    protected static ?string $navigationIcon = 'fas-dollar-sign'; 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

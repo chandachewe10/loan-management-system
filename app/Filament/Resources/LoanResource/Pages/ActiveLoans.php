@@ -22,6 +22,13 @@ class ActiveLoans extends Page implements HasForms, HasTable
     protected static string $resource = LoanResource::class;
 
     protected static string $view = 'filament.resources.loan-resource.pages.active-loans';
+    protected static ?string $navigationIcon = 'fas-wallet';
+    protected static ?string $navigationLabel = 'Active Loans';
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public function getBreadcrumb(): ?string
     {
         return static::$breadcrumb ?? __('Active Borrowers');
