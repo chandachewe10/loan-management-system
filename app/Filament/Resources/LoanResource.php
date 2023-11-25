@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LoanResource extends Resource
 {
     protected static ?string $model = Loan::class;
-
+    
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
     protected static ?string $navigationGroup = 'Loans';
     public static function getNavigationBadge(): ?string
@@ -27,7 +27,7 @@ class LoanResource extends Resource
         return static::getModel()::count();
     }
 
-
+    
 
     public static function form(Form $form): Form
     {
@@ -208,10 +208,14 @@ class LoanResource extends Resource
     public static function getPages(): array
     {
         return [
+            'active' => Pages\ActiveLoans::route('/active'),
             'index' => Pages\ListLoans::route('/'),
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),
+            
         ];
     }
+
+    
 }
