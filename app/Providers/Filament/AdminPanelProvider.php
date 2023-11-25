@@ -48,8 +48,23 @@ class AdminPanelProvider extends PanelProvider
                 
                 
           ])
-        
-       
+          ->navigationItems([
+            NavigationItem::make('Denied Loans')
+                ->url('denied')
+                ->icon('fas-ban')
+                ->group('Loans')
+                ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.denied-loans'))
+                ->sort(5),
+          ])
+          ->navigationItems([
+            NavigationItem::make('Defalted Loans')
+                ->url('defaulted')
+                ->icon('fas-exclamation-triangle')
+                ->group('Loans')
+                ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.defaulted-loans'))
+                ->sort(6),
+          ])
+          
         ->
           default()
             ->id('admin')

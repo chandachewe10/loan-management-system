@@ -213,6 +213,8 @@ class LoanResource extends Resource
             'index' => Pages\ListLoans::route('/'),
             'active' => Pages\ActiveLoans::route('/active'),
             'pending' => Pages\PendingLoans::route('/pending'),
+            'denied' => Pages\DeniedLoans::route('/denied'),
+            'defaulted' => Pages\DefaultedLoans::route('/defaulted'),
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),
