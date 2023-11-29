@@ -181,6 +181,8 @@ class LoanResource extends Resource
                         'approved' => 'Approved',
                         'denied' => 'Denied',
                         'defaulted' => 'Defaulted',
+                        'partially_paid' => 'Partially Paid',
+                        'fully_paid' => 'Fully Paid',
 
                     ]),
             ])
@@ -215,6 +217,8 @@ class LoanResource extends Resource
             'pending' => Pages\PendingLoans::route('/pending'),
             'denied' => Pages\DeniedLoans::route('/denied'),
             'defaulted' => Pages\DefaultedLoans::route('/defaulted'),
+            'partially_paid' => Pages\PartiallyPaidLoans::route('/partially_paid'),
+            'fully_paid' => Pages\FullyPaidLoans::route('/fully_paid'),
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),

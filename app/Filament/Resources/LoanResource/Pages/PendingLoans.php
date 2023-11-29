@@ -22,7 +22,7 @@ class PendingLoans extends Page implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static string $resource = LoanResource::class;
-
+    
     protected static string $view = 'filament.resources.loan-resource.pages.pending-loans';
     protected static ?string $navigationIcon = 'fas-clock';
     protected static ?string $navigationLabel = 'Pending Loans';

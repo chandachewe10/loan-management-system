@@ -11,30 +11,30 @@ use Illuminate\Contracts\View\View;
 use App\Models\Loan;
 use Filament\Resources\Pages\Page;
 
-class ActiveLoans extends Page implements HasForms, HasTable
+class PartiallyPaidLoans extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
    
     protected static string $resource = LoanResource::class;
 
-    protected static string $view = 'filament.resources.loan-resource.pages.active-loans';
-    protected static ?string $navigationIcon = 'fas-wallet';
-    protected static ?string $navigationLabel = 'Active Loans';
+    protected static string $view = 'filament.resources.loan-resource.pages.partially-paid-loans';
+    protected static ?string $navigationIcon = 'fas-dollar-sign';
+    protected static ?string $navigationLabel = 'Partially Paid Loans';
     
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('loan_status',"=",'approved')->count();
+        return static::getModel()::where('loan_status',"=",'partially_paid')->count();
     }
     public function getBreadcrumb(): ?string
     {
-        return static::$breadcrumb ?? __('Active Loans');
+        return static::$breadcrumb ?? __('Partially Paid Loans');
     }
 
     public function table(Table $table): Table
     {
         return $table
-        ->query(Loan::query()->where('loan_status', 'approved'))
+        ->query(Loan::query()->where('loan_status', 'partially_paid'))
         ->columns([
             Tables\Columns\TextColumn::make('borrower.full_name')
             ->searchable(),
