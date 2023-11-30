@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ee26ac2ccff0f78f9d29a13bd01759af",
+    "content-hash": "4577a1d6beedca4cf24b46aef94fd8ae",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -59,6 +59,91 @@
                 "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.8"
             },
             "time": "2022-12-07T17:46:57+00:00"
+        },
+        {
+            "name": "bavix/laravel-wallet",
+            "version": "10.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bavix/laravel-wallet.git",
+                "reference": "5536ca62c30871a5edd24a719b093d3b0a0d5d44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bavix/laravel-wallet/zipball/5536ca62c30871a5edd24a719b093d3b0a0d5d44",
+                "reference": "5536ca62c30871a5edd24a719b093d3b0a0d5d44",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.10",
+                "doctrine/dbal": "^3.5",
+                "ext-json": "*",
+                "ext-pdo": "*",
+                "illuminate/contracts": "^10.0",
+                "illuminate/database": "^10.0",
+                "php": "^8.1",
+                "ramsey/uuid": "^4.0"
+            },
+            "require-dev": {
+                "brianium/paratest": "^7.2",
+                "cknow/laravel-money": "^7.1",
+                "driftingly/rector-laravel": "^0.26",
+                "ergebnis/phpstan-rules": "^1.0",
+                "infection/infection": "~0.27",
+                "laravel/cashier": "^14.12",
+                "nunomaduro/collision": "^7.7",
+                "nunomaduro/larastan": "^2.6",
+                "orchestra/testbench": "^8.5",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^10.2",
+                "rector/rector": "^0.17",
+                "symplify/easy-coding-standard": "^12.0"
+            },
+            "suggest": {
+                "bavix/laravel-wallet-swap": "Addition to the laravel-wallet library for quick setting of exchange rates",
+                "bavix/laravel-wallet-warmup": "Addition to the laravel-wallet library for refresh balance wallets"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Bavix\\Wallet\\WalletServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bavix\\Wallet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Babichev Maxim",
+                    "email": "info@babichev.net"
+                }
+            ],
+            "description": "Easy work with virtual wallet.",
+            "homepage": "https://bavix.github.io/laravel-wallet/",
+            "keywords": [
+                "bavix",
+                "credits",
+                "currency",
+                "laravel",
+                "laravel-package",
+                "laravel-wallet",
+                "payments",
+                "virtual",
+                "wallet"
+            ],
+            "support": {
+                "issues": "https://github.com/bavix/laravel-wallet/issues",
+                "source": "https://github.com/bavix/laravel-wallet/tree/10.0.1"
+            },
+            "time": "2023-09-29T21:06:54+00:00"
         },
         {
             "name": "blade-ui-kit/blade-heroicons",
