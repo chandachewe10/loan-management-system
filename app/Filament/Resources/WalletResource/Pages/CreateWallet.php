@@ -13,6 +13,7 @@ class CreateWallet extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+
         $wallet = auth()->user()->createWallet([
             'name' => $data['name'],
             'amount' => 0,
@@ -20,25 +21,26 @@ class CreateWallet extends CreateRecord
             'meta' => ['currency' =>  $data['meta']],
             'description' => strip_tags($data['description']),
         ])->deposit($data['amount']);
-        
+
         return $wallet;
     }
 
-    protected function generateSlug($text) { 
+    protected function generateSlug($text)
+    {
         // Replace spaces with hyphens
         $slug = str_replace(' ', '-', $text);
-        
+
         // Remove special characters
         $slug = preg_replace('/[^A-Za-z0-9\-]/', '', $slug);
-        
+
         // Convert to lowercase
         $slug = strtolower($slug);
-        
+
         return $slug;
     }
 
     protected function getRedirectUrl(): string
-{
-    return $this->getResource()::getUrl('index');
-}
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
