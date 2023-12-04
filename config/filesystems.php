@@ -44,6 +44,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'expenses' => [
+            'driver' => 'local',
+            'root' => public_path('EXPENSES'),
+            'throw' => false,
+            'url' => env('APP_URL').'/EXPENSES',
+            'visibility' => 'public',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
