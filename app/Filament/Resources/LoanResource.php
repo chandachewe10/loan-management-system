@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms\Components\Toggle;
+
 use Carbon\Carbon;
 use Filament\Forms\Set;
 use Filament\Forms\Get;
@@ -19,15 +21,15 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LoanResource extends Resource
 {
     protected static ?string $model = Loan::class;
-    
+
     protected static ?string $navigationGroup = 'Loans';
-    protected static ?string $navigationIcon = 'fas-dollar-sign'; 
+    protected static ?string $navigationIcon = 'fas-dollar-sign';
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
 
-    
+
 
     public static function form(Form $form): Form
     {
@@ -84,20 +86,20 @@ class LoanResource extends Resource
                     })
 
                     ->numeric(),
-                    Forms\Components\TextInput::make('loan_duration')
+                Forms\Components\TextInput::make('loan_duration')
                     ->label('Loan Duration')
                     ->prefixIcon('fas-clock')
                     ->live(onBlur: true)
                     ->required(function ($state, Set $set, Get $get) {
-                        if($state && $get('loan_type_id') && $get('principal_amount')){
-                        $duration = $state ?? 0;
-                        $principle_amount = $get('principal_amount');
-                        $loan_percent = \App\Models\LoanType::findOrFail($get('loan_type_id'))->interest_rate ?? 0;
-                        $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
-                        $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
-                        $set('repayment_amount', number_format($total_repayment));
-                        $set('interest_amount', number_format($interest_amount));
-                        $set('interest_rate', $loan_percent);
+                        if ($state && $get('loan_type_id') && $get('principal_amount')) {
+                            $duration = $state ?? 0;
+                            $principle_amount = $get('principal_amount');
+                            $loan_percent = \App\Models\LoanType::findOrFail($get('loan_type_id'))->interest_rate ?? 0;
+                            $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
+                            $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
+                            $set('repayment_amount', number_format($total_repayment));
+                            $set('interest_amount', number_format($interest_amount));
+                            $set('interest_rate', $loan_percent);
                         }
                         return true;
                     })
@@ -107,33 +109,30 @@ class LoanResource extends Resource
                     ->label('Duration Period')
                     ->prefixIcon('fas-clock')
                     ->required()
-                    ->disabled(),
+                    ->readOnly(),
                 Forms\Components\DatePicker::make('loan_release_date')
                     ->label('Loan Release Date')
                     ->prefixIcon('heroicon-o-calendar')
-                    ->live() 
+                    ->live()
                     ->required()
                     ->native(false)
                     ->maxDate(now()),
-                
-
-
                 Forms\Components\TextInput::make('repayment_amount')
                     ->label('Repayment Amount')
                     ->prefixIcon('fas-coins')
                     ->required()
-                    ->disabled(),
+                    ->readOnly(),
                 Forms\Components\TextInput::make('interest_amount')
                     ->label('Interest Amount')
                     ->prefixIcon('fas-coins')
-                    ->disabled()
+                    ->readOnly()
                     ->required(),
 
                 Forms\Components\TextInput::make('interest_rate')
                     ->label('Interest Rate')
                     ->required()
                     ->prefixIcon('fas-percentage')
-                    ->disabled()
+                    ->readOnly()
                     ->numeric(),
 
                 Forms\Components\DatePicker::make('loan_due_date')
@@ -142,10 +141,17 @@ class LoanResource extends Resource
                     ->hidden()
                     ->required()
                     ->native(false),
-                    
+
                 Forms\Components\TextInput::make('transaction_reference')
                     ->label('Transaction Reference')
-                    ->prefixIcon('fas-money-bill-wave')
+                    ->prefixIcon('fas-money-bill-wave'),
+                    Forms\Components\Toggle::make('activate_loan_agreement_form')
+                    ->label('Compile Loan Agreement Form')
+                    ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan loan agreement form template for this type of loan.')    
+                    ->onColor('success')
+                    ->offColor('danger'),
+                    Forms\Components\TextInput::make('loan_agreement_file_path')
+                    ->hidden(),
 
             ]);
     }
@@ -166,7 +172,7 @@ class LoanResource extends Resource
                     ->money('ZMW')
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('loan_due_date')
+                Tables\Columns\TextColumn::make('loan_due_date')
                     ->label('Due Date')
                     ->searchable(),
 
@@ -210,8 +216,8 @@ class LoanResource extends Resource
     public static function getPages(): array
     {
         return [
-           
-           
+
+
             'index' => Pages\ListLoans::route('/'),
             'active' => Pages\ActiveLoans::route('/active'),
             'pending' => Pages\PendingLoans::route('/pending'),
@@ -222,9 +228,7 @@ class LoanResource extends Resource
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),
-            
+
         ];
     }
-
-    
 }

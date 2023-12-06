@@ -25,5 +25,9 @@ class Loan extends Model
         return date('d,F Y', strtotime($value));
     }
 
+    protected $casts = [
+        'activate_loan_agreement_form' => 'boolean',
+    ];
+
 
 }

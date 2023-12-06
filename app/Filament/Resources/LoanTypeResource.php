@@ -19,7 +19,8 @@ class LoanTypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar'; 
 
-    protected static ?string $navigationGroup = 'Loans';
+    protected static ?string $navigationGroup = 'Loan Agreement Forms';
+    protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
 {

@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.0",
         "owenvoke/blade-fontawesome": "^2.4",
+        "phpoffice/phpword": "^1.1",
         "realrashid/sweet-alert": "^7.1"
     },
     "require-dev": {
