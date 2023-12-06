@@ -20,7 +20,7 @@ class LoanAgreementFormsResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-file';
     protected static ?string $navigationGroup = 'Loan Agreement Forms';
-    
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -31,17 +31,17 @@ class LoanAgreementFormsResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('loan_type_id')
-                ->prefixIcon('heroicon-o-wallet')
-                ->label('Choose Loan Type')
-                ->relationship('loan_type', 'loan_name')
-                ->helperText('Please make sure you have added the loan type under loans to create the loan agreement form.')
-                ->searchable()
-                ->columnSpan(2)
-                ->preload(), 
+                    ->prefixIcon('heroicon-o-wallet')
+                    ->label('Choose Loan Type')
+                    ->relationship('loan_type', 'loan_name')
+                    ->helperText('Please make sure you have added the loan type under loans to create the loan agreement form.')
+                    ->searchable()
+                    ->columnSpan(2)
+                    ->preload(),
                 RichEditor::make('loan_agreement_text')
-                ->label('Create Form')
-                ->placeholder('John Doe')
-                ->columnSpan(2)
+                    ->label('Create Form')
+                    ->placeholder('John Doe')
+                    ->columnSpan(2)
             ]);
     }
 
@@ -49,7 +49,12 @@ class LoanAgreementFormsResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('loan_type.loan_name')
+                    ->label('Loan Type')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('loan_agreement_text')
+                    ->html()
+
             ])
             ->filters([
                 //
@@ -67,14 +72,14 @@ class LoanAgreementFormsResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -83,5 +88,5 @@ class LoanAgreementFormsResource extends Resource
             'view' => Pages\ViewLoanAgreementForms::route('/{record}'),
             'edit' => Pages\EditLoanAgreementForms::route('/{record}/edit'),
         ];
-    }    
+    }
 }

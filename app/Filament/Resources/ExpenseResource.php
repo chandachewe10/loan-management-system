@@ -96,7 +96,7 @@ class ExpenseResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('expense_amount')
                     ->searchable(),
-
+                  
                
                 Tables\Columns\TextColumn::make('expense_category.category_name')
                     ->searchable(),
