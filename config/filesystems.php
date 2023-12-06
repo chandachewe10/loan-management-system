@@ -52,6 +52,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'loan_agreement_forms' => [
+            'driver' => 'local',
+            'root' => public_path('LOAN_AGREEMENT_FORMS'),
+            'throw' => false,
+            'url' => env('APP_URL').'/LOAN_AGREEMENT_FORMS',
+            'visibility' => 'public',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
