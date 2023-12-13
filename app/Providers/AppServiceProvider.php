@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
             'Loans',
             'Wallets',
             'Expenses',
+            'Repayments',
         ]);
     }
 }

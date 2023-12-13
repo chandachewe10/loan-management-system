@@ -4,6 +4,8 @@ namespace App\Filament\Resources\LoanResource\Pages;
 
 use Carbon\Carbon;
 use App\Filament\Resources\LoanResource;
+use Bavix\Wallet\Models\Wallet;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
@@ -18,7 +20,12 @@ class CreateLoan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+//         $user = User::first();
+// $user->balance; // 0
 
+      
+        $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
+        $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->first()->name; 
         $data['repayment_amount'] = (float) str_replace(',', '', $data['repayment_amount']);
         $data['interest_amount'] = (float) str_replace(',', '', $data['interest_amount']);
         $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;

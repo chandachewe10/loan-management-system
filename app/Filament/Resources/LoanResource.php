@@ -9,6 +9,8 @@ use Filament\Forms\Set;
 use Filament\Forms\Get;
 use App\Filament\Resources\LoanResource\Pages;
 use App\Filament\Resources\LoanResource\RelationManagers;
+use Bavix\Wallet\Models\Wallet;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Loan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -33,6 +35,14 @@ class LoanResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $options = Wallet::all()->map(function ($wallet) {
+            return [
+                'value' => $wallet->id, // Set the wallet ID as the 'value'
+                'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
+            ];
+        });
+
+
         return $form
             ->schema([
                 Forms\Components\Select::make('loan_type_id')
@@ -141,16 +151,24 @@ class LoanResource extends Resource
                     ->hidden()
                     ->required()
                     ->native(false),
+                    Forms\Components\TextInput::make('loan_number')                  
+                    ->hidden(),
+                    Forms\Components\Select::make('from_this_account')
+                    ->label('From this Account')
+                    ->prefixIcon('fas-wallet')
+                    ->options($options->pluck('label', 'value')->toArray())
+                    ->required()
+                    ->searchable(),
 
                 Forms\Components\TextInput::make('transaction_reference')
                     ->label('Transaction Reference')
                     ->prefixIcon('fas-money-bill-wave'),
-                    Forms\Components\Toggle::make('activate_loan_agreement_form')
+                Forms\Components\Toggle::make('activate_loan_agreement_form')
                     ->label('Compile Loan Agreement Form')
-                    ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan loan agreement form template for this type of loan.')    
+                    ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan loan agreement form template for this type of loan.')
                     ->onColor('success')
                     ->offColor('danger'),
-                    Forms\Components\TextInput::make('loan_agreement_file_path')
+                Forms\Components\TextInput::make('loan_agreement_file_path')
                     ->hidden(),
 
             ]);
@@ -175,6 +193,17 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('loan_due_date')
                     ->label('Due Date')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('loan_due_date')
+                    ->label('Due Date')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('loan_agreement_file_path')
+                    ->formatStateUsing(function (string $state): string {
+                        return 'Loan Agreement Form';
+                    })
+                    ->formatStateUsing(function (string $state): string {
+                        return $state;
+                    })
+                
 
 
 
