@@ -93,6 +93,7 @@ class RepaymentsResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->searchable(),
+                  
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payments_method')

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('repayments', function (Blueprint $table) {
-            $table->string('loan_number')->nullable();
+        Schema::table('loans', function (Blueprint $table) {
+            $table->string('loan_settlement_file_path')->unique();
+            
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('repayments', function (Blueprint $table) {
+        Schema::table('loans', function (Blueprint $table) {
             //
         });
     }

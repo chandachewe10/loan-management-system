@@ -22,6 +22,7 @@ class LoanAgreementFormsResource extends Resource
     protected static ?string $navigationGroup = 'Loan Agreement Forms';
     protected static ?int $navigationSort = 2; 
     
+    
 
     public static function getNavigationBadge(): ?string
     {

@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('repayments', function (Blueprint $table) {
-            $table->string('loan_number')->nullable();
+        Schema::create('loan_settlement_forms', function (Blueprint $table) {
+            $table->id();
+            $table->text('loan_settlement_text')->unique();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('repayments', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('loan_settlement_forms');
     }
 };
