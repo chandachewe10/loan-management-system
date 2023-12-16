@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms\Set;
+use Filament\Forms\Get;
 use App\Filament\Resources\RepaymentsResource\Pages;
 use App\Filament\Resources\RepaymentsResource\RelationManagers;
 use App\Models\Repayments;
@@ -28,26 +30,37 @@ class RepaymentsResource extends Resource
     {
         return $form
             ->schema([
+
                 Forms\Components\Select::make('loan_id')
                     ->label('Loan Number')
                     ->prefixIcon('heroicon-o-wallet')
-                    ->relationship('loan_number', 'loan_status')
+                    ->relationship('loan_number', 'loan_number')
                     ->searchable()
-                    ->required(),
+                    ->preload()
+                    ->live(onBlur: true)
+                    ->required(function ($state, Set $set) {
+                        if ($state) {
+                            $balance = \App\Models\Loan::findOrFail($state)->balance;
+                            $set('balance', $balance);
+                        }
+                        return true;
+                    }),
 
-                
-                    Forms\Components\TextInput::make('payments')
+
+
+                Forms\Components\TextInput::make('payments')
                     ->label('Repayment Amount')
                     ->prefixIcon('fas-dollar-sign')
                     ->required(),
-                    Forms\Components\TextInput::make('balance')
+                Forms\Components\TextInput::make('balance')
                     ->label('Current Balance')
                     ->prefixIcon('fas-dollar-sign')
                     ->readOnly(),
 
-                    Forms\Components\Select::make('loan_status')
-                    ->label('Loan Status')
+                Forms\Components\Select::make('payments_method')
+                    ->label('Payment Method')
                     ->prefixIcon('fas-dollar-sign')
+                    ->required()
                     ->options([
                         'bank_transfer' => 'Bank Transfer',
                         'mobile_money' => 'Mobile Money',
@@ -56,12 +69,13 @@ class RepaymentsResource extends Resource
                         'cash' => 'Cash',
 
                     ]),
-                    Forms\Components\TextInput::make('transaction_reference')
+                Forms\Components\TextInput::make('reference_number')
                     ->label('Transaction Reference')
                     ->prefixIcon('fas-dollar-sign')
+                    ->required()
                     ->columnSpan(2),
 
-               
+
             ]);
     }
 
@@ -69,9 +83,11 @@ class RepaymentsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('loan_id.loan_status')
-                ->searchable(),
-                Tables\Columns\TextColumn::make('loan_id.loan_number')
+                Tables\Columns\TextColumn::make('loan_number.loan_number')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('loan_number.loan_status')
+                ->label('Loan Status')
+                ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal')
                     ->searchable(),
@@ -80,15 +96,15 @@ class RepaymentsResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payments_method')
-                ->options([
-                    'bank_transfer' => 'Bank Transfer',
-                    'mobile_money' => 'Mobile Money',
-                    'pemic' => 'PEMIC',
-                    'cheque' => 'Cheque',
-                    'cash' => 'Cash',
+                    ->options([
+                        'bank_transfer' => 'Bank Transfer',
+                        'mobile_money' => 'Mobile Money',
+                        'pemic' => 'PEMIC',
+                        'cheque' => 'Cheque',
+                        'cash' => 'Cash',
 
 
-                ]),
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -103,14 +119,14 @@ class RepaymentsResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -119,5 +135,5 @@ class RepaymentsResource extends Resource
             'view' => Pages\ViewRepayments::route('/{record}'),
             'edit' => Pages\EditRepayments::route('/{record}/edit'),
         ];
-    }    
+    }
 }

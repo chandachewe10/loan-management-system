@@ -20,13 +20,14 @@ class CreateLoan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-//         $user = User::first();
-// $user->balance; // 0
+        // dd($data);
 
-      
+        $wallet = Wallet::findOrFail($data['from_this_account']);
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
-        $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->first()->name; 
+        $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->first()->name;
+        $data['principal_amount'] = (float) str_replace(',', '', $data['principal_amount']);
         $data['repayment_amount'] = (float) str_replace(',', '', $data['repayment_amount']);
+        $data['balance'] = (float) str_replace(',', '', $data['repayment_amount']);
         $data['interest_amount'] = (float) str_replace(',', '', $data['interest_amount']);
         $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
         $loan_duration = $data['loan_duration'];
@@ -46,8 +47,13 @@ class CreateLoan extends CreateRecord
             $data['loan_due_date'] = $loan_date->addYears($loan_duration);
         }
 
-        // Check if the loan is being approved and they want to compie the Loan Agreement Form
+        // Check if the loan is being approved and they want to compile the Loan Agreement Form
         if ($data['loan_status'] === 'approved' && $data['activate_loan_agreement_form'] == 1) {
+
+
+
+
+
 
             //Check if they have the Loan Agreement Form template for this type of loan
             $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
@@ -66,6 +72,12 @@ class CreateLoan extends CreateRecord
 
                 $this->halt();
             } else {
+
+                // Remove the amount from the Specified Wallet
+                
+                $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+
+
                 $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
                 $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id'])->first();
 

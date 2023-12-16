@@ -151,9 +151,9 @@ class LoanResource extends Resource
                     ->hidden()
                     ->required()
                     ->native(false),
-                    Forms\Components\TextInput::make('loan_number')                  
+                Forms\Components\TextInput::make('loan_number')
                     ->hidden(),
-                    Forms\Components\Select::make('from_this_account')
+                Forms\Components\Select::make('from_this_account')
                     ->label('From this Account')
                     ->prefixIcon('fas-wallet')
                     ->options($options->pluck('label', 'value')->toArray())
@@ -169,6 +169,8 @@ class LoanResource extends Resource
                     ->onColor('success')
                     ->offColor('danger'),
                 Forms\Components\TextInput::make('loan_agreement_file_path')
+                    ->hidden(),
+                Forms\Components\TextInput::make('balance')
                     ->hidden(),
 
             ]);
@@ -196,14 +198,14 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('loan_due_date')
                     ->label('Due Date')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('loan_agreement_file_path')
+                Tables\Columns\TextColumn::make('loan_agreement_file_path')
                     ->formatStateUsing(function (string $state): string {
                         return 'Loan Agreement Form';
                     })
                     ->formatStateUsing(function (string $state): string {
                         return $state;
                     })
-                
+
 
 
 

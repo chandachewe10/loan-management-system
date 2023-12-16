@@ -24,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
         Filament::registerNavigationGroups([
             'Customers',
             'Loan Agreement Forms',
-            'Loans',
             'Wallets',
+            'Loans',            
             'Expenses',
             'Repayments',
         ]);
