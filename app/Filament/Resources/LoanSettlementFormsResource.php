@@ -38,6 +38,7 @@ class LoanSettlementFormsResource extends Resource
                 RichEditor::make('loan_settlement_text')
                     ->label('Create Settlement Form')
                     ->required()
+                   
                     ->disableToolbarButtons([
                         'attachFiles',
                         'codeBlock',
