@@ -6,16 +6,25 @@ use Filament\Widgets\ChartWidget;
 
 class PieChart extends ChartWidget
 {
-    protected static ?string $heading = 'Blog Posts';
+    protected static ?string $heading = 'Total Collected';
     protected static ?string $maxHeight = '200px';
     protected static ?int $sort = 1;
 
     protected function getData(): array
     {
+
+        $records = [];
+        
+        for ($month = 1; $month <= 12; $month++) {
+            $records[] = \App\Models\Repayments::whereMonth('created_at', $month)
+                ->sum('payments');
+        }
+
+
         return [
             'datasets' => [
                 [
-                    'data' => [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],
+                    'data' => array_map('floatval', $records),
                     'backgroundColor' => [
                         '#FF6384',
                         '#36A2EB',
