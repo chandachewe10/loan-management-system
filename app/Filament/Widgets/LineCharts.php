@@ -2,11 +2,18 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Loan;
 use Filament\Widgets\LineChartWidget;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Carbon\CarbonImmutable;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class LineCharts extends LineChartWidget
 {
+    use InteractsWithPageFilters;
    
     protected static ?string $maxHeight = '200px';
     protected static ?int $sort = 1;
@@ -22,13 +29,16 @@ class LineCharts extends LineChartWidget
 
     protected function getData(): array
     {
-       
+        $startDate = $this->filters['startDate'] ?? null;
+        $endDate = $this->filters['endDate'] ?? null;
         $records = [];
         
         for ($month = 1; $month <= 12; $month++) {
-            $records[] = \App\Models\Loan::whereMonth('created_at', $month)
-                ->where('loan_status', '=', 'approved')
-                ->sum('principal_amount');
+            $records[] = Loan::query()
+            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+            ->where('loan_status', 'approved')
+            ->sum('principal_amount');
         }
         
         return [

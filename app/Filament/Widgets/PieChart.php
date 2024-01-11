@@ -2,24 +2,34 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Repayments;
 use Filament\Widgets\ChartWidget;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Carbon\CarbonImmutable;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Illuminate\Database\Eloquent\Builder;
 
 class PieChart extends ChartWidget
 {
+    use InteractsWithPageFilters;
     protected static ?string $heading = 'Total Collected';
     protected static ?string $maxHeight = '200px';
     protected static ?int $sort = 1;
 
     protected function getData(): array
     {
-
+        $startDate = $this->filters['startDate'] ?? null;
+        $endDate = $this->filters['endDate'] ?? null;
         $records = [];
-        
         for ($month = 1; $month <= 12; $month++) {
-            $records[] = \App\Models\Repayments::whereMonth('created_at', $month)
-                ->sum('payments');
+            $records[] = Repayments::query()
+            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+            ->whereMonth('created_at', $month)
+            ->sum('payments');
         }
-
+        
 
         return [
             'datasets' => [
