@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers\Filament;
-
+use Filament\Navigation\MenuItem;
 use App\Filament\Resources\LoanResource;
 use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationBuilder;
@@ -27,7 +27,14 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-
+        ->plugins([
+            \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+        ])
+        ->login()
+        ->registration()
+        ->passwordReset()
+        ->emailVerification()
+        ->profile()
           ->navigationItems([
             NavigationItem::make('Active Loans')            
                 ->url('/admin/loans/active')

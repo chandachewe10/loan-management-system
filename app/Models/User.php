@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Traits\HasWallets;
 use Bavix\Wallet\Interfaces\Wallet;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -21,6 +23,8 @@ class User extends Authenticatable implements Wallet
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasWallet, HasWallets;
+    use HasRoles;
+    use HasPanelShield;
 
     /**
      * The attributes that are mass assignable.
