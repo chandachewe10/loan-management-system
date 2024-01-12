@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
             'Loans',            
             'Expenses',
             'Repayments',
+            'Addons',
         ]);
     }
 }

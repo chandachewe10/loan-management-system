@@ -12,4 +12,14 @@ class ThirdParty extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function getIsActiveAttribute($value) {
+        if($value){
+            return 'Active';
+        }
+        else{
+            return 'In-Active';
+        }
+        
+    }
 }

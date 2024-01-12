@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ThirdPartyResource extends Resource
 {
     protected static ?string $model = ThirdParty::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Addons';
+  
+    protected static ?string $navigationIcon = 'fas-plus';
 
     public static function form(Form $form): Form
     {
@@ -37,13 +38,16 @@ class ThirdPartyResource extends Resource
                     Forms\Components\TextInput::make('token')
                     ->label('API/TOKEN')
                     ->prefixIcon('fas-lock'),
+                    Toggle::make('is_active')
+                    ->helperText('This third party will only be activated and start functioning when you switch on this.')
+                    ->onColor('success')
+                    ->offColor('danger'),
                     Forms\Components\TextInput::make('sender_id')
                     ->label('Sender ID')
                     ->minLength(2)
-                    ->maxLength(12),
-                    Toggle::make('is_active')
-                    ->onColor('success')
-                    ->offColor('danger')
+                    ->maxLength(12)
+                    ->columnSpan(2),
+                    
 
             ]);
     }
@@ -52,7 +56,14 @@ class ThirdPartyResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('sender_id')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('token')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('is_active')
+                ->searchable(),
             ])
             ->filters([
                 //
