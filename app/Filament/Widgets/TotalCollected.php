@@ -15,7 +15,7 @@ class TotalCollected extends ChartWidget
     use InteractsWithPageFilters;
     protected static ?string $heading = 'Total Collected';
     protected static ?string $maxHeight = '200px';
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {

@@ -17,7 +17,7 @@ class StatsOverview extends BaseWidget
 {
     use InteractsWithPageFilters;
     protected static ?string $maxHeight = '100px';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 1;
     public function getColumns(): int
     {
         return 2;

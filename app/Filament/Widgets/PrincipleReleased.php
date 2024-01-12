@@ -16,7 +16,7 @@ class PrincipleReleased extends LineChartWidget
     use InteractsWithPageFilters;
    
     protected static ?string $maxHeight = '200px';
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 2;
 
    
 
