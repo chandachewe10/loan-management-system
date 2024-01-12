@@ -11,7 +11,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
 
 
-class LineCharts extends LineChartWidget
+class PrincipleReleased extends LineChartWidget
 {
     use InteractsWithPageFilters;
    

@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
 
-class PieChart extends ChartWidget
+class TotalCollected extends ChartWidget
 {
     use InteractsWithPageFilters;
     protected static ?string $heading = 'Total Collected';
