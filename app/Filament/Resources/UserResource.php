@@ -21,6 +21,11 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'User Management';
     protected static ?string $navigationLabel = 'Manage Users';
     protected static ?string $navigationIcon = 'fas-user';
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -61,6 +66,7 @@ class UserResource extends Resource
 
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
+                    ->badge()
                     ->searchable(),
             ])
             ->filters([

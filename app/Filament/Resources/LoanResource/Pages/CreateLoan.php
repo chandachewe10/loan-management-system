@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources\LoanResource\Pages;
 
 use Illuminate\Support\Facades\Http;
@@ -22,7 +21,7 @@ class CreateLoan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // dd($data);
+        //dd($data);
 
         $wallet = Wallet::findOrFail($data['from_this_account']);
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
@@ -50,14 +49,14 @@ class CreateLoan extends CreateRecord
         }
 
 
-        // Send an SMS to the Client depending on the ststus of the Loan Stage
+        // Send an SMS to the Client depending on the status of the Loan Stage
 
         $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
         $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
         if (
-            $bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile)
+            $bulk_sms_config && $bulk_sms_config->is_active === 'Active' && isset($borrower->mobile)
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
@@ -96,7 +95,7 @@ class CreateLoan extends CreateRecord
             $jsonDataPayments = [
                 "sender_id" => $bulk_sms_config->sender_id,
                 "numbers" => $borrower->mobile,
-                "message" => 'Hi ' . $borrower->first_name . ' Your Loan application form has been processed and the current status is:' . $data['loan_status'],
+                "message" => $message,
 
             ];
 
@@ -205,6 +204,8 @@ class CreateLoan extends CreateRecord
                 $data['loan_agreement_file_path'] = 'LOAN_AGREEMENT_FORMS/' . $current_year . '/DOCX' . '/' . $file_name;
                 return $data;
             }
+            return $data;
         }
+        return $data;
     }
 }

@@ -30,6 +30,8 @@ class AdminPanelProvider extends PanelProvider
         ->plugins([
             \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
         ])
+        ->sidebarCollapsibleOnDesktop()
+        
         ->login()
         ->registration()
         ->passwordReset()
