@@ -186,6 +186,15 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('loan_type.loan_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_status')
+                ->badge()
+               
+                ->color(fn (string $state): string => match ($state) {
+                    'requested' => 'gray',
+                    'processing' => 'info',
+                    'approved' => 'success',
+                    'denied' => 'danger',
+                    'defaulted' => 'warning',
+                })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal_amount')
                     ->label('Principle Amount')

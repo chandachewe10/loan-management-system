@@ -23,6 +23,7 @@ class EditLoan extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
 {
+   
     // Send an SMS to the Client depending on the status of the Loan Stage
 
     $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
@@ -79,7 +80,7 @@ class EditLoan extends EditRecord
         // Convert the data to JSON format
         $jsonDataPayments = json_encode($jsonDataPayments);
 
-      $request = Http::withHeaders([
+       Http::withHeaders([
             'Authorization' => 'Bearer ' . $bulk_sms_config->token,
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
@@ -88,11 +89,13 @@ class EditLoan extends EditRecord
             ->withBody($jsonDataPayments, 'application/json')
             ->get($url);
 
-            ($request);
+            
     }
 
 
     
+    $record->update($data);
+ 
     return $record;
 }
 }
