@@ -38,6 +38,7 @@ class Expenses extends LineChartWidget
                 ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
                 ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
                 ->where('type', '=', 'withdraw')
+                ->whereMonth('created_at', $month)
                 ->sum('amount');
         }
 

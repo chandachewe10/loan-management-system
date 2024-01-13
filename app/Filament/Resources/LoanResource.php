@@ -50,7 +50,6 @@ class LoanResource extends Resource
                     ->relationship('loan_type', 'loan_name')
                     ->searchable()
                     ->preload()
-
                     ->live(onBlur: true)
                     ->required(function ($state, Set $set) {
                         if ($state) {
@@ -62,7 +61,7 @@ class LoanResource extends Resource
 
                 Forms\Components\Select::make('borrower_id')
                     ->prefixIcon('heroicon-o-user')
-                    ->relationship('borrower', 'full_name')
+                    ->relationship('borrower', 'last_name')
                     ->preload()
                     ->required(),
                 Forms\Components\Select::make('loan_status')
@@ -186,15 +185,15 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('loan_type.loan_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_status')
-                ->badge()
-               
-                ->color(fn (string $state): string => match ($state) {
-                    'requested' => 'gray',
-                    'processing' => 'info',
-                    'approved' => 'success',
-                    'denied' => 'danger',
-                    'defaulted' => 'warning',
-                })
+                    ->badge()
+
+                    ->color(fn(string $state): string => match ($state) {
+                        'requested' => 'gray',
+                        'processing' => 'info',
+                        'approved' => 'success',
+                        'denied' => 'danger',
+                        'defaulted' => 'warning',
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal_amount')
                     ->label('Principle Amount')

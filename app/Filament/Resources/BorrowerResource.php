@@ -123,6 +123,10 @@ class BorrowerResource extends Resource
                     ->prefixIcon('heroicon-o-user')
                     ->required()
                     ->maxLength(255),
+
+                    Forms\Components\TextInput::make('full_name')
+                    ->hidden(),
+
                 Forms\Components\Select::make('gender')
                     ->label('Gender')
                     ->prefixIcon('heroicon-o-users')

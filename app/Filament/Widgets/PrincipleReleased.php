@@ -38,6 +38,7 @@ class PrincipleReleased extends LineChartWidget
             ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
             ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
             ->where('loan_status', 'approved')
+            ->whereMonth('created_at', $month)
             ->sum('principal_amount');
         }
         

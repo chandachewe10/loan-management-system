@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('borrowers', function (Blueprint $table) {
-            $table->string('full_name')->virtualAs('concat(first_name, \' \', last_name, \' \', email)');
+            $table->string('full_name');
         });
     }
 
