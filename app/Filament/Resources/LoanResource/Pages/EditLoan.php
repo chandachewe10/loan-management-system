@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
+use Carbon\Carbon;
 
 
 class EditLoan extends EditRecord
@@ -31,7 +32,7 @@ class EditLoan extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
        
-        dd($data);
+        
 
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
         if ($data['loan_status'] === 'approved' && $data['activate_loan_agreement_form'] == 1) {
@@ -53,8 +54,23 @@ class EditLoan extends EditRecord
 
                 $this->halt();
             } else {
+                $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
+                $loan_duration = $data['loan_duration'];
+                $loan_release_date = $data['loan_release_date'];
+                $loan_date = Carbon::createFromFormat('Y-m-d', $loan_release_date);
 
-
+                if ($loan_cycle === 'daily') {
+                    $data['loan_due_date'] = $loan_date->addDays($loan_duration);
+                }
+                if ($loan_cycle === 'weekly') {
+                    $data['loan_due_date'] = $loan_date->addWeeks($loan_duration);
+                }
+                if ($loan_cycle === 'monthly') {
+                    $data['loan_due_date'] = $loan_date->addMonths($loan_duration);
+                }
+                if ($loan_cycle === 'yearly') {
+                    $data['loan_due_date'] = $loan_date->addYears($loan_duration);
+                }
 
                 $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
                 $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id'])->first();
