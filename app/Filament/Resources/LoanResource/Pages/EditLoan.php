@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LoanResource\Pages;
 use App\Models\ThirdParty;
 use Illuminate\Support\Facades\Http;
 use App\Filament\Resources\LoanResource;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -54,6 +55,12 @@ class EditLoan extends EditRecord
 
                 $this->halt();
             } else {
+
+
+                $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
+
+
+
                 $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
                 $loan_duration = $data['loan_duration'];
                 $loan_release_date = $data['loan_release_date'];
@@ -87,7 +94,7 @@ class EditLoan extends EditRecord
                 $loan_repayment_amount = $data['repayment_amount'];
                 $loan_interest_amount = $data['interest_amount'];
                 $loan_due_date = $data['loan_due_date'];
-
+                $loan_number = $data['loan_number'];
                 // The original content with placeholders
                 $template_content = $loan_agreement_text->loan_agreement_text;
 
@@ -104,6 +111,7 @@ class EditLoan extends EditRecord
                 $template_content = str_replace('[Borrower Email]', $borrower_email, $template_content);
                 $template_content = str_replace('[Borrower Phone]', $borrower_phone, $template_content);
                 $template_content = str_replace('[Loan Name]', $loan_name, $template_content);
+                $template_content = str_replace('[Loan Number]', $loan_number, $template_content);
 
                 $characters_to_remove = ['<br>', '&nbsp;'];
                 $template_content = str_replace($characters_to_remove, '', $template_content);
