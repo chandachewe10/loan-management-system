@@ -30,6 +30,7 @@ class EditLoan extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+       
         dd($data);
 
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
@@ -115,9 +116,9 @@ class EditLoan extends EditRecord
                 $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
                 $objWriter->save($path . '/' . $file_name);
                 $data['loan_agreement_file_path'] = 'LOAN_AGREEMENT_FORMS/' . $current_year . '/DOCX' . '/' . $file_name;
-                return $data;
+               
             }
-            return $data;
+           
         }
 
 
