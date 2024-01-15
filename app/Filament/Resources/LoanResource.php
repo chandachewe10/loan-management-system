@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms\Components\Toggle;
-
+use App\helpers\CreateLinks;
 use Carbon\Carbon;
 use Filament\Forms\Set;
 use Filament\Forms\Get;
@@ -177,6 +177,7 @@ class LoanResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $create_link = new CreateLinks();
         return $table
             ->columns([
 
@@ -203,20 +204,12 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('loan_due_date')
                     ->label('Due Date')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('loan_due_date')
-                    ->label('Due Date')
-                    ->searchable(),
+               
                 Tables\Columns\TextColumn::make('loan_agreement_file_path')
-                    ->formatStateUsing(function (string $state): string {
-                        return 'Loan Agreement Form';
-                    })
-                    ->formatStateUsing(function (string $state): string {
-                        return $state;
-                    })
-
-
-
-
+                ->formatStateUsing(
+                    
+                    fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan agreement form'),
+                )
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('loan_status')
