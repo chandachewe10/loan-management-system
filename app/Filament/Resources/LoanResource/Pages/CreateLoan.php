@@ -157,6 +157,7 @@ class CreateLoan extends CreateRecord
                 $loan_repayment_amount = $data['repayment_amount'];
                 $loan_interest_amount = $data['interest_amount'];
                 $loan_due_date = $data['loan_due_date'];
+                $loan_number = $data['loan_number'];
 
                 // The original content with placeholders
                 $template_content = $loan_agreement_text->loan_agreement_text;
@@ -174,6 +175,7 @@ class CreateLoan extends CreateRecord
                 $template_content = str_replace('[Borrower Email]', $borrower_email, $template_content);
                 $template_content = str_replace('[Borrower Phone]', $borrower_phone, $template_content);
                 $template_content = str_replace('[Loan Name]', $loan_name, $template_content);
+                $template_content = str_replace('[Loan Number]', $loan_number, $template_content);
 
                 $characters_to_remove = ['<br>', '&nbsp;'];
                 $template_content = str_replace($characters_to_remove, '', $template_content);
