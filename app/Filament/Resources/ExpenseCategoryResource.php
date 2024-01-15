@@ -32,13 +32,13 @@ class ExpenseCategoryResource extends Resource
                 ->label('Category Name')
                 ->prefixIcon('heroicon-o-user')
                 ->required()
-                ->unique()
+                ->unique(ignoreRecord: true)
                 ->maxLength(255),
                 Forms\Components\TextInput::make('category_code')
                 ->label('Category Code')
                 ->prefixIcon('heroicon-o-user')
                 ->required()
-                ->unique()
+                ->unique(ignoreRecord: true)
                 ->maxLength(255),
             ]);
     }
