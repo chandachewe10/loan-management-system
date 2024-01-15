@@ -89,10 +89,14 @@ class RepaymentsResource extends Resource
                 ->label('Loan Status')
                 ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('principal')
+                Tables\Columns\TextColumn::make('payments')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('loan_number.repayment_amount')
+                    ->label('Total Repayments')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->searchable(),
+                   
                   
             ])
             ->filters([

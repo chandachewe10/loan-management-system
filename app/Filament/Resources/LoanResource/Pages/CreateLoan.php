@@ -28,6 +28,7 @@ class CreateLoan extends CreateRecord
         $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->first()->name;
         $data['principal_amount'] = (float) str_replace(',', '', $data['principal_amount']);
         $data['repayment_amount'] = (float) str_replace(',', '', $data['repayment_amount']);
+        
         $data['balance'] = (float) str_replace(',', '', $data['repayment_amount']);
         $data['interest_amount'] = (float) str_replace(',', '', $data['interest_amount']);
         $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
