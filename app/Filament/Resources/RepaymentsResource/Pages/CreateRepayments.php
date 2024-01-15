@@ -42,13 +42,19 @@ class CreateRepayments extends CreateRecord
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
 
         if ($new_balance <= 0) {
-            $data['loan_settlement_file_path'] =  $this->settlement_form($loan);
+            $data['loan_settlement_file_path'] = $this->settlement_form($loan);
+
+            //update Balance in Loans Table
+            $loan->update([
+                'balance' => $new_balance,
+                'loan_settlement_file_path' => $data['loan_settlement_file_path']
+            ]);
+        } else {
+            $loan->update([
+                'balance' => $new_balance
+
+            ]);
         }
-        //update Balance in Loans Table
-        $loan->update([
-            'balance' => $new_balance,
-            'loan_settlement_file_path' => $data['loan_settlement_file_path']
-        ]);
 
 
 
@@ -74,7 +80,7 @@ class CreateRepayments extends CreateRecord
         // The original content with placeholders
         $template_content = \App\Models\LoanSettlementForms::latest()->first()->loan_settlement_text;
 
-        
+
         // Replace placeholders with actual data
         $template_content = str_replace('{company_name}', $company_name, $template_content);
         $template_content = str_replace('{company_address}', $company_address, $template_content);
@@ -93,7 +99,7 @@ class CreateRepayments extends CreateRecord
         // dd($template_content);
         // Add content to the document (agenda, summary, key points, sentiments)
         $section = $phpWord->addSection();
-       
+
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content, false, false);
 
         $current_year = date('Y');
