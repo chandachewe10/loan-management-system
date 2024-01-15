@@ -44,7 +44,7 @@ class LoanSettlementFormsResource extends Resource
                         'codeBlock',
                     ])
                     
-                     ->default('<p>Company Name: {company_name}<br>Company Address: {company_address}<br><br>Date: {current_date}<br><br>Customer Name: {customer_name}<br>Customer Address: {customer_address}<br><br>Dear {customer_name},<br><br>We are pleased to inform you that your loan with us has been fully settled. The details of the settlement are as follows:<br><br>Loan Amount: {loan_amount}<br>Settled Date: {settled_date}<br><br>Thank you for choosing our services. If you have any questions or require further assistance, please feel free to contact us.<br><br>Sincerely,<br><br>{company_name}<br>{company_address}<br><br></p>')
+                    ->default('<p>{company_name}</p><p>Lusaka Zambia</p><p>P.O BOX 1209,</p><p>Lusaka</p><p>{current_date}</p><p><br></p><p>Dear {customer_name},</p><h3><span style="text-decoration: underline;">REF:LOAN SETTLEMENT FORM</span></h3><p>We are pleased to inform you that your loan with us has been fully settled. The details of the settlement are as follows:</p><ul><li>Loan Amount: {loan_amount}</li><li>Settled Date: {settled_date}</li></ul><p>The lender agrees to provide a loan of {loan_amount} to the borrower under the following terms and conditions:............................</p><p>The borrower agrees to repay the loan amount in installments within the loan tenure period. By signing this agreement, the borrower acknowledges and agrees to the terms and conditions set forth herein.&nbsp;</p><p>Sincerely,</p><p>{company_name}<br>{company_address}</p>')
                     ->columnSpan(2),
 
                     

@@ -209,6 +209,11 @@ class LoanResource extends Resource
                 ->formatStateUsing(
                     
                     fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan agreement form'),
+                ),
+                Tables\Columns\TextColumn::make('loan_settlement_file_path')
+                ->formatStateUsing(
+                    
+                    fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan settlement form'),
                 )
             ])
             ->filters([

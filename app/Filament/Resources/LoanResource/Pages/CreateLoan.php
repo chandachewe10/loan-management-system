@@ -61,6 +61,7 @@ class CreateLoan extends CreateRecord
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
+           
             // Define the JSON data
             $url = $base_uri . $end_point;
             $message = 'Hi ' . $borrower->first_name . ', ';
