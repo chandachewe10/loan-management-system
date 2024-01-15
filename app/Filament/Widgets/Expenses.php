@@ -28,32 +28,33 @@ class Expenses extends LineChartWidget
     }
 
     protected function getData(): array
-    {
-        $startDate = $this->filters['startDate'] ?? null;
-        $endDate = $this->filters['endDate'] ?? null;
-        $records = [];
+{
+    $startDate = $this->filters['startDate'] ?? null;
+    $endDate = $this->filters['endDate'] ?? null;
+    $records = [];
 
-        for ($month = 1; $month <= 12; $month++) {
-            $records[] = \Bavix\Wallet\Models\Transaction::query()
-                ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-                ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
-                ->where('type', '=', 'withdraw')
-                ->whereMonth('created_at', $month)
-                ->sum('amount');
-        }
-
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Business Expenses',
-                    'data' => array_map('floatval', $records),
-                ],
-            ],
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        ];
-
-
-
+    for ($month = 1; $month <= 12; $month++) {
+        $records[] = \Bavix\Wallet\Models\Transaction::query()
+            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+            ->where('type', '=', 'withdraw')
+            ->whereMonth('created_at', $month)
+            ->sum('amount');
     }
+
+    // Multiply each value in $records by -1
+    $records = array_map(fn($value) => $value * -1, $records);
+
+    return [
+        'datasets' => [
+            [
+                'label' => 'Business Expenses',
+                'data' => array_map('floatval', $records),
+            ],
+        ],
+        'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    ];
+}
+
 
 }
