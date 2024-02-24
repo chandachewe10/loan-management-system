@@ -7,10 +7,7 @@
 
 ## Demo
 
-
-
-
-
+https://github.com/chandachewe10/loan-management-system/assets/82529756/e7bd7b63-0b5e-43bc-88e1-90469e4f7111
 
 
 ## How it works
