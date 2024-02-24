@@ -10,10 +10,7 @@
 
 
 
-![Super Admin Dashboard](public/samples/sample1.png)
-![Super Admin Dashboard](public/samples/sample2.png)
-![Super Admin Dashboard](public/samples/sample3.png)
-![Super Admin Dashboard](public/samples/sample4.png)
+
 
 
 ## How it works
@@ -70,7 +67,10 @@ Set up email notifications using [Mailtrap](https://mailtrap.io). Copy the mail 
 
 
 
-
+![Super Admin Dashboard](public/samples/sample1.png)
+![Super Admin Dashboard](public/samples/sample2.png)
+![Super Admin Dashboard](public/samples/sample3.png)
+![Super Admin Dashboard](public/samples/sample4.png)
 
 
 
