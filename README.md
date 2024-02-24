@@ -1,66 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Loan Management Software.
 
-## About Laravel
+## Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP >= 8.1
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Demo
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## How it works
 
-## Learning Laravel
+The Loan Management software is a web-based application that helps manage and track loans efficiently. It provides features to streamline the loan application process, automate loan approvals, and monitor loan repayments. This README file provides an overview of the software and instructions for installation, configuration, and usage.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Beautiful, User-friendly interface for managing loans, borrowers, and lenders
+2. Add different types of loans, their percentage and intrest cycle 
+3. Add different types of wallets accounts such as expense wallet including expense categories for business expenses and loan wallet for loans payouts. 
+4. Transfer funds from one wallet to the other e.g from loans wallet to the expense wallet
+5. Show all transactions history  
+6. Loan application form with customizable fields to collect borrowers information and add borrower files.
+7. Automated loan approval process with customizable criteria and decision workflows.
+8. Loan repayment tracking and reminders for borrowers.
+9. Detailed loan reports and analytics for monitoring loan portfolios.
+10. Role-based access control to manage user permissions.
+11. Integration with external systems such as payment gateways and credit scoring services.
+12. Recieve loan agreement forms via email once the loan is approved automatically and compile the loan settlement form once the loan is settled
+13. View and Export Active Loans, Denied Loans, Pending Loans and Defaulted Loans
+14. Update Payments for loans
+15. Assign roles, assign permissions, revoke roles Etc 
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Clone the repository
+Please follow carefully the installation and use of this web framework of the Loan Management System for better utilisation of it. Do not skip any stage.
 
-### Premium Partners
+```bash
+1. git clone https://github.com/chandachewe10/loan-management-system.git
+2. composer update
+3. copy .env.example .env
+4. php artisan key:generate
+5. php artisan migrate 
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```
+ 
+create a super-admin user on the terminal by running the following script and follow the prompts
 
-## Contributing
+```bash
+php artisan shield:super-admin
+```
+Finally run migrations for roles and permissions by running the following scripts on your cmd and accept the prompts
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan shield:install
+```
 
-## Code of Conduct
+```bash
+Set up email notifications using [Mailtrap](https://mailtrap.io). Copy the mail credentials for your Laravel app from Mailtrap and update the corresponding settings in your `.env` file.
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+
+![Super Admin Dashboard](public/samples/sample1.png)
+![Super Admin Dashboard](public/samples/sample2.png)
+![Super Admin Dashboard](public/samples/sample3.png)
+
+
+
+
+## Contributions
+Contributions to the Loan Management software are welcome! If you have suggestions, bug reports, or feature requests, please submit an issue or a pull request on the GitHub repository.
 
 ## License
+The Loan Management software is open-source and released under the MIT License.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
