@@ -7,6 +7,15 @@
 
 ## Demo
 
+
+
+
+![Super Admin Dashboard](public/samples/sample1.png)
+![Super Admin Dashboard](public/samples/sample2.png)
+![Super Admin Dashboard](public/samples/sample3.png)
+![Super Admin Dashboard](public/samples/sample4.png)
+
+
 ## How it works
 
 The Loan Management software is a web-based application that helps manage and track loans efficiently. It provides features to streamline the loan application process, automate loan approvals, and monitor loan repayments. This README file provides an overview of the software and instructions for installation, configuration, and usage.
@@ -63,10 +72,6 @@ Set up email notifications using [Mailtrap](https://mailtrap.io). Copy the mail 
 
 
 
-![Super Admin Dashboard](public/samples/sample1.png)
-![Super Admin Dashboard](public/samples/sample2.png)
-![Super Admin Dashboard](public/samples/sample3.png)
-![Super Admin Dashboard](public/samples/sample4.png)
 
 
 
