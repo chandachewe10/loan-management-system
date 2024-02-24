@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 ->icon('fas-coins')
                 ->group('Loans')
                 ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.loans.active'))
-                ->badge(\App\Models\Loan::where('loan_status',"=",'approved')->count(), 'success')
+                // ->badge(\App\Models\Loan::where('loan_status',"=",'approved')->count(), 'success')
                 ->sort(4),
                 
                 
@@ -53,7 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 ->url('/admin/loans/pending')
                 ->icon('fas-clock')
                 ->group('Loans')
-                ->badge(\App\Models\Loan::where('loan_status',"=",'processing')->count(), 'info')
+                // ->badge(\App\Models\Loan::where('loan_status',"=",'processing')->count(), 'info')
                 ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.pending-loans'))
                 ->sort(3),
                 
@@ -64,7 +64,7 @@ class AdminPanelProvider extends PanelProvider
                 ->url('/admin/loans/denied')
                 ->icon('fas-ban')
                 ->group('Loans')
-                ->badge(\App\Models\Loan::where('loan_status',"=",'denied')->count(), 'danger')
+                // ->badge(\App\Models\Loan::where('loan_status',"=",'denied')->count(), 'danger')
                 ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.denied-loans'))
                 ->sort(5),
           ])
@@ -73,7 +73,7 @@ class AdminPanelProvider extends PanelProvider
               NavigationItem::make('Partially Paid Loans')
                   ->url('/admin/loans/partially_paid')
                   ->icon('fas-adjust')
-                  ->badge(\App\Models\Loan::where('loan_status',"=",'partially_paid')->count(), 'primary')
+                //   ->badge(\App\Models\Loan::where('loan_status',"=",'partially_paid')->count(), 'primary')
                   ->group('Loans')
                   ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.partially-loans'))
                   ->sort(6),
@@ -83,7 +83,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Fully Paid Loans')
                     ->url('/admin/loans/fully_paid')
                     ->icon('fas-square-full')
-                    ->badge(\App\Models\Loan::where('loan_status',"=",'fully_paid')->count(), 'success')
+                    // ->badge(\App\Models\Loan::where('loan_status',"=",'fully_paid')->count(), 'success')
                     ->group('Loans')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.fully-loans'))
                     ->sort(7),
@@ -92,7 +92,7 @@ class AdminPanelProvider extends PanelProvider
             NavigationItem::make('Defaulted Loans')
                 ->url('/admin/loans/defaulted')
                 ->icon('fas-exclamation-triangle')
-                ->badge(\App\Models\Loan::where('loan_status',"=",'defaulted')->count(), 'warning')
+                // ->badge(\App\Models\Loan::where('loan_status',"=",'defaulted')->count(), 'warning')
                 ->group('Loans')
                 ->isActiveWhen(fn (): bool => request()->routeIs('filament.resources.loan-resource.pages.defaulted-loans'))
                 ->sort(8),

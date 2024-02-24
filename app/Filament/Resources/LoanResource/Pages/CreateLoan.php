@@ -21,7 +21,7 @@ class CreateLoan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        //dd($data);
+        
 
         $wallet = Wallet::findOrFail($data['from_this_account']);
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);

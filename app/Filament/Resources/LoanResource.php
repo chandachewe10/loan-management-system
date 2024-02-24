@@ -206,11 +206,13 @@ class LoanResource extends Resource
                     ->searchable(),
                
                 Tables\Columns\TextColumn::make('loan_agreement_file_path')
+                ->label('Loan Agreement Form')
                 ->formatStateUsing(
                     
                     fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan agreement form'),
                 ),
                 Tables\Columns\TextColumn::make('loan_settlement_file_path')
+                ->label('Loan Settlement Form')
                 ->formatStateUsing(
                     
                     fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan settlement form'),

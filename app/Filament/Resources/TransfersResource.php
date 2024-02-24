@@ -74,6 +74,8 @@ class TransfersResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('deposit.amount')
+                    ->money('ZMW')
+                    ->badge()
                     ->searchable()
 
             ])
