@@ -38,7 +38,7 @@ Please follow carefully the installation and use of this web framework of the Lo
 ```bash
 1. git clone https://github.com/chandachewe10/loan-management-system.git
 2. composer update
-3. copy .env.example .env
+3. copy .env.example .env and set DB Credentials
 4. php artisan key:generate
 5. php artisan migrate 
 
