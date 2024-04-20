@@ -57,7 +57,7 @@ class CreateLoan extends CreateRecord
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
         if (
-            $bulk_sms_config && $bulk_sms_config->is_active === 'Active' && isset($borrower->mobile)
+            $bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile)
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
