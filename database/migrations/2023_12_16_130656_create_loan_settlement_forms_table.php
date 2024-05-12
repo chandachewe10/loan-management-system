@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('loan_settlement_forms', function (Blueprint $table) {
             $table->id();
-            $table->text('loan_settlement_text')->unique();
+            $table->text('loan_settlement_text');
             $table->timestamps();
         });
     }
