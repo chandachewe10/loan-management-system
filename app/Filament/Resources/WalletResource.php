@@ -31,7 +31,7 @@ class WalletResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Wallet Name')
+                    ->label('Wallet Name - Account Name')
                     ->prefixIcon('fas-wallet')
                     ->required(),
                 Forms\Components\TextInput::make('meta')
@@ -64,12 +64,16 @@ class WalletResource extends Resource
             ->columns([
 
                 Tables\Columns\TextColumn::make('name')
+                ->badge()
+                
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->badge()
+                    
                     ->searchable(),                   
 
                 Tables\Columns\TextColumn::make('balance')
+                ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
