@@ -63,7 +63,7 @@ class ThirdPartyResource extends Resource
                 Tables\Columns\TextColumn::make('token')
                 ->searchable(),
             Tables\Columns\TextColumn::make('is_active')
-                ->searchable(),
+            
             ])
             ->filters([
                 //

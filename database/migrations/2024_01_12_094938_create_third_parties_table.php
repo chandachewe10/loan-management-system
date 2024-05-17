@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('endpoint')->nullable();
             $table->string('token')->nullable();
             $table->string('sender_id')->nullable();
-            $table->string('is_active')->nullable();
+            $table->integer('is_active');
             $table->timestamps();
         });
     }
