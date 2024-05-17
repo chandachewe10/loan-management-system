@@ -68,6 +68,7 @@ class TransfersResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('from.name')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('to.name')
                     ->badge()
