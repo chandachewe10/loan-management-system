@@ -161,16 +161,23 @@ class EditLoan extends EditRecord
         ) {
 
 
-            // Define the JSON data
-            $url = $base_uri . $end_point;
-            $message = 'Hi ' . $borrower->first_name . ', ';
+           // Define the JSON data
+           $url = $base_uri . $end_point;
+           $message = 'Hi ' . $borrower->first_name . ', ';
+           $loan_amount = $data['principal_amount'];
+           $loan_duration = $data['loan_duration'];
+           $loan_release_date = $data['loan_release_date'];
+           $loan_repayment_amount = $data['repayment_amount'];
+           $loan_interest_amount = $data['interest_amount'];
+           $loan_due_date = $data['loan_due_date'];
+           $loan_number = $data['loan_number'];
 
             // Assuming $data['loan_status'] contains the current status
             $loanStatus = $data['loan_status'];
 
             switch ($loanStatus) {
                 case 'approved':
-                    $message .= 'Congratulations! Your loan application has been approved.';
+                    $message .= 'Congratulations! Your loan application of K'.$loan_amount. ' has been approved successfully. The total repayment amount is K'.$loan_repayment_amount .' to be repaid in '.$loan_duration .' '.$loan_cycle;
                     break;
 
                 case 'processing':
@@ -184,8 +191,6 @@ class EditLoan extends EditRecord
                 case 'defaulted':
                     $message .= 'Unfortunately, your loan is in default status. Please contact us as soon as possible to discuss the situation.';
                     break;
-
-
 
                 default:
                     $message .= 'Your loan application is in progress. Current status: ' . $loanStatus;
