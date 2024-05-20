@@ -21,14 +21,14 @@ class CreateLoan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        
+
 
         $wallet = Wallet::findOrFail($data['from_this_account']);
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
         $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->first()->name;
         $data['principal_amount'] = (float) str_replace(',', '', $data['principal_amount']);
         $data['repayment_amount'] = (float) str_replace(',', '', $data['repayment_amount']);
-        
+
         $data['balance'] = (float) str_replace(',', '', $data['repayment_amount']);
         $data['interest_amount'] = (float) str_replace(',', '', $data['interest_amount']);
         $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
@@ -61,19 +61,26 @@ class CreateLoan extends CreateRecord
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
-           
+
             // Define the JSON data
             $url = $base_uri . $end_point;
             $message = 'Hi ' . $borrower->first_name . ', ';
+            $loan_amount = $data['principal_amount'];
+            $loan_duration = $data['loan_duration'];
+            $loan_release_date = $data['loan_release_date'];
+            $loan_repayment_amount = $data['repayment_amount'];
+            $loan_interest_amount = $data['interest_amount'];
+            $loan_due_date = $data['loan_due_date'];
+            $loan_number = $data['loan_number'];
 
             // Assuming $data['loan_status'] contains the current status
             $loanStatus = $data['loan_status'];
 
             switch ($loanStatus) {
                 case 'approved':
-                    $message .= 'Congratulations! Your loan application has been approved.';
+                    $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
                     break;
-
+                    
                 case 'processing':
                     $message .= 'Your loan application is currently under review. We will notify you once the review process is complete.';
                     break;

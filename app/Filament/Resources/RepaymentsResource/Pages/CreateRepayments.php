@@ -21,7 +21,7 @@ class CreateRepayments extends CreateRecord
     {
 
         $loan = Loan::findOrFail($data['loan_id']);
-        $wallet = Wallet::where('name', "=", $loan->from_this_account)->first();
+        $wallet = Wallet::findOrFail($loan->from_this_account);//where('name', "=", $loan->from_this_account)->first();
         $principal_amount = $loan->principal_amount;
         $loan_number = $loan->loan_number;
         $old_balance = (float) ($loan->balance);
