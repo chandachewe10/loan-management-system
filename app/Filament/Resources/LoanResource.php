@@ -204,6 +204,11 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('loan_due_date')
                     ->label('Due Date')
                     ->searchable(),
+
+                    Tables\Columns\TextColumn::make('loan_number')
+                    ->label('Loan Number')
+                    ->badge()
+                    ->searchable(),
                
                 Tables\Columns\TextColumn::make('loan_agreement_file_path')
                 ->label('Loan Agreement Form')
