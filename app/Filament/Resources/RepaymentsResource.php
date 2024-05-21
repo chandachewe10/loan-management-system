@@ -83,6 +83,9 @@ class RepaymentsResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('created_at')
+                ->label('Payments Date')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_status')

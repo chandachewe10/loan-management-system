@@ -14,6 +14,8 @@ class Repayments extends Model
     return $this->belongsTo(Loan::class, 'loan_id', 'id');
 }
 
-
+public function getCreatedAtAttribute($value) {
+    return date('d,F Y H:m:i', strtotime($value));
+}
   
 }
