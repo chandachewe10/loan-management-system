@@ -57,7 +57,7 @@ class EditLoan extends EditRecord
             } else {
 
 
-                $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
+                // $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
 
 
 
@@ -66,16 +66,16 @@ class EditLoan extends EditRecord
                 $loan_release_date = $data['loan_release_date'];
                 $loan_date = Carbon::createFromFormat('Y-m-d', $loan_release_date);
 
-                if ($loan_cycle === 'daily') {
+                if ($loan_cycle === 'day(s)') {
                     $data['loan_due_date'] = $loan_date->addDays($loan_duration);
                 }
-                if ($loan_cycle === 'weekly') {
+                if ($loan_cycle === 'week(s)') {
                     $data['loan_due_date'] = $loan_date->addWeeks($loan_duration);
                 }
-                if ($loan_cycle === 'monthly') {
+                if ($loan_cycle === 'month(s)') {
                     $data['loan_due_date'] = $loan_date->addMonths($loan_duration);
                 }
-                if ($loan_cycle === 'yearly') {
+                if ($loan_cycle === 'year(s)') {
                     $data['loan_due_date'] = $loan_date->addYears($loan_duration);
                 }
 

@@ -45,10 +45,10 @@ class LoanTypeResource extends Resource
                     ->label('Interest Cycle')
                     ->prefixIcon('fas-sync-alt')
                     ->options([
-                        'daily' => 'Daily',
-                        'weekly' => 'Weekly',
-                        'monthly' => 'Monthly',
-                        'yearly' => 'Yearly',
+                        'day(s)' => 'Daily',
+                        'week(s)' => 'Weekly',
+                        'month(s)' => 'Monthly',
+                        'year(s)' => 'Yearly',
 
                     ])
                     ->required(),
@@ -72,10 +72,10 @@ class LoanTypeResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('interest_cycle')
                     ->options([
-                        'daily' => 'Daily',
-                        'weekly' => 'Weekly',
-                        'monthly' => 'Monthly',
-                        'yearly' => 'Yearly',
+                        'day(s)' => 'Daily',
+                        'week(s)' => 'Weekly',
+                        'month(s)' => 'Monthly',
+                        'year(s)' => 'Yearly',
 
                     ]),
             ])
