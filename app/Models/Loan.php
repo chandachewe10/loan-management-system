@@ -29,6 +29,15 @@ class Loan extends Model
     protected $casts = [
         'activate_loan_agreement_form' => 'boolean',
     ];
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'balance',
+        'loan_status',
+    ];
 
 
 }
