@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\RepaymentsResource\Pages;
+
 use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
@@ -22,30 +23,30 @@ class CreateRepayments extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
 
- //Check if they have created the Loan settlement Form template
- $template_content = \App\Models\LoanSettlementForms::latest()->first();
- if (!$template_content) {
-     Notification::make()
-         ->warning()
-         ->title('Invalid Settlement Form!')
-         ->body('Please create a loan settlement form first')
-         ->persistent()
-         ->actions([
-             Action::make('create')
-                 ->button()
-                 ->url(route('filament.admin.resources.repayments.create'), shouldOpenInNewTab: true),
-         ])
-         ->send();
+        //Check if they have created the Loan settlement Form template
+        $template_content = \App\Models\LoanSettlementForms::latest()->first();
+        if (!$template_content) {
+            Notification::make()
+                ->warning()
+                ->title('Invalid Settlement Form!')
+                ->body('Please create a loan settlement form first')
+                ->persistent()
+                ->actions([
+                    Action::make('create')
+                        ->button()
+                        ->url(route('filament.admin.resources.repayments.create'), shouldOpenInNewTab: true),
+                ])
+                ->send();
 
-     $this->halt();
- } 
+            $this->halt();
+        }
 
 
         $loan = Loan::findOrFail($data['loan_id']);
-        Log::info('Loan Details: '.$loan);
-        
+        Log::info('Loan Details: ' . $loan);
+
         $wallet = Wallet::where('name', "=", $loan->from_this_account)->first();
-        Log::info('Wallet Details: '.$wallet);
+        Log::info('Wallet Details: ' . $wallet);
         $principal_amount = $loan->principal_amount;
         $loan_number = $loan->loan_number;
         $old_balance = (float) ($loan->balance);
@@ -61,6 +62,9 @@ class CreateRepayments extends CreateRecord
             'principal' => $principal_amount,
 
         ]);
+        //Update the loan balance in the loans table
+        $loan->balance = $new_balance;
+        $loan->save();
 
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
