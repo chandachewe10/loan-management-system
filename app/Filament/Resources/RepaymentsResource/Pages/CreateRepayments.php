@@ -62,9 +62,7 @@ class CreateRepayments extends CreateRecord
             'principal' => $principal_amount,
 
         ]);
-        //Update the loan balance in the loans table
-        $loan->balance = $new_balance;
-        $loan->save();
+      
 
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
@@ -75,11 +73,13 @@ class CreateRepayments extends CreateRecord
             //update Balance in Loans Table
             $loan->update([
                 'balance' => $new_balance,
+                'loan_status' => 'fully paid',
                 'loan_settlement_file_path' => $data['loan_settlement_file_path']
             ]);
         } else {
             $loan->update([
-                'balance' => $new_balance
+                'balance' => $new_balance,
+                'loan_status' => 'partially paid',
 
             ]);
         }
