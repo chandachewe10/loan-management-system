@@ -6,6 +6,7 @@ use App\Models\ThirdParty;
 use Illuminate\Support\Facades\Http;
 use App\Filament\Resources\LoanResource;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Bavix\Wallet\Models\Wallet;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +35,8 @@ class EditLoan extends EditRecord
     {
        
         
-
+        
+        $wallet = Wallet::where('name', "=", $data['from_this_account'])->first();
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
         if ($data['loan_status'] === 'approved' && $data['activate_loan_agreement_form'] == 1) {
 
@@ -57,8 +59,12 @@ class EditLoan extends EditRecord
             } else {
 
 
-                // $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
+                 $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
 
+
+                // Remove the amount from the Specified Wallet
+
+                $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
 
 
                 $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
@@ -142,6 +148,9 @@ class EditLoan extends EditRecord
                 $data['loan_agreement_file_path'] = 'LOAN_AGREEMENT_FORMS/' . $current_year . '/DOCX' . '/' . $file_name;
                
             }
+
+
+
            
         }
 
