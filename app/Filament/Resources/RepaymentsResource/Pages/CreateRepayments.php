@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\RepaymentsResource\Pages;
 use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Bavix\Wallet\Models\Wallet;
 use App\Models\Expense;
@@ -19,6 +21,25 @@ class CreateRepayments extends CreateRecord
     protected static string $resource = RepaymentsResource::class;
     protected function handleRecordCreation(array $data): Model
     {
+
+ //Check if they have created the Loan settlement Form template
+ $template_content = \App\Models\LoanSettlementForms::latest()->first();
+ if (!$template_content) {
+     Notification::make()
+         ->warning()
+         ->title('Invalid Settlement Form!')
+         ->body('Please create a loan settlement form first')
+         ->persistent()
+         ->actions([
+             Action::make('create')
+                 ->button()
+                 ->url(route('filament.admin.resources.repayments.create'), shouldOpenInNewTab: true),
+         ])
+         ->send();
+
+     $this->halt();
+ } 
+
 
         $loan = Loan::findOrFail($data['loan_id']);
         Log::info('Loan Details: '.$loan);
