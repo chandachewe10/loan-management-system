@@ -34,7 +34,7 @@ class CreateRepayments extends CreateRecord
                 ->actions([
                     Action::make('create')
                         ->button()
-                        ->url(route('filament.admin.resources.repayments.create'), shouldOpenInNewTab: true),
+                        ->url(route('filament.admin.resources.loan-settlement-forms.create'), shouldOpenInNewTab: true),
                 ])
                 ->send();
 
