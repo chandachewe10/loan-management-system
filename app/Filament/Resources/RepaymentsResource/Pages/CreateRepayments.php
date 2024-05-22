@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\RepaymentsResource\Pages;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Bavix\Wallet\Models\Wallet;
 use App\Models\Expense;
@@ -21,7 +21,10 @@ class CreateRepayments extends CreateRecord
     {
 
         $loan = Loan::findOrFail($data['loan_id']);
-        $wallet = Wallet::findOrFail($loan->from_this_account);//where('name', "=", $loan->from_this_account)->first();
+        Log::info('Loan Details: '.$loan);
+        
+        $wallet = Wallet::where('name', "=", $loan->from_this_account)->first();
+        Log::info('Wallet Details: '.$wallet);
         $principal_amount = $loan->principal_amount;
         $loan_number = $loan->loan_number;
         $old_balance = (float) ($loan->balance);
