@@ -151,7 +151,7 @@ class LoanResource extends Resource
                     ->required()
                     ->native(false),
                 Forms\Components\TextInput::make('loan_number')
-                    ->hidden(),
+                ->readOnly(),
                 Forms\Components\Select::make('from_this_account')
                     ->label('From this Account')
                     ->prefixIcon('fas-wallet')

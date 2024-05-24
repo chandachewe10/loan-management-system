@@ -73,13 +73,13 @@ class CreateRepayments extends CreateRecord
             //update Balance in Loans Table
             $loan->update([
                 'balance' => $new_balance,
-                'loan_status' => 'fully paid',
+                'loan_status' => 'fully_paid',
                 'loan_settlement_file_path' => $data['loan_settlement_file_path']
             ]);
         } else {
             $loan->update([
                 'balance' => $new_balance,
-                'loan_status' => 'partially paid',
+                'loan_status' => 'partially_paid',
 
             ]);
         }
