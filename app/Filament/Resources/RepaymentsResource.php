@@ -94,9 +94,9 @@ class RepaymentsResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payments')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('loan_number.repayment_amount')
-                    ->label('Total Repayments')
-                    ->searchable(),
+                    // Tables\Columns\TextColumn::make('loan_number.repayment_amount')
+                    // ->label('Total Repayments')
+                    // ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->searchable(),
                    

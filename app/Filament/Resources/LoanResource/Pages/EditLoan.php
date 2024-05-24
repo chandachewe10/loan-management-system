@@ -59,7 +59,7 @@ class EditLoan extends EditRecord
             } else {
 
 
-                 $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
+               //  $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
 
 
                 // Remove the amount from the Specified Wallet
@@ -68,6 +68,7 @@ class EditLoan extends EditRecord
 
 
                 $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
+                
                 $loan_duration = $data['loan_duration'];
                 $loan_release_date = $data['loan_release_date'];
                 $loan_date = Carbon::createFromFormat('Y-m-d', $loan_release_date);

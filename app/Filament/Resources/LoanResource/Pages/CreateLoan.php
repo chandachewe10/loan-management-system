@@ -82,11 +82,11 @@ class CreateLoan extends CreateRecord
                     break;
                     
                 case 'processing':
-                    $message .= 'Your loan application is currently under review. We will notify you once the review process is complete.';
+                    $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
                     break;
 
                 case 'denied':
-                    $message .= 'We regret to inform you that your loan application has been rejected.';
+                    $message .= 'We regret to inform you that your loan application of K' . $loan_amount . ' has been rejected.';
                     break;
 
                 case 'defaulted':
@@ -96,7 +96,7 @@ class CreateLoan extends CreateRecord
 
 
                 default:
-                    $message .= 'Your loan application is in progress. Current status: ' . $loanStatus;
+                    $message .= 'Your loan application of K' . $loan_amount . ' is in progress. Current status: ' . $loanStatus;
                     break;
             }
 
