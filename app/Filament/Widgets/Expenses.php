@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Loan;
 use Filament\Widgets\LineChartWidget;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use App\Models\Expense;
 use Carbon\CarbonImmutable;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -34,12 +35,11 @@ class Expenses extends LineChartWidget
     $records = [];
 
     for ($month = 1; $month <= 12; $month++) {
-        $records[] = \Bavix\Wallet\Models\Transaction::query()
+        $records[] = Expense::query()
             ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
             ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
-            ->where('type', '=', 'withdraw')
             ->whereMonth('created_at', $month)
-            ->sum('amount');
+            ->sum('expense_amount');
     }
 
     // Multiply each value in $records by -1
