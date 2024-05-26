@@ -55,7 +55,7 @@ class TransactionsResource extends Resource
 
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payable.name')
-                    ->label('Payee')
+                    ->label('Performed By')
                     ->searchable(),
             ])
             ->filters([

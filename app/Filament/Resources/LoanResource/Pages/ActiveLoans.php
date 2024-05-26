@@ -34,7 +34,7 @@ class ActiveLoans extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-        ->query(Loan::query()->where('loan_status', 'approved'))
+        ->query(Loan::query()->where('loan_status', 'approved')->orWhere('loan_status', 'partially_paid'))
         ->columns([
             Tables\Columns\TextColumn::make('borrower.full_name')
             ->searchable(),
