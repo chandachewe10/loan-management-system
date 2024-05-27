@@ -192,6 +192,7 @@ class LoanResource extends Resource
                         'requested' => 'gray',
                         'processing' => 'info',
                         'approved' => 'success',
+                        'fully_paid' => 'success',
                         'denied' => 'danger',
                         'defaulted' => 'warning',
                     })
