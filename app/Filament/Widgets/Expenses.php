@@ -43,7 +43,8 @@ class Expenses extends LineChartWidget
     }
 
     // Multiply each value in $records by -1
-    $records = array_map(fn($value) => $value * -1, $records);
+   // $records = array_map(fn($value) => $value * (-1), $records);
+   $records = array_map(fn($value) => $value, $records);
 
     return [
         'datasets' => [
