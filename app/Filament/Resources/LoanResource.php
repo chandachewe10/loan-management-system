@@ -195,6 +195,7 @@ class LoanResource extends Resource
                         'fully_paid' => 'success',
                         'denied' => 'danger',
                         'defaulted' => 'warning',
+                        default => 'warning',
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal_amount')
