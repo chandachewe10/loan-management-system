@@ -124,11 +124,17 @@ class CreateLoan extends CreateRecord
 
 
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
-        if ($data['loan_status'] === 'approved' && $data['activate_loan_agreement_form'] == 1) {
+        if ($data['loan_status'] === 'approved') {
+
+
+// Remove the amount from the Specified Wallet
+
+$wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+
 
             //Check if they have the Loan Agreement Form template for this type of loan
             $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
-            if (!$loan_agreement_text) {
+            if (!$loan_agreement_text && $data['activate_loan_agreement_form'] == 1) {
                 Notification::make()
                     ->warning()
                     ->title('Invalid Agreement Form!')
@@ -143,12 +149,6 @@ class CreateLoan extends CreateRecord
 
                 $this->halt();
             } else {
-
-
-
-                // Remove the amount from the Specified Wallet
-
-                $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
 
 
                 $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
