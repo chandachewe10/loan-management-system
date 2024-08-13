@@ -38,11 +38,18 @@ class EditLoan extends EditRecord
         
         $wallet = Wallet::where('name', "=", $data['from_this_account'])->first();
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
-        if ($data['loan_status'] === 'approved' && $data['activate_loan_agreement_form'] == 1) {
+        if ($data['loan_status'] === 'approved') {
+
+
+ // Remove the amount from the Specified Wallet
+
+ $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+
+
 
             //Check if they have the Loan Agreement Form template for this type of loan
             $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
-            if (!$loan_agreement_text) {
+            if (!$loan_agreement_text && $data['activate_loan_agreement_form'] == 1) {
                 Notification::make()
                     ->warning()
                     ->title('Invalid Agreement Form!')
@@ -62,10 +69,7 @@ class EditLoan extends EditRecord
                //  $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
 
 
-                // Remove the amount from the Specified Wallet
-
-                $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
-
+               
 
                 $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
                 
