@@ -63,6 +63,7 @@ class LoanResource extends Resource
                     ->prefixIcon('heroicon-o-user')
                     ->relationship('borrower', 'full_name')
                     ->preload()
+                    ->searchable()
                     ->required(),
                 Forms\Components\Select::make('loan_status')
                     ->label('Loan Status')
