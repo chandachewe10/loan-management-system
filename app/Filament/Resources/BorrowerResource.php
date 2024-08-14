@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists;
@@ -19,8 +19,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Exports\BorrowerExporter;
-use Filament\Tables\Actions\ExportAction;
+
 
 
 class BorrowerResource extends Resource
@@ -267,10 +266,7 @@ class BorrowerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->headerActions([
-            ExportAction::make()
-                ->exporter(BorrowerExporter::class)
-        ])
+        
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
                     ->searchable(),
@@ -290,6 +286,7 @@ class BorrowerResource extends Resource
 
 
             ])
+            
             ->filters([
                 Tables\Filters\SelectFilter::make('gender')
                     ->options([
@@ -305,7 +302,8 @@ class BorrowerResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()
                 ]),
             ])
             ->emptyStateActions([

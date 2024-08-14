@@ -44,6 +44,30 @@ return [
             'visibility' => 'public',
         ],
 
+        'loan_types' => [
+            'driver' => 'local',
+            'root' => public_path('LOAN_TYPES'),
+            'throw' => false,
+            'url' => env('APP_URL').'/LOAN_TYPES',
+            'visibility' => 'public',
+        ],
+
+       'loans' => [
+            'driver' => 'local',
+            'root' => public_path('LOANS'),
+            'throw' => false,
+            'url' => env('APP_URL').'/LOANS',
+            'visibility' => 'public',
+        ],
+
+        'repayments' => [
+            'driver' => 'local',
+            'root' => public_path('REPAYMENTS'),
+            'throw' => false,
+            'url' => env('APP_URL').'/REPAYMENTS',
+            'visibility' => 'public',
+        ],
+
         'expenses' => [
             'driver' => 'local',
             'root' => public_path('EXPENSES'),

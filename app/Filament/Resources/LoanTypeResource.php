@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\LoanTypeResource\Pages;
 use App\Filament\Resources\LoanTypeResource\RelationManagers;
 use App\Models\LoanType;
@@ -12,8 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Exports\LoanTypeExporter;
-use Filament\Tables\Actions\ExportAction;
+
 
 class LoanTypeResource extends Resource
 {
@@ -60,10 +59,7 @@ class LoanTypeResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->headerActions([
-            ExportAction::make()
-                ->exporter(LoanTypeExporter::class)
-        ])
+        
             ->columns([
                 Tables\Columns\TextColumn::make('loan_name')
                     ->searchable(),
@@ -92,6 +88,7 @@ class LoanTypeResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ])
             ->emptyStateActions([
