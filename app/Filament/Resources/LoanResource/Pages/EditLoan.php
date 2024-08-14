@@ -17,6 +17,7 @@ use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use Carbon\Carbon;
+use App\Notifications\LoanStatusNotification;
 
 
 class EditLoan extends EditRecord
@@ -201,8 +202,8 @@ class EditLoan extends EditRecord
            $loan_release_date = $data['loan_release_date'];
            $loan_repayment_amount = $data['repayment_amount'];
            $loan_interest_amount = $data['interest_amount'];
-           $loan_due_date = $data['loan_due_date'];
-           $loan_number = $data['loan_number'];
+           $loan_due_date = $data['loan_due_date'] ?? '';
+           $loan_number = $data['loan_number'] ?? '';
 
             // Assuming $data['loan_status'] contains the current status
             $loanStatus = $data['loan_status'];
@@ -253,6 +254,11 @@ class EditLoan extends EditRecord
         }
 
 
+// send via SMS too if email is not Null
+if(!is_null($borrower->email)){
+    //dd('email is not null');
+    $borrower->notify(new LoanStatusNotification($message));
+}
 
         $record->update($data);
 

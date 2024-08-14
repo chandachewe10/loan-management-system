@@ -14,6 +14,8 @@ use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
+use App\Notifications\LoanStatusNotification;
+
 
 class CreateLoan extends CreateRecord
 {
@@ -121,6 +123,11 @@ class CreateLoan extends CreateRecord
                 ->get($url);
         }
 
+// send via SMS too if email is not Null
+if(!is_null($borrower->email)){
+    //dd('email is not null');
+    $borrower->notify(new LoanStatusNotification($message));
+}
 
 
         // Check if the loan is being approved and they want to compile the Loan Agreement Form

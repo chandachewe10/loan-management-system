@@ -6,11 +6,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Notifications\Notifiable;
 class Borrower extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use Notifiable;
     
 
     public function getCreatedAtAttribute($value) {
