@@ -86,6 +86,9 @@ class RepaymentsResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                 ->label('Payments Date')
                     ->searchable(),
+                    Tables\Columns\TextColumn::make('reference_number')
+                    ->label('Reference Number')
+                        ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_status')
