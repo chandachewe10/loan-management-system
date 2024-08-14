@@ -35,15 +35,33 @@ class EditLoan extends EditRecord
     {
        
         
+        $loan = \App\Models\Loan::where('loan_number',"=",$data['loan_number'])->first();
+//Disable editing an already approved loan
+        if ($loan->loan_status == 'approved') {
+            Notification::make()
+                ->warning()
+                ->title('Loan already approved')
+                ->body('You cant edit an already approved loan')
+                ->persistent()
+                 ->send();
+
+            $this->halt();
+        } 
+
+
+
+
         
         $wallet = Wallet::where('name', "=", $data['from_this_account'])->first();
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
         if ($data['loan_status'] === 'approved') {
 
 
- // Remove the amount from the Specified Wallet
-
- $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+//  // Remove the amount from the Specified Wallet if the wallet was not approved otherwise if the wallet was approved don't remove the funds
+// if($loan->loan_status != 'approved'){
+//     $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+// }
+ 
 
 
 
