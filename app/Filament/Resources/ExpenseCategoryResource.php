@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\ExpenseCategoryResource\Pages;
 use App\Filament\Resources\ExpenseCategoryResource\RelationManagers;
 use App\Models\ExpenseCategory;
@@ -61,7 +61,9 @@ class ExpenseCategoryResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                ,
+                ExportBulkAction::make()
                 ]),
             ])
             ->emptyStateActions([

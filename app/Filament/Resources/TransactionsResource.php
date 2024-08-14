@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\TransactionsResource\Pages;
 use App\Filament\Resources\TransactionsResource\RelationManagers;
 use Bavix\Wallet\Models\Transaction;
@@ -70,6 +70,7 @@ class TransactionsResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ])
             ->emptyStateActions([]);
