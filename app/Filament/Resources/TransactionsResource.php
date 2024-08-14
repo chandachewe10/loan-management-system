@@ -41,6 +41,9 @@ class TransactionsResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Transaction Date')
                     ->searchable(),
+                    Tables\Columns\TextColumn::make('uuid')
+                    ->label('Transaction ID')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('amount')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')
