@@ -19,6 +19,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\BorrowerExporter;
+use Filament\Tables\Actions\ExportAction;
+
 
 class BorrowerResource extends Resource
 {
@@ -28,7 +31,7 @@ class BorrowerResource extends Resource
     protected static ?string $navigationLabel = 'Borrowers';
 
     protected static ?string $navigationGroup = 'Customers';
-
+    
 
 
     //     public static function infolist(Infolist $infolist): Infolist
@@ -264,6 +267,10 @@ class BorrowerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->headerActions([
+            ExportAction::make()
+                ->exporter(BorrowerExporter::class)
+        ])
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
                     ->searchable(),
