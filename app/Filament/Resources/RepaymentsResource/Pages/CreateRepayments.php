@@ -93,7 +93,7 @@ class CreateRepayments extends CreateRecord
 
     protected function settlement_form($loan)
     {
-        $borrower = \App\Models\Borrower::findOrFail($loan->borrower_id)->first();
+        $borrower = \App\Models\Borrower::findOrFail($loan->borrower_id);
 
 
         $company_name = env('APP_NAME');
