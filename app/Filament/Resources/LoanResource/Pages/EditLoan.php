@@ -109,8 +109,8 @@ class EditLoan extends EditRecord
                     $data['loan_due_date'] = $loan_date->addYears($loan_duration);
                 }
 
-                $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
-                $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id'])->first();
+                $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
+                $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id']);
 
                 $company_name = env('APP_NAME');
                 $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;
@@ -183,7 +183,7 @@ class EditLoan extends EditRecord
         // Send an SMS to the Client depending on the status of the Loan Stage
 
         $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
-        $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
+        $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
 
