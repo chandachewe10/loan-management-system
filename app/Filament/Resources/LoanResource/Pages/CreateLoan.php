@@ -212,7 +212,7 @@ $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed f
 
 
 // Add an image to the document
-$imagePath = public_path('logos/logo2.png'); // Adjust the path to your image
+$imagePath = public_path('Logos/logo2.png'); // Adjust the path to your image
 $section->addImage($imagePath, [
     'width' => 170, // Adjust the width as needed 150
     'height' => 70, // Adjust the height as needed 50

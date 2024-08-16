@@ -151,6 +151,27 @@ class EditLoan extends EditRecord
                 // dd($template_content);
                 // Add content to the document (agenda, summary, key points, sentiments)
                 $section = $phpWord->addSection();
+
+
+// Add an image to the document
+$imagePath = public_path('Logos/logo2.png'); // Adjust the path to your image
+$section->addImage($imagePath, [
+    'width' => 170, // Adjust the width as needed 150
+    'height' => 70, // Adjust the height as needed 50
+    'align' => 'center' // Center align the image
+]);
+
+// A TextRun object for applying formatting
+$textRun = $section->addTextRun([
+    'lineHeight' => 1.5 // Line height as a percentage (150% for 1.5 spacing)
+]);
+
+// Add formatted text to the TextRun object
+$textRun->addText($template_content, ['name' => 'Arial', 'size' => 12]);
+
+
+
+
                 // \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content, false, false);
 
