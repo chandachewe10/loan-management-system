@@ -49,6 +49,7 @@ class ActiveLoans extends Page implements HasForms, HasTable
             'approved' => 'success',
             'denied' => 'danger',
             'defaulted' => 'warning',
+             default => 'info',
         })
             ->searchable(),
         Tables\Columns\TextColumn::make('principal_amount')
