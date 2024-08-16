@@ -27,7 +27,7 @@ class CreateLoan extends CreateRecord
 
         $wallet = Wallet::findOrFail($data['from_this_account']);
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
-        $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->first()->name;
+        $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->name;
         $data['principal_amount'] = (float) str_replace(',', '', $data['principal_amount']);
         $data['repayment_amount'] = (float) str_replace(',', '', $data['repayment_amount']);
 
@@ -55,7 +55,8 @@ class CreateLoan extends CreateRecord
         // Send an SMS to the Client depending on the status of the Loan Stage
 
         $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
-        $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
+        $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
+        
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
         if (
@@ -158,8 +159,8 @@ $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed f
             } else {
 
 
-                $borrower = \App\Models\Borrower::findOrFail($data['borrower_id'])->first();
-                $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id'])->first();
+                $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
+                $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id']);
 
                 $company_name = env('APP_NAME');
                 $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;

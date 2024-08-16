@@ -54,7 +54,7 @@ class StatsOverview extends BaseWidget
                 ->where('loan_status', 'defaulted')
                 ->count(), )
                 ->description('Defaulted Loans')
-                ->descriptionIcon('fas-dollar-sign')
+                ->descriptionIcon('fas-sync')
                 ->color('danger'),
 
 
