@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\Toggle;
 use App\Filament\Resources\ThirdPartyResource\Pages;
 use App\Filament\Resources\ThirdPartyResource\RelationManagers;

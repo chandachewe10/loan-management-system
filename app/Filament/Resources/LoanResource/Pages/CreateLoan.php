@@ -219,16 +219,16 @@ $section->addImage($imagePath, [
     'align' => 'center' // Center align the image
 ]);
 
-// A TextRun object for applying formatting
-$textRun = $section->addTextRun([
-    'lineHeight' => 1.5 // Line height as a percentage (150% for 1.5 spacing)
-]);
+// // A TextRun object for applying formatting
+// $textRun = $section->addTextRun([
+//     'lineHeight' => 1.5 // Line height as a percentage (150% for 1.5 spacing)
+// ]);
 
-// Add formatted text to the TextRun object
-$textRun->addText($template_content, ['name' => 'Arial', 'size' => 12]);
+// // Add formatted text to the TextRun object
+// $textRun->addText($template_content, ['name' => 'Arial', 'size' => 12]);
 
 // Alternatively, if you have HTML content and want to preserve it:
-\PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content, false, false);
+
 
                 // \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content, false, false);
