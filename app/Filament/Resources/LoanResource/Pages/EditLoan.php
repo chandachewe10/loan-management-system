@@ -278,8 +278,45 @@ $section->addImage($imagePath, [
 // send via SMS too if email is not Null
 if(!is_null($borrower->email)){
     //dd('email is not null');
+    $message = 'Hi ' . $borrower->first_name . ', ';    
+    $loan_amount = $data['principal_amount'];
+    $loan_duration = $data['loan_duration'];
+    $loan_release_date = $data['loan_release_date'];
+    $loan_repayment_amount = $data['repayment_amount'];
+    $loan_interest_amount = $data['interest_amount'];
+    $loan_due_date = $data['loan_due_date'];
+    $loan_number = $data['loan_number'];
+
+    // Assuming $data['loan_status'] contains the current status
+    $loanStatus = $data['loan_status'];
+
+    switch ($loanStatus) {
+        case 'approved':
+            $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
+            break;
+            
+        case 'processing':
+            $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
+            break;
+
+        case 'denied':
+            $message .= 'We regret to inform you that your loan application of K' . $loan_amount . ' has been rejected.';
+            break;
+
+        case 'defaulted':
+            $message .= 'Unfortunately, your loan is in default status. Please contact us as soon as possible to discuss the situation.';
+            break;
+
+
+
+        default:
+            $message .= 'Your loan application of K' . $loan_amount . ' is in progress. Current status: ' . $loanStatus;
+            break;
+    }
+
     $borrower->notify(new LoanStatusNotification($message));
 }
+
 
         $record->update($data);
 
