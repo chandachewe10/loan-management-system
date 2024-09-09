@@ -50,7 +50,7 @@ class LoanResource extends Resource
                     ->relationship('loan_type', 'loan_name')
                     ->searchable()
                     ->preload()
-                    ->live(onBlur: true)
+                    ->live()
                     ->required(function ($state, Set $set) {
                         if ($state) {
                             $interest_cycle = \App\Models\LoanType::findOrFail($state)->interest_cycle;
@@ -80,7 +80,7 @@ class LoanResource extends Resource
                 Forms\Components\TextInput::make('principal_amount')
                     ->label('Principle Amount')
                     ->prefixIcon('fas-dollar-sign')
-                    ->live(onBlur: true)
+                    ->live()
                     ->required(function ($state, Set $set, Get $get) {
                         if ($get('loan_type_id')) {
                             $duration = $get('loan_duration') ?? 0;
@@ -99,7 +99,7 @@ class LoanResource extends Resource
                 Forms\Components\TextInput::make('loan_duration')
                     ->label('Loan Duration')
                     ->prefixIcon('fas-clock')
-                    ->live(onBlur: true)
+                    ->live()
                     ->required(function ($state, Set $set, Get $get) {
                         if ($state && $get('loan_type_id') && $get('principal_amount')) {
                             $duration = $state ?? 0;
