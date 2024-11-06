@@ -249,7 +249,7 @@ class BorrowerResource extends Resource
                     ->label('Mobile Money Number')
                     ->prefixIcon('fas-user')
                     ->tel(),
-                    Forms\Components\TextInput::make('added_by')
+                    Forms\Components\Select::make('added_by')
                     ->prefixIcon('heroicon-o-user')
                     ->relationship('added_by', 'name')
                     ->preload()
