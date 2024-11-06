@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -30,7 +31,7 @@ class BorrowerResource extends Resource
     protected static ?string $navigationLabel = 'Borrowers';
 
     protected static ?string $navigationGroup = 'Customers';
-    
+
 
 
     //     public static function infolist(Infolist $infolist): Infolist
@@ -126,7 +127,7 @@ class BorrowerResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                    Forms\Components\TextInput::make('full_name')
+                Forms\Components\TextInput::make('full_name')
                     ->hidden(),
 
                 Forms\Components\Select::make('gender')
@@ -249,9 +250,9 @@ class BorrowerResource extends Resource
                     ->label('Mobile Money Number')
                     ->prefixIcon('fas-user')
                     ->tel(),
-                    Forms\Components\Select::make('added_by')
+                Forms\Components\Select::make('added_by')
                     ->prefixIcon('heroicon-o-user')
-                    ->relationship('added_by', 'name')
+                    ->relationship('created_by', 'name')
                     ->preload()
                     ->searchable()
                     ->required(),
@@ -264,7 +265,7 @@ class BorrowerResource extends Resource
                     ->maxSize(5120)
                     ->columnSpan(2)
                     ->openable(),
-                    
+
 
 
             ]);
@@ -273,7 +274,7 @@ class BorrowerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        
+
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
                     ->searchable(),
@@ -293,7 +294,7 @@ class BorrowerResource extends Resource
 
 
             ])
-            
+
             ->filters([
                 Tables\Filters\SelectFilter::make('gender')
                     ->options([
@@ -309,8 +310,8 @@ class BorrowerResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-                ExportBulkAction::make()
+                    Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ])
             ->emptyStateActions([

@@ -13,7 +13,6 @@ class CreateBorrower extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         
-dd($data);
        $data['full_name'] = $data['first_name']. ' '.$data['last_name']. ' - '.$data['mobile'];
        return $data;
     }
