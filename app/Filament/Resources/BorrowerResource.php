@@ -250,12 +250,6 @@ class BorrowerResource extends Resource
                     ->label('Mobile Money Number')
                     ->prefixIcon('fas-user')
                     ->tel(),
-                Forms\Components\Select::make('added_by')
-                    ->prefixIcon('heroicon-o-user')
-                    ->relationship('created_by', 'name')
-                    ->preload()
-                    ->searchable()
-                    ->required(),
                 SpatieMediaLibraryFileUpload::make('attachment')
                     ->disk('borrowers')
                     ->visibility('public')
