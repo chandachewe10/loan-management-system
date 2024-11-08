@@ -35,7 +35,7 @@ class Borrower extends Model implements HasMedia
         'city',
         'province',
         'zipcode',
-        
+        'added_by'
 
     ];
 
@@ -52,9 +52,8 @@ class Borrower extends Model implements HasMedia
         return $this->hasMany(Loan::class, 'id','borrower_id');
     }
 
-    public function added_by()
+    public function created_by()
     {
-        
         return $this->belongsTo(User::class, 'added_by','id');
     }
 
