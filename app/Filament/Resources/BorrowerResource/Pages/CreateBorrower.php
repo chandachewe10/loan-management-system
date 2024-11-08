@@ -14,6 +14,7 @@ class CreateBorrower extends CreateRecord
     {
         
        $data['full_name'] = $data['first_name']. ' '.$data['last_name']. ' - '.$data['mobile'];
+       $data['added_by'] =Auth::user()->id;
        return $data;
     }
 
