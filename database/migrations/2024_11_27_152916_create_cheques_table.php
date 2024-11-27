@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('cheques', function (Blueprint $table) {
             $table->id();
-            $table->string('check_number');
-            $table->decimal('amount', 10, 2);            
+            $table->string('check_number')->unique();;
+            $table->decimal('amount', 10, 2);
             $table->string('beneficiary');
             $table->softDeletes();
             $table->timestamps();
