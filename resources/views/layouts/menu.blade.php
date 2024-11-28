@@ -96,7 +96,7 @@
                          </li>
 
                          <li class="nav-item">
-                             <a href=""
+                             <a href="{{ route('cheque.index') }}"
                                  class="nav-link {{ request()->routeIs('cheque.index') ? 'active' : '' }}">
                                  <i class="far fa-circle nav-icon"></i>
                                  <p>All Cheques</p>
