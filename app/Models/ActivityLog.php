@@ -14,10 +14,6 @@ class ActivityLog extends Model
         'user_agent',
         'action',
         'details',
-                     
+
     ];
-
-
-
-
 }
