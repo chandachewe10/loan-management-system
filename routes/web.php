@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\BorrowersController;
+use App\Http\Controllers\{
+    BorrowersController,
+    ChequeController
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,5 +30,6 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::resource('borrower',BorrowersController::class);
+    Route::resource('borrower', BorrowersController::class);
+    Route::resource('cheque', ChequeController::class);
 });
