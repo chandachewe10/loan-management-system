@@ -37,7 +37,7 @@ Please follow carefully the installation and use of this web framework of the Lo
 
 ```bash
 1. git clone https://github.com/chandachewe10/loan-management-system.git
-2. composer update
+2. composer install
 3. copy .env.example .env and set DB Credentials
 4. php artisan key:generate
 5. php artisan migrate 
@@ -49,7 +49,9 @@ create a super-admin user on the terminal by running the following script and fo
 ```bash
 php artisan shield:super-admin
 ```
+
 Finally run migrations for roles and permissions by running the following scripts on your cmd and accept the prompts
+If asked for the pannel ID enter `admin`
 
 ```bash
 php artisan shield:install
