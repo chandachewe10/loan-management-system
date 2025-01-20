@@ -30,9 +30,9 @@ class AdminPanelProvider extends PanelProvider
         ->plugins([
             \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
         ])
-        ->brandLogo(asset('Logos/logo2.png'))
-        ->brandLogoHeight('4rem')
-        ->favicon(asset('Logos/logo2.png'))
+        // ->brandLogo(asset('Logos/logo2.png'))
+        // ->brandLogoHeight('4rem')
+        // ->favicon(asset('Logos/logo2.png'))
         ->sidebarCollapsibleOnDesktop()
         
         ->login()
