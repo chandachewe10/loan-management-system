@@ -285,6 +285,8 @@ class BorrowerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                    Tables\Columns\TextColumn::make('created_by.name')
+                    ->searchable(),
 
 
             ])
