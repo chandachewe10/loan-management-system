@@ -48,6 +48,13 @@ class FullyPaidLoans extends Page implements HasForms, HasTable
         Tables\Columns\TextColumn::make('principal_amount')
             ->label('Principle Amount')
             ->money('ZMW')
+            ->badge()
+            ->sortable()
+            ->searchable(),
+            Tables\Columns\TextColumn::make('balance')
+            ->label('Balance')
+            ->badge()
+            ->money('ZMW')
             ->sortable()
             ->searchable(),
             Tables\Columns\TextColumn::make('loan_due_date')

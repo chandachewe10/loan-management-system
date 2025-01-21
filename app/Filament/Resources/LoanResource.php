@@ -202,6 +202,13 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('principal_amount')
                     ->label('Principle Amount')
                     ->money('ZMW')
+                    ->badge()
+                    ->sortable()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('balance')
+                    ->label('Balance')
+                    ->money('ZMW')
+                    ->badge()
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_due_date')
