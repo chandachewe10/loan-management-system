@@ -60,7 +60,7 @@ class CreateLoan extends CreateRecord
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
         if (
-            $bulk_sms_config && $bulk_sms_config->is_active == "Active" && isset($borrower->mobile)
+            $bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile)
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
@@ -124,7 +124,7 @@ class CreateLoan extends CreateRecord
                 ->get($url);
         }
 
-// send via SMS too if email is not Null
+// send via Email too if email is not Null
 if(!is_null($borrower->email)){
     //dd('email is not null');
     $message = 'Hi ' . $borrower->first_name . ', ';    
@@ -248,12 +248,12 @@ $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed f
 
 
 // Add an image to the document
-$imagePath = public_path('Logos/logo2.png'); // Adjust the path to your image
-$section->addImage($imagePath, [
-    'width' => 170, // Adjust the width as needed 150
-    'height' => 70, // Adjust the height as needed 50
-    'align' => 'center' // Center align the image
-]);
+// $imagePath = public_path('Logos/logo2.png'); // Adjust the path to your image
+// $section->addImage($imagePath, [
+//     'width' => 170, // Adjust the width as needed 150
+//     'height' => 70, // Adjust the height as needed 50
+//     'align' => 'center' // Center align the image
+// ]);
 
 // // A TextRun object for applying formatting
 // $textRun = $section->addTextRun([
