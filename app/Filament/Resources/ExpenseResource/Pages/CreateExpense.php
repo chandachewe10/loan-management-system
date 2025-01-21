@@ -13,20 +13,15 @@ class CreateExpense extends CreateRecord
 {
     protected static string $resource = ExpenseResource::class;
 
-    protected function handleRecordCreation(array $data): Model
-    {
+    protected function mutateFormDataBeforeCreate(array $data): array{
+
+   
+       
         $wallet = Wallet::findOrFail($data['from_this_account']);
         $wallet->withdraw($data['expense_amount'], ['meta' => 'Expense amount for ' . $data['expense_name']]);
-        $expense = Expense::create([
-            'expense_name' => $data['expense_name'],
-            'expense_amount' => $data['expense_amount'],
-            'expense_vendor' => $data['expense_vendor'],
-            'category_id' => $data['category_id'],
-            'expense_date' => $data['expense_date'],
-            'from_this_account' => $wallet->name,
-            'expense_attachment' => $data['expense_attachment'] ?? '',
-        ]);
-        return $expense;
+        $data['from_this_account'] = $wallet->name;
+       
+        return $data;
     }
 
     protected function getRedirectUrl(): string
