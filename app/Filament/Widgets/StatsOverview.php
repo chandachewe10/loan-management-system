@@ -11,11 +11,12 @@ use Carbon\CarbonImmutable;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
-
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class StatsOverview extends BaseWidget
 {
     use InteractsWithPageFilters;
+    use HasWidgetShield;
     protected static ?string $maxHeight = '100px';
     protected static ?int $sort = 1;
     public function getColumns(): int

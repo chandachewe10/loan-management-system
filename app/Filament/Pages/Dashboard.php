@@ -12,9 +12,11 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Route;
 use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class Dashboard extends Page
 {
+    //use HasPageShield;
     protected static string $routePath = '/';
 
     protected static ?int $navigationSort = -2;
