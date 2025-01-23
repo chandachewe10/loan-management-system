@@ -95,7 +95,8 @@ class ExpenseResource extends Resource
                 Tables\Columns\TextColumn::make('expense_vendor')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('expense_amount')
-                    ->searchable(),
+                ->badge()
+                ->searchable(),
                   
                
                 Tables\Columns\TextColumn::make('expense_category.category_name')
@@ -118,7 +119,7 @@ class ExpenseResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\ViewAction::make(),
+                 Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

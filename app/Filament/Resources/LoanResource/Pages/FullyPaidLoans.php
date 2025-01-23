@@ -10,11 +10,13 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\View\View;
 use App\Models\Loan;
 use Filament\Resources\Pages\Page;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class FullyPaidLoans extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
+    use HasPageShield;
    
     protected static string $resource = LoanResource::class;
 
@@ -47,6 +49,13 @@ class FullyPaidLoans extends Page implements HasForms, HasTable
             ->searchable(),
         Tables\Columns\TextColumn::make('principal_amount')
             ->label('Principle Amount')
+            ->money('ZMW')
+            ->badge()
+            ->sortable()
+            ->searchable(),
+            Tables\Columns\TextColumn::make('balance')
+            ->label('Balance')
+            ->badge()
             ->money('ZMW')
             ->sortable()
             ->searchable(),

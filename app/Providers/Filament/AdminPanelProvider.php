@@ -21,6 +21,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,7 +29,22 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
         ->plugins([
-            \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+            FilamentShieldPlugin::make()
+                ->gridColumns([
+                    'default' => 1,
+                    'sm' => 2,
+                    'lg' => 2
+                ])
+                ->sectionColumnSpan(1)
+                ->checkboxListColumns([
+                    'default' => 1,
+                    'sm' => 2,
+                    'lg' => 4,
+                ])
+                ->resourceCheckboxListColumns([
+                    'default' => 1,
+                    'sm' => 2,
+                ]),
         ])
         // ->brandLogo(asset('Logos/logo2.png'))
         // ->brandLogoHeight('4rem')

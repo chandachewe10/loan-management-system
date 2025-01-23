@@ -72,7 +72,6 @@ class RepaymentsResource extends Resource
                 Forms\Components\TextInput::make('reference_number')
                     ->label('Transaction Reference')
                     ->prefixIcon('fas-dollar-sign')
-                    ->required()
                     ->columnSpan(2),
 
 

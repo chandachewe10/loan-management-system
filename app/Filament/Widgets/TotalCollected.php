@@ -9,10 +9,12 @@ use Carbon\CarbonImmutable;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class TotalCollected extends ChartWidget
 {
     use InteractsWithPageFilters;
+    use HasWidgetShield;
     protected static ?string $heading = 'Total Collected';
     protected static ?string $maxHeight = '200px';
     protected static ?int $sort = 2;
