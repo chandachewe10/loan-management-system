@@ -15,11 +15,15 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\View\View;
 use App\Models\Loan;
 use Filament\Resources\Pages\Page;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+
+
 
 class PendingLoans extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
+    use HasPageShield;
 
     protected static string $resource = LoanResource::class;
     
