@@ -16,7 +16,7 @@ class ActiveLoans extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
-    use HasPageShield;
+    //use HasPageShield;
    
     protected static string $resource = LoanResource::class;
 
