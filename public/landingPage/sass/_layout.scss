@@ -1,0 +1,152 @@
+/*
+** Container
+*/
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+
+  @media only screen and (min-width: $bp-large) {
+    max-width: 1128px;
+  }
+}
+
+/*
+** Header
+*/
+
+.header {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  padding: 1.5rem;
+
+  .header__wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+/*
+** Section
+*/
+
+.section {
+  margin: 4rem 0;
+
+  .section__title-wrapper {
+    margin-bottom: 4rem;
+
+    @media only screen and (min-width: $bp-large) {
+      padding: 0rem 12rem;
+    }
+  }
+
+  &.features {
+    background-color: $color-blue-dark;
+    padding: 4rem 0;
+  }
+
+  &.banner {
+    position: relative;
+
+    &:before {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background-color: $color-blue-dark;
+      z-index: -1;
+    }
+  }
+
+  &:first-of-type {
+    margin: 0 0 4rem 0;
+  }
+
+  &:last-of-type {
+    margin: 4rem 0 0 0;
+  }
+}
+
+/*
+** Box
+*/
+
+.box {
+  &--flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &--grid {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 4rem;
+
+    @media only screen and (min-width: $bp-large) {
+      display: grid;
+      grid-template-rows: none;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 6rem;
+    }
+  }
+
+  &--mt2 {
+    margin-top: 2rem;
+  }
+
+  &--gap2 {
+    grid-gap: 1.5rem;
+
+    @media only screen and (min-width: $bp-large) {
+      grid-gap: 3rem;
+    }
+  }
+}
+
+/*
+** Nav
+*/
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+/*
+** Button group
+*/
+
+.button__group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+** Footer
+*/
+
+.footer {
+  position: relative;
+  background-color: $color-blue-dark;
+  z-index: 0;
+
+  &:after {
+    top: 0%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../img/footer.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -1;
+  }
+}

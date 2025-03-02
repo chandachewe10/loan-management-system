@@ -1,0 +1,55 @@
+/*
+** Footer
+*/
+
+.c-footer {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding: 4rem 0 1rem 0;
+  flex-direction: column;
+
+  @media only screen and (min-width: $bp-large) {
+    flex-direction: row;
+    padding: 6rem 0;
+  }
+
+  .c-footer__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 4rem;
+
+    @media only screen and (min-width: $bp-large) {
+      align-items: flex-start;
+
+      &:last-child {
+        align-items: flex-end;
+      }
+    }
+  }
+
+  .c-footer__text {
+    margin-top: 1rem;
+    font-size: 80%;
+    color: $color-blue-light;
+  }
+
+  .c-footer__icons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+
+    .c-footer__icon {
+      width: 2rem;
+      margin-left: 1.5rem;
+      transition: transform 300ms $default-timing-function;
+
+      &:hover {
+        transform: translateY(-0.5rem);
+      }
+    }
+  }
+}

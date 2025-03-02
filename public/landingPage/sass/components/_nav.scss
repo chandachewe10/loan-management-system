@@ -1,0 +1,106 @@
+/*
+** Nav
+*/
+
+.c-nav {
+  .c-nav__toggle {
+    opacity: 1;
+    position: absolute;
+    top: 2rem;
+    transition: 300ms opacity ease;
+
+    @media only screen and (min-width: $bp-large) {
+      opacity: 0;
+    }
+
+    &:before {
+      content: "\2261";
+      font-size: 1.6rem;
+      top: -0.5rem;
+      left: -0.5rem;
+      position: absolute;
+      z-index: 5;
+      width: 20px;
+      height: 20px;
+      color: white;
+      background-color: $color-blue-dark;
+      border: 1px solid white;
+      border-radius: 50%;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:checked {
+      &:before {
+        content: "\2A2F";
+      }
+
+      ~ .c-nav__content {
+        opacity: 1;
+      }
+    }
+  }
+
+  .c-nav__content {
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 300ms $default-timing-function;
+
+    .c-list {
+      margin: 0;
+      flex-direction: column;
+      align-items: center;
+
+      .c-list__item {
+        margin-bottom: 3rem;
+
+        .c-link--list {
+          color: white;
+          margin: 0;
+          font-size: 200%;
+        }
+      }
+    }
+
+    @media only screen and (min-width: $bp-large) {
+      opacity: 1;
+      position: inherit;
+      top: inherit;
+      left: inherit;
+      width: inherit;
+      height: inherit;
+      background: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: inherit;
+      flex-direction: inherit;
+
+      .c-list {
+        margin: inherit;
+        flex-direction: inherit;
+        align-items: inherit;
+
+        .c-list__item {
+          margin-bottom: inherit;
+
+          .c-link--list {
+            color: $color-blue-light;
+            margin-right: 1.5rem;
+            font-size: inherit;
+          }
+        }
+      }
+    }
+  }
+}

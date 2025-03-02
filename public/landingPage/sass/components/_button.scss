@@ -1,0 +1,55 @@
+/*
+** Button
+*/
+
+.c-button {
+  padding: 0.8rem 1.6rem;
+  border: none;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  ~ .c-button {
+    margin-left: 1.4rem;
+  }
+
+  &--small {
+    padding: 0.6rem 0.8rem;
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-blue-dark;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: white;
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &:after {
+    top: 0;
+    left: -50%;
+    z-index: 0;
+    background: rgba(0, 0, 0, 0.15);
+    width: 0%;
+    height: 100%;
+    transform: skew(50deg);
+    transition-duration: 600ms;
+    transition-timing-function: $default-timing-function;
+    transform-origin: top left;
+  }
+
+  &:hover {
+    &:after {
+      width: 150%;
+    }
+  }
+}

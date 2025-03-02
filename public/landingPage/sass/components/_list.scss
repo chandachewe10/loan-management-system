@@ -1,0 +1,47 @@
+/*
+** List
+*/
+
+.c-list {
+  list-style: none;
+  margin-right: 1.5rem;
+
+  &--flex {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &--align-right {
+    margin-right: 0;
+  }
+
+  .c-list__item {
+    &--small {
+      font-size: 80%;
+    }
+  }
+
+  .c-list__link {
+    color: $color-blue-light;
+  }
+
+  .c-list__icon {
+    width: 2rem;
+
+    &--check {
+      &:before {
+        content: "\2713";
+        display: inline-block;
+        color: $color-primary;
+      }
+    }
+
+    &--cross {
+      &:before {
+        content: "\274c";
+        display: inline-block;
+        color: $color-pink;
+      }
+    }
+  }
+}
