@@ -1,0 +1,21 @@
+/*
+** Logo
+*/
+
+.c-logo {
+  display: flex;
+  align-items: center;
+
+  .c-logo__img {
+    height: 2rem;
+  }
+
+  .c-logo__text {
+    margin-left: 0.7rem;
+    font-weight: 600;
+
+    &--white {
+      color: white;
+    }
+  }
+}

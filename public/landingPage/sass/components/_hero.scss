@@ -1,0 +1,94 @@
+/*
+** Hero
+*/
+
+.c-hero {
+  position: relative;
+  background-color: $color-blue-dark;
+  padding-bottom: 1.5rem;
+
+  @media only screen and (min-width: $bp-large) {
+    background-color: transparent;
+    padding: inherit;
+  }
+
+  .c-hero__content {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 6rem;
+    padding-bottom: 2rem;
+
+    @media only screen and (min-width: $bp-large) {
+      padding: 10rem 12rem 3rem 12rem;
+    }
+  }
+
+  .c-hero__button-group {
+    margin-top: 2rem;
+    display: flex;
+
+    @media only screen and (min-width: $bp-large) {
+      display: inherit;
+    }
+  }
+
+  .c-hero__img-holder {
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: $box-shadow;
+    border-radius: 22px;
+
+    .c-hero__img {
+      width: 100%;
+    }
+
+    &:before {
+      width: 100px;
+      height: 100px;
+      top: 0%;
+      left: 50%;
+      background-color: $color-pink;
+      transform: translate(-50%);
+      filter: blur(100px);
+      z-index: -1;
+      opacity: 0.7;
+
+      @media only screen and (min-width: $bp-large) {
+        width: 300px;
+        height: 300px;
+      }
+    }
+
+    @media only screen and (min-width: $bp-large) {
+      width: 70%;
+    }
+  }
+
+  &:before {
+    background: $color-blue-dark;
+    width: 100%;
+    height: 640px;
+    z-index: -1;
+  }
+
+  &:after {
+    top: 0%;
+    left: 50%;
+    width: 100%;
+    height: 640px;
+    background-image: url("../img/art.png");
+    background-position: center top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: translate(-50%);
+    z-index: -1;
+
+    @supports (-ms-ime-align: auto) {
+      width: 0;
+    }
+  }
+}

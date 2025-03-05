@@ -1,0 +1,28 @@
+/*
+** Feature
+*/
+
+.c-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  .c-feature__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .c-feature__img-holder {
+    height: 3rem;
+    margin-bottom: 2rem;
+
+    .c-feature__img {
+      width: 100%;
+    }
+  }
+}

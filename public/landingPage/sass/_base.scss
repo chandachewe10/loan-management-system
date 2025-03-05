@@ -1,0 +1,50 @@
+/*
+** Color variables
+*/
+$color-primary: #29d2d3;
+$color-secondary: #2d3a4b;
+
+$color-blue: #2f7deb;
+$color-blue-dark: #101d2d;
+$color-blue-light: #808ab8;
+$color-pink: #d3299a;
+
+/*
+** Responsive breakpoints
+*/
+$bp-wide: 1200px; // Large desktops
+$bp-large: 992px; // Desktops
+$bp-medium: 768px; // Tablets
+$bp-small: 576px; // Landscape phones
+
+/*
+** Other variables
+*/
+$default-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+$border-radius: 3px;
+$box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+*:before,
+*:after {
+  content: "";
+  position: absolute;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+}

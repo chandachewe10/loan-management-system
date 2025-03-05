@@ -1,0 +1,98 @@
+/*
+** Heading
+*/
+
+.heading {
+  font-family: "Hind", sans-serif;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1;
+
+  &--light {
+    color: white;
+  }
+
+  &--dark {
+    color: $color-blue-dark;
+  }
+
+  &--blue {
+    color: $color-blue-light;
+  }
+
+  &--1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+  }
+
+  &--2 {
+    font-size: 2.5rem;
+  }
+
+  &--3 {
+    font-size: 1.7rem;
+  }
+
+  &--4 {
+    font-family: "Open Sans", sans-serif;
+    line-height: 1.7;
+    font-size: 1.2rem;
+  }
+
+  &--5 {
+    font-family: "Open Sans", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+/*
+** Paragraph
+*/
+
+.c-paragraph {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/*
+** Link
+*/
+
+.c-link {
+  position: relative;
+  text-decoration: none;
+  color: $color-primary;
+
+  &:after {
+    left: 0;
+    bottom: -0.1rem;
+    width: 0;
+    height: 1px;
+    background-color: $color-primary;
+    transition-duration: 600ms;
+    transition-timing-function: $default-timing-function;
+    transform-origin: left;
+  }
+
+  &:hover {
+    &:after {
+      width: 100%;
+    }
+  }
+
+  &--list {
+    margin-right: 1.5rem;
+    color: $color-blue-light;
+
+    &:after {
+      background-color: $color-blue-light;
+    }
+  }
+
+  &--list-right {
+    margin-right: 0;
+    margin-left: 1.5rem;
+  }
+}

@@ -1,0 +1,48 @@
+/*
+** Card
+*/
+
+.c-card {
+  display: grid;
+  margin-bottom: 2rem;
+
+  .c-card__content {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    .c-card__title {
+      text-align: left;
+    }
+  }
+
+  .c-card__img-holder {
+    order: 2;
+
+    width: 100%;
+
+    .c-card__img {
+      width: 100%;
+    }
+  }
+
+  @media only screen and (min-width: $bp-large) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 6rem;
+    margin-bottom: 0;
+
+    &:nth-of-type(2),
+    &:nth-of-type(4),
+    &:nth-of-type(6) {
+      .c-card__content {
+        order: 2;
+      }
+
+      .c-card__img-holder {
+        order: 1;
+      }
+    }
+  }
+}
