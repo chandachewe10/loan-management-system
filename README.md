@@ -50,11 +50,17 @@ create a super-admin user on the terminal by running the following script and fo
 php artisan shield:super-admin
 ```
 
-Finally run migrations for roles and permissions by running the following scripts on your cmd and accept the prompts
-If asked for the pannel ID enter `admin`
+Finally run migrations for roles and permissions by running the following scripts on your cmd and accept the prompts.
+If asked for the pannel ID, enter `admin`
 
 ```bash
 php artisan shield:install
+```
+
+Publish policies
+
+```bash
+php artisan shield:generate --all
 ```
 Finally start the application as usual. Add `/admin` to your localhost url to access the login page e.g if your localhost is `http://127.0.0.1` then the login will be `http://127.0.0.1/admin` 
 
