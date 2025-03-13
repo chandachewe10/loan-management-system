@@ -13,14 +13,16 @@ class CreateWallet extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-
-        $wallet = auth()->user()->createWallet([
-            'name' => $data['name'],
-            'amount' => 0,
-            'slug' => $this->generateSlug($data['name']),
-            'meta' => ['currency' =>  $data['meta']],
-            'description' => strip_tags($data['description']),
-        ])->deposit($data['amount']);
+        $wallet = auth()
+            ->user()
+            ->createWallet([
+                'name' => $data['name'],
+                'amount' => 0,
+                // 'slug' => $this->generateSlug($data['name']),
+                // 'meta' => ['currency' =>  $data['meta']],
+                'description' => strip_tags($data['description']),
+            ])
+            ->deposit($data['amount']);
 
         return $wallet;
     }

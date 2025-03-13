@@ -12,28 +12,22 @@ class EditWallet extends EditRecord
 {
     protected static string $resource = WalletResource::class;
 
-
-
-
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $record->update([
             'name' => $data['name'],
             'amount' => 0,
-            'meta' => ['currency' =>  $data['meta']],
+            // 'meta' => ['currency' =>  $data['meta']],
             'description' => strip_tags($data['description']),
         ]);
-        $wallet = Wallet::where('name', "=", $data['name'])->first();
+        $wallet = Wallet::where('name', '=', $data['name'])->first();
 
         $wallet->deposit($data['amount'], ['meta' => $data['description']]);
         return $record;
     }
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
-        ];
+        return [Actions\ViewAction::make(), Actions\DeleteAction::make()];
     }
 
     protected function getRedirectUrl(): string

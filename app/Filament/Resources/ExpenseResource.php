@@ -31,113 +31,39 @@ class ExpenseResource extends Resource
         $options = Wallet::all()->map(function ($wallet) {
             return [
                 'value' => $wallet->id,
-                'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
+                'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance),
             ];
         });
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('expense_name')
-                    ->label('Expense Name')
-                    ->prefixIcon('fas-file')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('expense_vendor')
-                    ->label('Expense Vendor')
-                    ->prefixIcon('heroicon-o-user')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('expense_amount')
-                    ->label('Expense Amount')
-                    ->prefixIcon('heroicon-o-user')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Select::make('from_this_account')
-                    ->label('From this Account')
-                    ->prefixIcon('fas-wallet')
-                    ->options($options->pluck('label', 'value')->toArray())
-                    ->required()
-                    ->searchable(),
-                Forms\Components\Select::make('category_id')
-                    ->label('Expense Category')
-                    ->prefixIcon('fas-copy')
-                    ->relationship('expense_category', 'category_name')
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\DatePicker::make('expense_date')
-                    ->label('Expense Date')
-                    ->prefixIcon('heroicon-o-calendar')
-                    ->live()
-                    ->required()
-                    ->native(false)
-                    ->maxDate(now()),
-                SpatieMediaLibraryFileUpload::make('expense_attachment')
-                    ->disk('expenses')
-                    ->visibility('public')
-                    ->multiple()
-                    ->minFiles(0)
-                    ->maxFiles(10)
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable()
-
-
-
-
-            ]);
+        return $form->schema([Forms\Components\Select::make('category_id')->label('Expense Category')->prefixIcon('fas-copy')->relationship('expense_category', 'category_name')->searchable()->preload(), Forms\Components\Select::make('from_this_account')->label('From this Account')->prefixIcon('fas-wallet')->options($options->pluck('label', 'value')->toArray())->required()->searchable(), Forms\Components\TextInput::make('expense_name')->label('Expense Name')->prefixIcon('fas-file')->required()->maxLength(255), Forms\Components\TextInput::make('expense_amount')->label('Expense Amount')->prefixIcon('heroicon-o-user')->required()->numeric(), Forms\Components\DatePicker::make('expense_date')->label('Expense Date')->prefixIcon('heroicon-o-calendar')->live()->required()->native(false)->maxDate(now()), SpatieMediaLibraryFileUpload::make('expense_attachment')->disk('expenses')->visibility('public')->multiple()->minFiles(0)->maxFiles(10)->maxSize(5120)->columnSpan(2)->openable()]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('expense_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('expense_vendor')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('expense_amount')
-                ->badge()
-                ->searchable(),
-                  
-               
-                Tables\Columns\TextColumn::make('expense_category.category_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('expense_date')
-                    ->searchable(),
-
-
-
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('gender')
-                    ->options([
-                        'male' => 'Male',
-                        'female' => 'Female',
-
-                    ]),
-            ])
+            ->columns([Tables\Columns\TextColumn::make('expense_category.category_name')->searchable(), Tables\Columns\TextColumn::make('expense_name')->searchable(), Tables\Columns\TextColumn::make('expense_amount')->badge()->searchable(), Tables\Columns\TextColumn::make('expense_date')->searchable()])
+            // ->filters([
+            //     Tables\Filters\SelectFilter::make('gender')
+            //         ->options([
+            //             'male' => 'Male',
+            //             'female' => 'Female',
+            //         ]),
+            // ])
             ->filters([
                 //
             ])
             ->actions([
-                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    ExportBulkAction::make()
-                ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
-            ]);
+            ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make(), ExportBulkAction::make()])])
+            ->emptyStateActions([Tables\Actions\CreateAction::make()]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 
     public static function getPages(): array

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('borrower_id');
             $table->unsignedBigInteger('loan_type_id');
             $table->string('loan_status');
-            $table->decimal('principal_amount', 10, 2);            
+            $table->decimal('principal_amount', 10, 4);
             $table->string('loan_release_date');
             $table->string('loan_duration');
             $table->string('duration_period');

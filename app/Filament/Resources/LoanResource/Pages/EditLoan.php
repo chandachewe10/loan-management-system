@@ -19,79 +19,46 @@ use PhpOffice\PhpWord\PhpWord;
 use Carbon\Carbon;
 use App\Notifications\LoanStatusNotification;
 
-
 class EditLoan extends EditRecord
 {
     protected static string $resource = LoanResource::class;
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
-        ];
+        return [Actions\ViewAction::make(), Actions\DeleteAction::make()];
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-       
-        
-        $loan = \App\Models\Loan::where('loan_number',"=",$data['loan_number'])->first();
-//Disable editing an already approved loan
+        $loan = \App\Models\Loan::where('loan_number', '=', $data['loan_number'])->first();
+
+        //Disable editing an already approved loan
         if ($loan->loan_status == 'approved') {
-            Notification::make()
-                ->warning()
-                ->title('Loan already approved')
-                ->body('You cant edit an already approved loan')
-                ->persistent()
-                 ->send();
-
+            Notification::make()->warning()->title('Loan already approved')->body('You cant edit an already approved loan')->persistent()->send();
             $this->halt();
-        } 
+        }
 
-
-
-
-        
-        $wallet = Wallet::where('name', "=", $data['from_this_account'])->first();
+        $wallet = Wallet::where('name', '=', $data['from_this_account'])->first();
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
         if ($data['loan_status'] === 'approved') {
-
-
-//  // Remove the amount from the Specified Wallet if the wallet was not approved otherwise if the wallet was approved don't remove the funds
-// if($loan->loan_status != 'approved'){
-//     $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
-// }
- 
-
-
-
             //Check if they have the Loan Agreement Form template for this type of loan
-            $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
+            $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', '=', $data['loan_type_id'])->first();
+
             if (!$loan_agreement_text && $data['activate_loan_agreement_form'] == 1) {
                 Notification::make()
                     ->warning()
                     ->title('Invalid Agreement Form!')
                     ->body('Please create a template first if you want to compile the Loan Agreement Form')
                     ->persistent()
-                    ->actions([
-                        Action::make('create')
-                            ->button()
-                            ->url(route('filament.admin.resources.loan-agreement-forms.create'), shouldOpenInNewTab: true),
-                    ])
+                    ->actions([Action::make('create')->button()->url(route('filament.admin.resources.loan-agreement-forms.create'), shouldOpenInNewTab: true)])
                     ->send();
 
                 $this->halt();
             } else {
-
-
-               //  $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
-
-
-               
+                //  $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
 
                 $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
-                
+
                 $loan_duration = $data['loan_duration'];
                 $loan_release_date = $data['loan_release_date'];
                 $loan_date = Carbon::createFromFormat('Y-m-d', $loan_release_date);
@@ -128,10 +95,9 @@ class EditLoan extends EditRecord
                 // The original content with placeholders
                 $template_content = $loan_agreement_text->loan_agreement_text;
 
-
                 // Replace placeholders with actual data
                 $template_content = str_replace('[Company Name]', $company_name, $template_content);
-                $template_content = str_replace('[Borrower Name]', $borrower_name, $template_content);
+                $template_content = str_replace('[Borrower Name]', strtoupper($borrower_name), $template_content);
                 $template_content = str_replace('[Loan Tenure]', $loan_duration, $template_content);
                 $template_content = str_replace('[Loan Interest Percentage]', $loan_interest_rate, $template_content);
                 $template_content = str_replace('[Loan Interest Fee]', $loan_interest_amount, $template_content);
@@ -142,6 +108,7 @@ class EditLoan extends EditRecord
                 $template_content = str_replace('[Borrower Phone]', $borrower_phone, $template_content);
                 $template_content = str_replace('[Loan Name]', $loan_name, $template_content);
                 $template_content = str_replace('[Loan Number]', $loan_number, $template_content);
+                $template_content = str_replace('[Loan Release Date]', $loan_release_date, $template_content);
 
                 $characters_to_remove = ['<br>', '&nbsp;'];
                 $template_content = str_replace($characters_to_remove, '', $template_content);
@@ -152,25 +119,21 @@ class EditLoan extends EditRecord
                 // Add content to the document (agenda, summary, key points, sentiments)
                 $section = $phpWord->addSection();
 
+                // // Add an image to the document
+                // $imagePath = public_path('Logos/logo2.png'); // Adjust the path to your image
+                // $section->addImage($imagePath, [
+                //     'width' => 170, // Adjust the width as needed 150
+                //     'height' => 70, // Adjust the height as needed 50
+                //     'align' => 'center' // Center align the image
+                // ]);
 
-// // Add an image to the document
-// $imagePath = public_path('Logos/logo2.png'); // Adjust the path to your image
-// $section->addImage($imagePath, [
-//     'width' => 170, // Adjust the width as needed 150
-//     'height' => 70, // Adjust the height as needed 50
-//     'align' => 'center' // Center align the image
-// ]);
+                // // A TextRun object for applying formatting
+                // $textRun = $section->addTextRun([
+                //     'lineHeight' => 1.5 // Line height as a percentage (150% for 1.5 spacing)
+                // ]);
 
-// // A TextRun object for applying formatting
-// $textRun = $section->addTextRun([
-//     'lineHeight' => 1.5 // Line height as a percentage (150% for 1.5 spacing)
-// ]);
-
-// // Add formatted text to the TextRun object
-// $textRun->addText($template_content, ['name' => 'Arial', 'size' => 12]);
-
-
-
+                // // Add formatted text to the TextRun object
+                // $textRun->addText($template_content, ['name' => 'Arial', 'size' => 12]);
 
                 // \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $template_content, false, false);
@@ -191,47 +154,34 @@ class EditLoan extends EditRecord
                 $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
                 $objWriter->save($path . '/' . $file_name);
                 $data['loan_agreement_file_path'] = 'LOAN_AGREEMENT_FORMS/' . $current_year . '/DOCX' . '/' . $file_name;
-               
             }
-
-
-
-           
         }
-
-
 
         // Send an SMS to the Client depending on the status of the Loan Stage
 
-        $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
+        $bulk_sms_config = ThirdParty::where('name', '=', 'SWIFT-SMS')->latest()->get()->first();
         $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
 
-        if (
-            $bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile)
-            && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
-            && isset($bulk_sms_config->sender_id)
-        ) {
-
-
-           // Define the JSON data
-           $url = $base_uri . $end_point;
-           $message = 'Hi ' . $borrower->first_name . ', ';
-           $loan_amount = $data['principal_amount'];
-           $loan_duration = $data['loan_duration'];
-           $loan_release_date = $data['loan_release_date'];
-           $loan_repayment_amount = $data['repayment_amount'];
-           $loan_interest_amount = $data['interest_amount'];
-           $loan_due_date = $data['loan_due_date'] ?? '';
-           $loan_number = $data['loan_number'] ?? '';
+        if ($bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile) && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token) && isset($bulk_sms_config->sender_id)) {
+            // Define the JSON data
+            $url = $base_uri . $end_point;
+            $message = 'Hi ' . $borrower->first_name . ', ';
+            $loan_amount = $data['principal_amount'];
+            $loan_duration = $data['loan_duration'];
+            $loan_release_date = $data['loan_release_date'];
+            $loan_repayment_amount = $data['repayment_amount'];
+            $loan_interest_amount = $data['interest_amount'];
+            $loan_due_date = $data['loan_due_date'] ?? '';
+            $loan_number = $data['loan_number'] ?? '';
 
             // Assuming $data['loan_status'] contains the current status
             $loanStatus = $data['loan_status'];
 
             switch ($loanStatus) {
                 case 'approved':
-                    $message .= 'Congratulations! Your loan application of K'.$loan_amount. ' has been approved successfully. The total repayment amount is K'.$loan_repayment_amount .' to be repaid in '.$loan_duration .' '.$loan_cycle;
+                    $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
                     break;
 
                 case 'processing':
@@ -251,12 +201,10 @@ class EditLoan extends EditRecord
                     break;
             }
 
-
             $jsonDataPayments = [
-                "sender_id" => $bulk_sms_config->sender_id,
-                "numbers" => $borrower->mobile,
-                "message" => $message,
-
+                'sender_id' => $bulk_sms_config->sender_id,
+                'numbers' => $borrower->mobile,
+                'message' => $message,
             ];
 
             // Convert the data to JSON format
@@ -270,57 +218,51 @@ class EditLoan extends EditRecord
                 ->timeout(300)
                 ->withBody($jsonDataPayments, 'application/json')
                 ->get($url);
-
-
         }
 
+        // send via Email too if email is not Null
+        if (!is_null($borrower->email)) {
+            //dd('email is not null');
+            $message = 'Hi ' . $borrower->first_name . ', ';
+            $loan_amount = $data['principal_amount'];
+            $loan_duration = $data['loan_duration'];
+            $loan_release_date = $data['loan_release_date'];
+            $loan_repayment_amount = $data['repayment_amount'];
+            $loan_interest_amount = $data['interest_amount'];
+            $loan_due_date = $data['loan_due_date'];
+            $loan_number = $data['loan_number'];
 
-// send via Email too if email is not Null
-if(!is_null($borrower->email)){
-    //dd('email is not null');
-    $message = 'Hi ' . $borrower->first_name . ', ';    
-    $loan_amount = $data['principal_amount'];
-    $loan_duration = $data['loan_duration'];
-    $loan_release_date = $data['loan_release_date'];
-    $loan_repayment_amount = $data['repayment_amount'];
-    $loan_interest_amount = $data['interest_amount'];
-    $loan_due_date = $data['loan_due_date'];
-    $loan_number = $data['loan_number'];
+            // Assuming $data['loan_status'] contains the current status
+            $loanStatus = $data['loan_status'];
 
-    // Assuming $data['loan_status'] contains the current status
-    $loanStatus = $data['loan_status'];
+            switch ($loanStatus) {
+                case 'approved':
+                    $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
+                    break;
 
-    switch ($loanStatus) {
-        case 'approved':
-            $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
-            break;
-            
-        case 'processing':
-            $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
-            break;
+                case 'processing':
+                    $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
+                    break;
 
-        case 'denied':
-            $message .= 'We regret to inform you that your loan application of K' . $loan_amount . ' has been rejected.';
-            break;
+                case 'denied':
+                    $message .= 'We regret to inform you that your loan application of K' . $loan_amount . ' has been rejected.';
+                    break;
 
-        case 'defaulted':
-            $message .= 'Unfortunately, your loan is in default status. Please contact us as soon as possible to discuss the situation.';
-            break;
+                case 'defaulted':
+                    $message .= 'Unfortunately, your loan is in default status. Please contact us as soon as possible to discuss the situation.';
+                    break;
 
+                default:
+                    $message .= 'Your loan application of K' . $loan_amount . ' is in progress. Current status: ' . $loanStatus;
+                    break;
+            }
 
+            $borrower->notify(new LoanStatusNotification($message));
+        }
 
-        default:
-            $message .= 'Your loan application of K' . $loan_amount . ' is in progress. Current status: ' . $loanStatus;
-            break;
-    }
-
-    $borrower->notify(new LoanStatusNotification($message));
-}
-
-
-if($data['loan_status'] === 'approved') {
-$wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
-}
+        if ($data['loan_status'] === 'approved') {
+            $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+        }
 
         $record->update($data);
 

@@ -20,9 +20,9 @@ use App\Models\Loan;
 class CreateRepayments extends CreateRecord
 {
     protected static string $resource = RepaymentsResource::class;
+
     protected function handleRecordCreation(array $data): Model
     {
-
         //Check if they have created the Loan settlement Form template
         $template_content = \App\Models\LoanSettlementForms::latest()->first();
         if (!$template_content) {
@@ -31,39 +31,34 @@ class CreateRepayments extends CreateRecord
                 ->title('Invalid Settlement Form!')
                 ->body('Please create a loan settlement form first')
                 ->persistent()
-                ->actions([
-                    Action::make('create')
-                        ->button()
-                        ->url(route('filament.admin.resources.loan-settlement-forms.create'), shouldOpenInNewTab: true),
-                ])
+                ->actions([Action::make('create')->button()->url(route('filament.admin.resources.loan-settlement-forms.create'), shouldOpenInNewTab: true)])
                 ->send();
 
             $this->halt();
         }
 
-
-        $loan = Loan::findOrFail($data['loan_id']);
+        $loan = Loan::where('borrower_id', $data['borrow_id'])
+                        ->where('balance', '>', 0)
+                        ->oldest()
+                        ->firstOrFail();
         Log::info('Loan Details: ' . $loan);
 
-        $wallet = Wallet::where('name', "=", $loan->from_this_account)->first();
+        $wallet = Wallet::where('name', '=', $loan->from_this_account)->first();
         Log::info('Wallet Details: ' . $wallet);
         $principal_amount = $loan->principal_amount;
         $loan_number = $loan->loan_number;
-        $old_balance = (float) ($loan->balance);
-        $new_balance = ($old_balance) - ((float) ($data['payments']));
+        $old_balance = (float) $loan->balance;
+        $new_balance = $old_balance - ((float) $data['payments']);
 
         $repayment = Repayments::create([
-            'loan_id' => $data['loan_id'],
+            'loan_id' => $loan->id,
             'payments' => $data['payments'],
             'balance' => $new_balance,
             'payments_method' => $data['payments_method'],
-            'reference_number' => $data['reference_number'] ?? 'No reference Was Entered by '.auth()->user()->name .' - '. auth()->user()->email,
+            'reference_number' => $data['reference_number'] ?? 'No reference Was Entered by ' . auth()->user()->name . ' - ' . auth()->user()->email,
             'loan_number' => $loan_number,
             'principal' => $principal_amount,
-
         ]);
-      
-
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
 
@@ -74,27 +69,21 @@ class CreateRepayments extends CreateRecord
             $loan->update([
                 'balance' => $new_balance,
                 'loan_status' => 'fully_paid',
-                'loan_settlement_file_path' => $data['loan_settlement_file_path']
+                'loan_settlement_file_path' => $data['loan_settlement_file_path'],
             ]);
         } else {
             $loan->update([
                 'balance' => $new_balance,
                 'loan_status' => 'partially_paid',
-
             ]);
         }
-
-
-
 
         return $repayment;
     }
 
-
     protected function settlement_form($loan)
     {
         $borrower = \App\Models\Borrower::findOrFail($loan->borrower_id);
-
 
         $company_name = env('APP_NAME');
         $company_address = 'Lusaka Zambia';
@@ -104,10 +93,8 @@ class CreateRepayments extends CreateRecord
         $settled_date = date('d, F Y');
         $current_date = date('d, F Y');
 
-
         // The original content with placeholders
         $template_content = \App\Models\LoanSettlementForms::latest()->first()->loan_settlement_text;
-
 
         // Replace placeholders with actual data
         $template_content = str_replace('{company_name}', $company_name, $template_content);
@@ -117,7 +104,6 @@ class CreateRepayments extends CreateRecord
         $template_content = str_replace('{loan_amount}', $loan_amount, $template_content);
         $template_content = str_replace('{settled_date}', $settled_date, $template_content);
         $template_content = str_replace('{current_date}', $current_date, $template_content);
-
 
         $characters_to_remove = ['<br>', '&nbsp;'];
         $template_content = str_replace($characters_to_remove, '', $template_content);
