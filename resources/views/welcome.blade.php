@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?family=Hind:wght@600&family=Open+Sans:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link href="./css/style.css" rel="stylesheet" />
+    <link href="{{ asset('landingPage/css/style.css') }}" rel="stylesheet" />
 
     <title>LENDIFY::HOME</title>
   </head>
@@ -17,8 +18,7 @@
         <div class="header__wrapper">
           <a class="c-link" href="#">
             <div class="c-logo">
-              <img src="img/logo.png" alt="Logo" class="c-logo__img" />
-              <span class="c-logo__text c-logo__text--white">Login</span>
+              <img src="{{ asset('logo.jpg') }}" alt="Logo" class="c-logo__img" style="border-radius:100%" />
             </div>
           </a>
           <nav class="c-nav">
@@ -26,15 +26,13 @@
             <div class="c-nav__content">
               <ul class="c-list c-list--flex">
                 <li class="c-list__item">
-                  <a href="#" class="c-link c-link--list">Pricing</a>
+                  <a href="#pricing" class="c-link c-link--list">Pricing</a>
                 </li>
                 <li class="c-list__item">
-                  <a href="#" class="c-link c-link--list">Services</a>
+                  <a href="#services" class="c-link c-link--list">Services</a>
                 </li>
               </ul>
-              <button class="c-button c-button--small c-button--secondary">
-                Sign Up
-              </button>
+              <a href="{{ route('register') }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a>
             </div>
           </nav>
         </div>
@@ -47,24 +45,21 @@
           <div class="container">
             <div class="c-hero__content">
               <h1 class="heading heading--1 heading--light">
-                Grow Your Lending Business.
-                Ditch the Spreadsheets
+                Grow Your Lending Business. Ditch the Spreadsheets
               </h1>
               <h4 class="heading heading--4 heading--blue">
                 Lendfy is a loan management software that helps lenders automate workflows, reduce manual work, and launch new products with ease.
               </h4>
               <div class="c-hero__button-group">
-                <button class="c-button c-button--primary">
-                Login
-                </button>
-                <button class="c-button c-button--secondary">Sign Up</button>
+                <a href="{{ route('login') }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Login</a>
+                <a href="{{ route('register') }}" class="c-button c-button--secondary" style="color:white; text-decoration:none;">Sign Up</a>
               </div>
             </div>
 
             <div class="c-hero__img-holder">
               <img
                 class="c-hero__img"
-                src="img/dashboard.png"
+                src="{{ asset('landingPage/img/dashboard.png') }}"
                 alt="Dashboard"
               />
             </div>
@@ -75,10 +70,7 @@
       <section class="section">
         <div class="container">
           <div class="section__title-wrapper">
-            <h2 class="heading heading--2">
-              Fully Automated
-            </h2>
-
+            <h2 class="heading heading--2">Fully Automated</h2>
             <h4 class="heading heading--4">
               Send personalized loan offers, agreements, and payment reminders via email or SMS. Predefined templates automate outreach, ensuring customers stay informed without adding to your workload.
             </h4>
@@ -95,7 +87,7 @@
                 </p>
               </div>
               <div class="c-card__img-holder">
-                <img class="c-card__img" src="img/card-1.png" alt="" />
+                <img class="c-card__img" src="{{ asset('landingPage/img/card-1.png') }}" alt="" />
               </div>
             </article>
 
@@ -108,36 +100,34 @@
                   Give customers instant reports to the status of their loan details, repayment schedules, and application statuses through <a href="https://swift-sms.net">Bulk SMS</a> Portal 
                 </p>
               </div>
-
               <div class="c-card__img-holder">
-                <img class="c-card__img" src="img/card-2.png" alt="" />
+                <img class="c-card__img" src="{{ asset('landingPage/img/card-2.png') }}" alt="" />
               </div>
             </article>
 
             <article class="c-card">
               <div class="c-card__content">
                 <h3 class="c-card__title heading heading--3">
-                 Flexibility
+                  Flexibility
                 </h3>
                 <p class="c-paragraph c-card__text">
                   Pre-configured loan agreement templates, settlements, and workflows are available to simplify loan management and ensure efficient operations.
                 </p>
               </div>
-
               <div class="c-card__img-holder">
-                <img class="c-card__img" src="img/card-3.png" alt="" />
+                <img class="c-card__img" src="{{ asset('landingPage/img/card-3.png') }}" alt="" />
               </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section features">
+      <section class="section features" id="services">
         <div class="container">
           <div class="box box--grid">
             <article class="c-feature">
               <div class="c-feature__img-holder">
-                <img class="c-feature__img" src="img/feature-1.png" alt="" />
+                <img class="c-feature__img" src="{{ asset('landingPage/img/feature-1.png') }}" alt="" />
               </div>
               <div class="c-feature__content">
                 <h3 class="c-feature__title heading heading--3">
@@ -151,11 +141,11 @@
 
             <article class="c-feature">
               <div class="c-feature__img-holder">
-                <img class="c-feature__img" src="img/feature-2.png" alt="" />
+                <img class="c-feature__img" src="{{ asset('landingPage/img/feature-2.png') }}" alt="" />
               </div>
               <div class="c-feature__content">
                 <h3 class="c-feature__title heading heading--3">
-                Cloud Based
+                  Cloud Based
                 </h3>
                 <p class="c-paragraph c-feature__text">
                   LendFy is a cloud-based hosted service. There is no need for you to have a website, servers or configure databases to start using our system.
@@ -165,32 +155,29 @@
 
             <article class="c-feature">
               <div class="c-feature__img-holder">
-                <img class="c-feature__img" src="img/feature-3.png" alt="" />
+                <img class="c-feature__img" src="{{ asset('landingPage/img/feature-3.png') }}" alt="" />
               </div>
               <div class="c-feature__content">
                 <h3 class="c-feature__title heading heading--3">
                   Scalability
                 </h3>
                 <p class="c-paragraph c-feature__text">
-                 If your business has a website you can integrate it with LendFy to receive applications over API. Alternatively, if you don’t have a website we can always help you build one.
+                  If your business has a website you can integrate it with LendFy to receive applications over API. Alternatively, if you don’t have a website we can always help you build one.
                 </p>
               </div>
             </article>
           </div>
 
           <div class="box box--flex box--mt2">
-            <button class="c-button c-button--primary">
-             Get Started
-            </button>
+            <a href="{{ route('register') }}" class="c-button c-button--primary">Get Started</a>
           </div>
         </div>
       </section>
 
-      <section class="section">
+      <section class="section" id="pricing">
         <div class="container">
           <div class="section__title-wrapper">
             <h2 class="heading heading--2">Simple pricing</h2>
-
             <h4 class="heading heading--4">
               LendFy is a SAAS platform and our pricing model is based on your growth. It starts from $20 per month and increases as your business grows.
             </h4>
@@ -207,7 +194,7 @@
                   </h3>
                 </div>
                 <p class="c-paragraph c-price__text">
-                You can cancel or change your plan at any time
+                  You can cancel or change your plan at any time
                 </p>
                 <h5 class="heading heading--4 c-price__title">
                   What's included
@@ -226,13 +213,8 @@
                   <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">All other features Included</div>
                 </li>
-                
               </ul>
-              <button
-                class="c-button c-button--secondary c-button--block c-price__button"
-              >
-                Get Started
-              </button>
+              <a href="{{ route('register') }}" class="c-button c-button--secondary c-button--block c-price__button">Get Started</a>
             </article>
 
             <article class="c-price c-price--highlight">
@@ -264,13 +246,8 @@
                   <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">All other features Included</div>
                 </li>
-               
               </ul>
-              <button
-                class="c-button c-button--primary c-button--block c-price__button"
-              >
-          Get Started
-              </button>
+              <a href="{{ route('register') }}" class="c-button c-button--primary c-button--block c-price__button">Get Started</a>
             </article>
 
             <article class="c-price">
@@ -302,13 +279,8 @@
                   <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">All other features Included</div>
                 </li>
-              
               </ul>
-              <button
-                class="c-button c-button--secondary c-button--block c-price__button"
-              >
-               Get Started
-              </button>
+              <a href="{{ route('register') }}" class="c-button c-button--secondary c-button--block c-price__button">Get Started</a>
             </article>
           </div>
         </div>
@@ -320,7 +292,7 @@
             <h2 class="heading heading--2 c-banner__title">
               Request a Meeting
             </h2>
-            <button class="c-button c-button--primary">Request now</button>
+            <a href="#" class="c-button c-button--primary">Request now</a>
           </div>
         </div>
       </section>
@@ -332,56 +304,38 @@
           <div class="c-footer__box">
             <a class="c-link" href="#">
               <div class="c-logo">
-                <img src="img/logo.png" alt="Logo" class="c-logo__img" />
-                <span class="c-logo__text c-logo__text--white">Login</span>
+                <img src="{{ asset('logo.jpg') }}" alt="Logo" class="c-logo__img" style="border-radius:100%" />
+                <!-- <span class="c-logo__text c-logo__text--white">Login</span> -->
               </div>
             </a>
             <p class="c-paragraph c-footer__text">
-              © 2025 Apply, all rights reserved
+              © <?php echo date('Y'); ?> all rights reserved
             </p>
           </div>
           <div class="c-footer__box">
             <div class="c-footer__icons">
               <a href="#">
-                <img
-                  class="c-footer__icon"
-                  src="img/instagram.svg"
-                  alt="Instagram"
-              /></a>
-              <a href="#">
-                <img
-                  class="c-footer__icon"
-                  src="img/twitter.svg"
-                  alt="Twitter"
-                />
+                <img class="c-footer__icon" src="{{ asset('landingPage/img/instagram.svg') }}" alt="Instagram" />
               </a>
               <a href="#">
-                <img
-                  class="c-footer__icon"
-                  src="img/facebook.svg"
-                  alt="Facebook"
-              /></a>
+                <img class="c-footer__icon" src="{{ asset('landingPage/img/twitter.svg') }}" alt="Twitter" />
+              </a>
+              <a href="#">
+                <img class="c-footer__icon" src="{{ asset('landingPage/img/facebook.svg') }}" alt="Facebook" />
+              </a>
             </div>
             <ul class="c-list c-list--flex c-list--align-right">
               <li class="c-list__item c-list__item--small">
-                <a href="#" class="c-link c-link--list c-link--list-right"
-                  >Contact</a
-                >
+                <a href="#" class="c-link c-link--list c-link--list-right">Contact</a>
               </li>
               <li class="c-list__item c-list__item--small">
-                <a href="#" class="c-link c-link--list c-link--list-right"
-                  >About us</a
-                >
+                <a href="#" class="c-link c-link--list c-link--list-right">About us</a>
               </li>
               <li class="c-list__item c-list__item--small">
-                <a href="#" class="c-link c-link--list c-link--list-right"
-                  >FAQ</a
-                >
+                <a href="#" class="c-link c-link--list c-link--list-right">FAQ</a>
               </li>
               <li class="c-list__item c-list__item--small">
-                <a href="#" class="c-link c-link--list c-link--list-right"
-                  >Support</a
-                >
+                <a href="#" class="c-link c-link--list c-link--list-right">Support</a>
               </li>
             </ul>
           </div>
