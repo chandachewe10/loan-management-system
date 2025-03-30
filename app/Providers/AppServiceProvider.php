@@ -4,6 +4,7 @@ namespace App\Providers;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->bind(LogoutResponseContract::class, CustomLogOutResponse::class);
         Model::unguard();
         Filament::registerNavigationGroups([
             'Customers',
