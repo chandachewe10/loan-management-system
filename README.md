@@ -62,10 +62,22 @@ Publish policies
 ```bash
 php artisan shield:generate --all
 ```
-Finally start the application as usual. Add `/admin` to your localhost url to access the login page e.g if your localhost is `http://127.0.0.1` then the login will be `http://127.0.0.1/admin` 
+
+Start Vite
 
 ```bash
-Set up email notifications using [Mailtrap](https://mailtrap.io). Copy the mail credentials for your Laravel app from Mailtrap and update the corresponding settings in your `.env` file.
+npm run dev
+```
+
+Start your Application 
+
+```bash
+php artisan serve
+```
+
+```bash
+Set up email notifications using [Mailtrap](https://mailtrap.io). 
+Copy the mail credentials for your Laravel app from Mailtrap and update the corresponding settings in your `.env` file.
 ```
 
 
