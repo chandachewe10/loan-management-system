@@ -36,6 +36,7 @@ class StatsOverview extends BaseWidget
                 ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
                 ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
                 ->where('loan_status', 'approved')
+                ->orWhere('loan_status', 'partially_paid')
                 ->count())
                 ->description('Active Loans')
                 ->descriptionIcon('fas-wallet')

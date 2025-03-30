@@ -66,6 +66,7 @@ php artisan shield:generate --all
 Start Vite
 
 ```bash
+npm install
 npm run dev
 ```
 
