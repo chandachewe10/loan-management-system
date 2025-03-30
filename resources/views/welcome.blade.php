@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -10,15 +10,37 @@
     />
     <link href="{{ asset('landingPage/css/style.css') }}" rel="stylesheet" />
 
-    <title>{{config('app.name')}}</title>
-  </head>
+    <title>{{ config('app.name') }}</title>
+
+    <!-- Open Graph (Facebook & LinkedIn) -->
+    <meta property="og:title" content="{{ config('app.name') }}" />
+    <meta property="og:description" content="Lendfy is a loan management software that helps lenders automate workflows, reduce manual work, and launch new products with ease." />
+    <meta property="og:image" content="{{ asset('logo.PNG') }}" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ config('app.name') }}" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="LendFy Loan Management" />
+    <meta name="twitter:title" content="{{ config('app.name') }}" />
+    <meta name="twitter:description" content="Lendfy is a loan management software that helps lenders automate workflows, reduce manual work, and launch new products with ease." />
+    <meta name="twitter:image" content="{{ asset('logo.PNG') }}" />
+    <meta name="twitter:url" content="{{ url()->current() }}" />
+    <meta name="twitter:site" content="" />
+
+    <!-- LinkedIn Enhancements -->
+    <meta name="linkedin:owner" content="" />
+    <meta name="linkedin:card" content="LendFy Loan Management" />
+</head>
+
   <body>
     <header class="header">
       <div class="container">
         <div class="header__wrapper">
           <a class="c-link" href="#">
             <div class="c-logo">
-              <img src="{{ asset('logo.PNG') }}" alt="Logo" class="c-logo__img" style="border-radius:100%" />
+              <img src="{{ asset('logo.jpg') }}" alt="Logo" class="c-logo__img" style="border-radius:100%" />
             </div>
           </a>
           <nav class="c-nav">
@@ -59,7 +81,7 @@
             <div class="c-hero__img-holder">
               <img
                 class="c-hero__img"
-                src="{{ asset('landingPage/img/dashboard.png') }}"
+                src="{{ asset('landingPage/img/dashboard2.PNG') }}"
                 alt="Dashboard"
               />
             </div>
