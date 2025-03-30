@@ -10,7 +10,7 @@
     />
     <link href="{{ asset('landingPage/css/style.css') }}" rel="stylesheet" />
 
-    <title>LENDIFY::HOME</title>
+    <title>{{config('app.name')}}</title>
   </head>
   <body>
     <header class="header">
@@ -18,7 +18,7 @@
         <div class="header__wrapper">
           <a class="c-link" href="#">
             <div class="c-logo">
-              <img src="{{ asset('logo.jpg') }}" alt="Logo" class="c-logo__img" style="border-radius:100%" />
+              <img src="{{ asset('logo.PNG') }}" alt="Logo" class="c-logo__img" style="border-radius:100%" />
             </div>
           </a>
           <nav class="c-nav">
