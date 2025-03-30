@@ -86,7 +86,7 @@ Copy the mail credentials for your Laravel app from Mailtrap and update the corr
 ![Super Admin Dashboard](public/samples/sample1.png)
 ![Super Admin Dashboard](public/samples/sample2.png)
 ![Super Admin Dashboard](public/samples/sample3.png)
-![Super Admin Dashboard](public/samples/sample4.png)
+![Landing Page](public/samples/sample4.png)
 
 
 
