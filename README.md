@@ -39,8 +39,8 @@ The Loan Management software is a web-based application that helps manage and tr
 
 [Website Link](https://lendfy.swift-sms.net/)
 
-EMAIL: demo@demo.com
-PASSWORD:test1234
+1. EMAIL: demo@demo.com
+2. PASSWORD:test1234
 
 
 
