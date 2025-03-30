@@ -91,7 +91,8 @@ php artisan serve
 ```
 
 ```bash
-Set up email notifications using [Mailtrap](https://mailtrap.io). 
+Set up email notifications using:
+[Mailtrap](https://mailtrap.io). 
 Copy the mail credentials for your Laravel app from Mailtrap and update the corresponding settings in your `.env` file.
 ```
 
