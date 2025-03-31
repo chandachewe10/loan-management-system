@@ -81,6 +81,7 @@ class RepaymentsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+         ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                 ->label('Payments Date')
