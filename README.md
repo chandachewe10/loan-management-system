@@ -77,13 +77,6 @@ Publish policies
 php artisan shield:generate --all
 ```
 
-Start Vite
-
-```bash
-npm install
-npm run dev
-```
-
 Start your Application 
 
 ```bash
