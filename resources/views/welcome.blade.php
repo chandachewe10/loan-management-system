@@ -54,13 +54,39 @@
                   <a href="#services" class="c-link c-link--list">Services</a>
                 </li>
               </ul>
-              <a href="{{ route('register') }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a>
+              <a href="{{ 'admin/register' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a>
             </div>
           </nav>
         </div>
       </div>
     </header>
+<style> 
+.c-hero__button-group {
+  position: relative;
+  z-index: 100; /* Ensure it stays above other elements */
+}
 
+.c-button {
+  position: relative;
+  touch-action: manipulation; /* Improves touch responsiveness */
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1); /* Visual feedback on tap */
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 768px) {
+  .c-hero__button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px; /* Replaces the <br> with better spacing */
+  }
+  
+  .c-button {
+    width: 100%;
+    max-width: 200px; /* Limits width but keeps buttons sizable */
+  }
+}
+</style>
     <main>
       <section class="section">
         <div class="c-hero">
@@ -73,9 +99,17 @@
                 Lendfy is a loan management software that helps lenders automate workflows, reduce manual work, and launch new products with ease.
               </h4>
               <div class="c-hero__button-group">
-                <a href="{{ route('login') }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Login</a>
-                <a href="{{ route('register') }}" class="c-button c-button--secondary" style="color:white; text-decoration:none;">Sign Up</a>
-              </div>
+  <a href="{{ 'admin/login' }}" 
+     class="c-button c-button--primary" 
+     style="color:white; text-decoration:none; display: inline-block; min-width: 120px; min-height: 44px; padding: 12px 24px; margin: 8px 0;">
+     Login
+  </a>
+  <a href="{{ 'admin/register' }}" 
+     class="c-button c-button--secondary" 
+     style="color:white; text-decoration:none; display: inline-block; min-width: 120px; min-height: 44px; padding: 12px 24px; margin: 8px 0;">
+     Sign Up
+  </a>
+</div>
             </div>
 
             <div class="c-hero__img-holder">
@@ -190,9 +224,7 @@
             </article>
           </div>
 
-          <div class="box box--flex box--mt2">
-            <a href="{{ route('register') }}" class="c-button c-button--primary">Get Started</a>
-          </div>
+         
         </div>
       </section>
 
@@ -236,7 +268,7 @@
                   <div class="c-list__text">All other features Included</div>
                 </li>
               </ul>
-              <a href="{{ route('register') }}" class="c-button c-button--secondary c-button--block c-price__button">Get Started</a>
+             
             </article>
 
             <article class="c-price c-price--highlight">
@@ -269,7 +301,7 @@
                   <div class="c-list__text">All other features Included</div>
                 </li>
               </ul>
-              <a href="{{ route('register') }}" class="c-button c-button--primary c-button--block c-price__button">Get Started</a>
+             
             </article>
 
             <article class="c-price">
@@ -302,7 +334,7 @@
                   <div class="c-list__text">All other features Included</div>
                 </li>
               </ul>
-              <a href="{{ route('register') }}" class="c-button c-button--secondary c-button--block c-price__button">Get Started</a>
+             
             </article>
           </div>
         </div>
