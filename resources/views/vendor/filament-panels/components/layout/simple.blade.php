@@ -39,7 +39,7 @@
                         MaxWidth::FiveExtraLarge, '5xl' => 'sm:max-w-5xl',
                         MaxWidth::SixExtraLarge, '6xl' => 'sm:max-w-6xl',
                         MaxWidth::SevenExtraLarge, '7xl' => 'sm:max-w-7xl',
-                        default => 'sm:max-w-lg',
+                        default => 'max-w-md',
                     },
                 ])
             >
