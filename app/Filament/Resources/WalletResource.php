@@ -61,6 +61,7 @@ class WalletResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->recordUrl(null)
             ->columns([
 
                 Tables\Columns\TextColumn::make('name')
@@ -85,7 +86,7 @@ class WalletResource extends Resource
             ])
             ->actions([
                
-                Tables\Actions\EditAction::make(),
+                //Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
