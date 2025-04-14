@@ -37,7 +37,7 @@ class LoanStatusNotification extends Notification
         return (new MailMessage)
         ->greeting('Loan Status')
         ->line($this->message)
-        ->action('Go to Dashboard', url('/admin/login'))
+        ->action('Go to Site', url('/'))
         ->line('Thank you!');
     }
 
