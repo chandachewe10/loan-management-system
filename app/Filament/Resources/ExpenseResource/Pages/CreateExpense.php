@@ -8,6 +8,7 @@ use Bavix\Wallet\Models\Wallet;
 use App\Models\Expense;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Notification;
 
 class CreateExpense extends CreateRecord
 {
@@ -18,7 +19,23 @@ class CreateExpense extends CreateRecord
    
        
         $wallet = Wallet::findOrFail($data['from_this_account']);
-        $wallet->withdraw($data['expense_amount'], ['meta' => 'Expense amount for ' . $data['expense_name']]);
+
+        try{
+            $wallet->withdraw($data['expense_amount'], ['meta' => 'Expense amount for ' . $data['expense_name']]);
+        }
+        catch(\Exception $e){
+            Notification::make()
+            ->warning()
+            ->title('Problem With Wallet')
+            ->body('Whoops, something went wrong: ' . $e->getMessage())
+            ->persistent()
+          
+            ->send();
+        
+        $this->halt();
+        }
+
+        
         $data['from_this_account'] = $wallet->name;
        
         return $data;

@@ -25,6 +25,26 @@ class CreateLoan extends CreateRecord
     {
 
 
+ //Check if they have the Loan Agreement Form template for this type of loan
+ $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
+           
+ if (!$loan_agreement_text && $data['activate_loan_agreement_form'] == 1) {
+     Notification::make()
+         ->warning()
+         ->title('Invalid Agreement Form!')
+         ->body('Please create a template first if you want to compile the Loan Agreement Form')
+         ->persistent()
+         ->actions([
+             Action::make('create')
+                 ->button()
+                 ->url(route('filament.admin.resources.loan-agreement-forms.create'), shouldOpenInNewTab: true),
+         ])
+         ->send();
+
+     $this->halt();
+ } 
+
+
         $wallet = Wallet::findOrFail($data['from_this_account']);
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
         $data['from_this_account'] = Wallet::findOrFail($data['from_this_account'])->name;
@@ -60,7 +80,7 @@ class CreateLoan extends CreateRecord
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
         if (
-            $bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile)
+            $bulk_sms_config && $bulk_sms_config->is_active == "Active" && isset($borrower->mobile)
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
@@ -163,7 +183,7 @@ if(!is_null($borrower->email)){
             break;
     }
 
-    $borrower->notify(new LoanStatusNotification($message));
+   $borrower->notify(new LoanStatusNotification($message));
 }
 
 
@@ -172,27 +192,26 @@ if(!is_null($borrower->email)){
 
 
 // Remove the amount from the Specified Wallet
+try{
+    $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+}
+catch(\Exception $e){
+    Notification::make()
+    ->warning()
+    ->title('Problem With Wallet')
+    ->body('Whoops, something went wrong: ' . $e->getMessage())
+    ->persistent()
+  
+    ->send();
 
-$wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+$this->halt();
+}
 
 
-            //Check if they have the Loan Agreement Form template for this type of loan
-            $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
-            if (!$loan_agreement_text && $data['activate_loan_agreement_form'] == 1) {
-                Notification::make()
-                    ->warning()
-                    ->title('Invalid Agreement Form!')
-                    ->body('Please create a template first if you want to compile the Loan Agreement Form')
-                    ->persistent()
-                    ->actions([
-                        Action::make('create')
-                            ->button()
-                            ->url(route('filament.admin.resources.loan-agreement-forms.create'), shouldOpenInNewTab: true),
-                    ])
-                    ->send();
 
-                $this->halt();
-            } else {
+           
+            
+            if (isset($loan_agreement_text) && $data['activate_loan_agreement_form'] == 1) {
 
 
                 $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
