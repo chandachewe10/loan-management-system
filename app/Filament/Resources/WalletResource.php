@@ -36,6 +36,10 @@ class WalletResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('meta')
                     ->label('Currency')
+                    ->formatStateUsing(function ($state, $record) {
+                        
+                        return $record->meta['currency'] ?? '';
+                    })
                     ->required()
                     ->prefixIcon('fas-money-bill'),
                     Forms\Components\TextInput::make('balance')
