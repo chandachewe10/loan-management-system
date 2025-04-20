@@ -52,6 +52,7 @@ class WalletResource extends Resource
                     ->label('Add Funds')
                     ->required()
                     ->numeric()
+                    ->minValue(0)
                     ->prefixIcon('fas-dollar-sign'),
                     
                
