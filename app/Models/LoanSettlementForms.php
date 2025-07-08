@@ -10,7 +10,7 @@ use Spatie\Activitylog\LogOptions;
 class LoanSettlementForms extends Model
 {
     use HasFactory;
-      use LogsActivity;
+    use LogsActivity;
 
     public function getActivitylogOptions(): LogOptions
     {
