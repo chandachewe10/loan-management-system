@@ -25,7 +25,8 @@
         "phpoffice/phpword": "^1.1",
         "psr/simple-cache": "^2.0",
         "pxlrbt/filament-excel": "^2.3",
-        "realrashid/sweet-alert": "^7.1"
+        "realrashid/sweet-alert": "^7.1",
+        "rmsramos/activitylog": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

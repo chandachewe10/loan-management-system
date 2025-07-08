@@ -22,6 +22,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Rmsramos\Activitylog\ActivitylogPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -47,6 +48,10 @@ class AdminPanelProvider extends PanelProvider
                     'default' => 1,
                     'sm' => 2,
                 ]),
+                ActivitylogPlugin::make()
+                ->authorize(
+                    fn () => auth()->user()->hasRole('super_admin')
+                ),
         ])
         // ->brandLogo(asset('Logos/logo2.png'))
         // ->brandLogoHeight('4rem')

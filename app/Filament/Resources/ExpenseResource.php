@@ -59,6 +59,7 @@ class ExpenseResource extends Resource
                     ->searchable(),
                 Forms\Components\Select::make('category_id')
                     ->label('Expense Category')
+                     ->required()
                     ->prefixIcon('fas-copy')
                     ->relationship('expense_category', 'category_name')
                     ->searchable()

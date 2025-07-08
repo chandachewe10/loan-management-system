@@ -4,15 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class ExpenseCategory extends Model
 {
     use HasFactory;
+    use LogsActivity;
     protected $fillable = [
         'category_name',
         'category_code'
     ];
 
+     public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logAll();
+    }
     public function getCreatedAtAttribute($value) {
         return date('d,F Y H:m:i', strtotime($value));
     }

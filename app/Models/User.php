@@ -14,6 +14,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable implements Wallet
 {
@@ -25,6 +27,14 @@ class User extends Authenticatable implements Wallet
     use HasWallet, HasWallets;
     use HasRoles;
     use HasPanelShield;
+    use LogsActivity;
+
+
+     public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logAll();
+    }
 
     /**
      * The attributes that are mass assignable.

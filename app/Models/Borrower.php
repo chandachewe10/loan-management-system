@@ -5,6 +5,8 @@ namespace App\Models;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 class Borrower extends Model implements HasMedia
@@ -12,11 +14,14 @@ class Borrower extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
     use Notifiable;
-    
+    use LogsActivity;
 
-    public function getCreatedAtAttribute($value) {
-        return date('d,F Y H:m:i', strtotime($value));
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logAll();
     }
+   
     /**
      * The attributes that are mass assignable.
      *
