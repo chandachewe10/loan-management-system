@@ -154,8 +154,8 @@ class LoanResource extends Resource
                     ->hidden()
                     ->required()
                     ->native(false),
-                Forms\Components\TextInput::make('loan_number')
-                 ->disabled(),
+                // Forms\Components\TextInput::make('loan_number')
+                //  ->disabled(),
                  Hidden::make('loan_number'),
                 Forms\Components\Select::make('from_this_account')
                     ->label('From this Account')
@@ -171,7 +171,8 @@ class LoanResource extends Resource
                     ->label('Compile Loan Agreement Form')
                     ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan loan agreement form template for this type of loan.')
                     ->onColor('success')
-                    ->offColor('danger'),
+                    ->offColor('danger')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('loan_agreement_file_path')
                     ->hidden(),
                 Forms\Components\TextInput::make('balance')
