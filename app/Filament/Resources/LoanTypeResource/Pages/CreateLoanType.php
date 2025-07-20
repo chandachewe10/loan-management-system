@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LoanTypeResource\Pages;
 use App\Filament\Resources\LoanTypeResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Notification;
 
 class CreateLoanType extends CreateRecord
 {
@@ -16,4 +17,19 @@ class CreateLoanType extends CreateRecord
      
     //     return $data;
     // }
+
+
+       protected function getRedirectUrl(): string
+    {
+       
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Loan type')
+            ->body('The loan type has been created successfully.');
+    }
 }
