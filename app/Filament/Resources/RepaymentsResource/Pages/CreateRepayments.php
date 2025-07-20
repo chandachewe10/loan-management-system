@@ -18,6 +18,7 @@ use PhpOffice\PhpWord\PhpWord;
 use App\Models\Loan;
 
 
+
 class CreateRepayments extends CreateRecord
 {
     protected static string $resource = RepaymentsResource::class;
@@ -157,4 +158,8 @@ class CreateRepayments extends CreateRecord
             ->title('Repayment Done')
             ->body('The repayment has been updated successfully.');
     }
+
+
+
+    
 }
