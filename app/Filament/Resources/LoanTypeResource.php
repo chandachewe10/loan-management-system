@@ -53,6 +53,10 @@ class LoanTypeResource extends Resource
 
                     ])
                     ->required(),
+                      Forms\Components\TextInput::make('service_fee')
+                    ->label('Processing Fee (optional)')
+                    ->prefixIcon('fas-sync-alt')
+                     ->helperText('The processing fee will be removed from the loan to be disbursed')
             ]);
     }
 
@@ -71,6 +75,10 @@ class LoanTypeResource extends Resource
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('interest_cycle')
+                    ->badge()
+                    ->searchable(),
+                     Tables\Columns\TextColumn::make('service_fee')
+                     ->label('Processing Fee')
                     ->badge()
                     ->searchable(),
             ])

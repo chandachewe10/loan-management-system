@@ -56,8 +56,9 @@ class LoanResource extends Resource
                     ->live()
                     ->required(function ($state, Set $set) {
                         if ($state) {
-                            $interest_cycle = \App\Models\LoanType::findOrFail($state)->interest_cycle;
-                            $set('duration_period', $interest_cycle);
+                            $interest_cycle = \App\Models\LoanType::findOrFail($state)->first();
+                            $set('duration_period', $interest_cycle->interest_cycle);
+                            
                         }
                         return true;
                     }),
@@ -86,14 +87,19 @@ class LoanResource extends Resource
                     ->live()
                     ->required(function ($state, Set $set, Get $get) {
                         if ($get('loan_type_id')) {
+                            $service_fee = \App\Models\LoanType::findOrFail($get('loan_type_id'))->service_fee ?? 0;
+                            $set('service_fee', $service_fee);
                             $duration = $get('loan_duration') ?? 0;
                             $principle_amount = $state ?? 0;
+                            $disbursement_amount = ($principle_amount -  $service_fee) < 0 ? 0.00 : $principle_amount -  $service_fee;
                             $loan_percent = \App\Models\LoanType::findOrFail($get('loan_type_id'))->interest_rate ?? 0;
                             $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
                             $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
                             $set('repayment_amount', number_format($total_repayment));
                             $set('interest_amount', number_format($interest_amount));
                             $set('interest_rate', $loan_percent);
+                            $set('disbursed_amount', $disbursement_amount);
+                           
                         }
                         return true;
                     })
@@ -154,8 +160,25 @@ class LoanResource extends Resource
                     ->hidden()
                     ->required()
                     ->native(false),
-                // Forms\Components\TextInput::make('loan_number')
-                //  ->disabled(),
+
+
+
+                Forms\Components\TextInput::make('service_fee')
+                    ->label('Processing Fee')
+                    ->prefixIcon('fas-percentage')
+                    ->readOnly()
+                    ->numeric(),
+
+                    Forms\Components\TextInput::make('disbursed_amount')
+                    ->label('Amount to be Disbursed')
+                    ->required()
+                    ->prefixIcon('fas-percentage')
+                    ->readOnly()
+                    ->numeric(),
+
+
+
+
                  Hidden::make('loan_number'),
                 Forms\Components\Select::make('from_this_account')
                     ->label('From this Account')
@@ -210,6 +233,18 @@ class LoanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal_amount')
                     ->label('Principle Amount')
+                    ->money('ZMW')
+                    ->badge()
+                    ->sortable()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('service_fee')
+                    ->label('Service Fee')
+                    ->money('ZMW')
+                    ->badge()
+                    ->sortable()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('disbursed_amount')
+                    ->label('Disbursed Amount')
                     ->money('ZMW')
                     ->badge()
                     ->sortable()
