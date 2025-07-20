@@ -17,10 +17,13 @@ class WalletExporter extends Exporter
             ExportColumn::make('id')
                 ->label('ID'),
             ExportColumn::make('name'),
-            ExportColumn::make('slug'),
-            ExportColumn::make('meta'),
-            ExportColumn::make('uuid'),
-            ExportColumn::make('amount'),
+            ExportColumn::make('slug')
+            ->label('code'),
+            ExportColumn::make('meta')
+            ->label('currency'),
+            ExportColumn::make('uuid')
+            ->label('Wallet reference'),
+            ExportColumn::make('balance'),
             ExportColumn::make('created_at'),
             ExportColumn::make('updated_at'),
         ];

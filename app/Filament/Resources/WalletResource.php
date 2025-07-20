@@ -10,8 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\WalletExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class WalletResource extends Resource
 {
@@ -66,6 +66,10 @@ class WalletResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+          ->headerActions([
+            ExportAction::make()
+                ->exporter(WalletExporter::class)
+        ])
         ->recordUrl(null)
             ->columns([
 
