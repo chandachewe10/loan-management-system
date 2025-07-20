@@ -19,7 +19,6 @@ class ThirdPartyExporter extends Exporter
             ExportColumn::make('name'),
             ExportColumn::make('base_uri'),
             ExportColumn::make('endpoint'),
-            ExportColumn::make('token'),
             ExportColumn::make('sender_id'),
             ExportColumn::make('is_active'),
             ExportColumn::make('created_at'),
