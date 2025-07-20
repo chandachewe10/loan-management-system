@@ -10,8 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\ExpenseCategoryExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class ExpenseCategoryResource extends Resource
 {
@@ -46,10 +46,15 @@ class ExpenseCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+          ->headerActions([
+            ExportAction::make()
+                ->exporter(ExpenseCategoryExporter::class)
+        ])
             ->columns([
                 Tables\Columns\TextColumn::make('category_name')
                 ->searchable(),
             Tables\Columns\TextColumn::make('category_code')
+            ->badge()
                 ->searchable(),
             ])
             ->filters([
