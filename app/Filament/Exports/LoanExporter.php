@@ -31,6 +31,10 @@ class LoanExporter extends Exporter
              ->label('NRC Number'),
              ExportColumn::make('principal_amount')
             ->label('Loan Amount Obtained (K)'),
+             ExportColumn::make('disbursed_amount')
+            ->label('Disbursed Amount (K)'),
+             ExportColumn::make('service_fee')
+            ->label('Processing Fee'),
             ExportColumn::make('interest_rate')
              ->label('Interest rate'),
             ExportColumn::make('repayment_amount')
@@ -48,6 +52,10 @@ class LoanExporter extends Exporter
              
               ExportColumn::make('loan_type.loan_name')
              ->label('Loan Name'),
+
+              ExportColumn::make('loan_duration')
+             ->label('Loan Duration'),
+             
              
             ExportColumn::make('outstanding_balance') 
     ->label('Total Outstanding Balance')
