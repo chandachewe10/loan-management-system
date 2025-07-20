@@ -16,6 +16,7 @@ class TransactionExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
+                ExportColumn::make('wallet.name'),
             ExportColumn::make('type'),
             ExportColumn::make('amount'),
             ExportColumn::make('created_at'),

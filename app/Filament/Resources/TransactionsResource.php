@@ -10,8 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\TransactionExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class TransactionsResource extends Resource
 {
@@ -37,6 +37,10 @@ class TransactionsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+          ->headerActions([
+            ExportAction::make()
+                ->exporter(TransactionExporter::class)
+        ])
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Transaction Date')

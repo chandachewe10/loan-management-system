@@ -13,7 +13,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\TransferExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class TransfersResource extends Resource
 {
@@ -36,7 +37,7 @@ class TransfersResource extends Resource
     {
         $options = Wallet::all()->map(function ($wallet) {
             return [
-                'value' => $wallet->id, // Set the wallet ID as the 'value'
+                'value' => $wallet->id, 
                 'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
             ];
         });
@@ -66,6 +67,10 @@ class TransfersResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        //  ->headerActions([
+        //     ExportAction::make()
+        //         ->exporter(TransferExporter::class)
+        // ])
             ->columns([
                 Tables\Columns\TextColumn::make('from.name')
                     ->badge()
