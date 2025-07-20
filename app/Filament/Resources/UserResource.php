@@ -11,8 +11,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\UserExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class UserResource extends Resource
 {
@@ -58,6 +58,10 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+          ->headerActions([
+            ExportAction::make()
+                ->exporter(UserExporter::class)
+        ])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Full Name')

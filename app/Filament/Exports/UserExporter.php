@@ -20,8 +20,7 @@ class UserExporter extends Exporter
             ExportColumn::make('email'),
             ExportColumn::make('created_at'),
             ExportColumn::make('updated_at'),
-            ExportColumn::make('is_approved'),
-            ExportColumn::make('is_blocked'),
+          
         ];
     }
 

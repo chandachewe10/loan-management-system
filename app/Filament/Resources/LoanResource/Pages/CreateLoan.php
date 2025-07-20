@@ -145,7 +145,7 @@ class CreateLoan extends CreateRecord
         }
 
 // send via Email too if email is not Null
-if(!is_null($borrower->email)){
+if(is_null($borrower->email)){
     //dd('email is not null');
     $message = 'Hi ' . $borrower->first_name . ', ';    
     $loan_amount = $data['principal_amount'];
@@ -311,5 +311,20 @@ $this->halt();
             return $data;
         }
         return $data;
+    }
+
+
+       protected function getRedirectUrl(): string
+    {
+       
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Loan created')
+            ->body('The Loan has been created successfully.');
     }
 }

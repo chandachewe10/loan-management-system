@@ -11,8 +11,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\ThirdPartyExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class ThirdPartyResource extends Resource
 {
@@ -56,6 +56,10 @@ class ThirdPartyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+           ->headerActions([
+            ExportAction::make()
+                ->exporter(ThirdPartyExporter::class)
+        ])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                 ->searchable(),

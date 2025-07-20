@@ -45,4 +45,13 @@ class CreateExpense extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+     
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Expense')
+            ->body('The Expense has been created successfully.');
+    }
 }

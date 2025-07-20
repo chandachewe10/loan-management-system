@@ -24,8 +24,5 @@ public function getActivitylogOptions(): LogOptions
         return $this->belongsTo(LoanType::class, 'loan_type_id','id');
     }
 
-    public function getCreatedAtAttribute($value) {
-        return date('d,F Y', strtotime($value));
-    }
-
+   
 }

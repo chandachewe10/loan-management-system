@@ -21,9 +21,7 @@ class ExpenseCategory extends Model
         return LogOptions::defaults()
         ->logAll();
     }
-    public function getCreatedAtAttribute($value) {
-        return date('d,F Y H:m:i', strtotime($value));
-    }
+   
 
 
     public function expense()

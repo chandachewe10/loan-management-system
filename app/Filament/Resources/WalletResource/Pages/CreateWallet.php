@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\WalletResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Notification;
 
 class CreateWallet extends CreateRecord
 {
@@ -42,5 +43,14 @@ class CreateWallet extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Bank Wallet')
+            ->body('The virtual Bank Wallet has been created successfully.');
     }
 }

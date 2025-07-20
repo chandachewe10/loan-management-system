@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Role;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
@@ -36,5 +37,15 @@ class CreateUser extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('User created')
+            ->body('The User has been created successfully.');
     }
 }

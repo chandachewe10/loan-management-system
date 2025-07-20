@@ -17,6 +17,7 @@ use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use App\Models\Loan;
 
+
 class CreateRepayments extends CreateRecord
 {
     protected static string $resource = RepaymentsResource::class;
@@ -146,5 +147,14 @@ class CreateRepayments extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Repayment Done')
+            ->body('The repayment has been updated successfully.');
     }
 }
