@@ -85,6 +85,10 @@ class WalletResource extends Resource
                 Tables\Columns\TextColumn::make('balance')
                 ->badge()
                     ->searchable(),
+                      Tables\Columns\TextColumn::make('meta')
+                      ->label('Currency')
+                ->badge()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
