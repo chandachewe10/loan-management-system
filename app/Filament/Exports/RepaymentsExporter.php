@@ -16,7 +16,7 @@ class RepaymentsExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
-            ExportColumn::make('loan_id'),
+            ExportColumn::make('loan_number'),
             ExportColumn::make('balance'),
             ExportColumn::make('payments'),
             ExportColumn::make('principal'),

@@ -12,8 +12,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\RepaymentsExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class RepaymentsResource extends Resource
 {
@@ -81,6 +81,10 @@ class RepaymentsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+           ->headerActions([
+            ExportAction::make()
+                ->exporter(RepaymentsExporter::class)
+        ])
          ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
