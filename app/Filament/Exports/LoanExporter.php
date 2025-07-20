@@ -98,20 +98,20 @@ class LoanExporter extends Exporter
              ExportColumn::make('loan_due_date')
              ->label('Due Date'),
 
-           ExportColumn::make('days_past_due')
-    ->label('Days Past Due')
-    ->state(function (Loan $loan): int {
+    //        ExportColumn::make('days_past_due')
+    // ->label('Days Past Due')
+    // ->state(function (Loan $loan): int {
        
-        $due = Carbon::createFromFormat('d\,F Y', $loan->loan_due_date);
-        $overdue = $due->diffInDays(Carbon::today(), false);
-        if($overdue < 0) {
-        return 0;
-        }
-      else{
-       return $overdue;
-         }
+    //     $due = Carbon::createFromFormat('yy mm dd', $loan->loan_due_date);
+    //     $overdue = $due->diffInDays(Carbon::today(), false);
+    //     if($overdue < 0) {
+    //     return 0;
+    //     }
+    //   else{
+    //    return $overdue;
+    //      }
         
-    }),
+    // }),
 
             
         ];
