@@ -22,4 +22,9 @@ class CreateBulkRepayments extends CreateRecord
                 ->icon('heroicon-o-arrow-up-on-square') 
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
