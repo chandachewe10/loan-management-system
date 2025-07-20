@@ -10,8 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\MessagesExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class MessagesResource extends Resource
 {
@@ -60,6 +60,10 @@ class MessagesResource extends Resource
 public static function table(Table $table): Table
     {
         return $table
+          ->headerActions([
+            ExportAction::make()
+                ->exporter(MessagesExporter::class)
+        ])
        
             ->columns([
                 Tables\Columns\TextColumn::make('index')
