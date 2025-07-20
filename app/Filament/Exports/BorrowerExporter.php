@@ -42,7 +42,7 @@ class BorrowerExporter extends Exporter
             ExportColumn::make('bank_account_name'),
             ExportColumn::make('mobile_money_name'),
             ExportColumn::make('mobile_money_number'),
-             ExportColumn::make('created_by.full_name')
+             ExportColumn::make('created_by.name')
              ->label('Added By'),
            
            
