@@ -19,6 +19,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\LoanExporter;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Forms\Components\Hidden;
 
 class LoanResource extends Resource
 {
@@ -152,7 +155,8 @@ class LoanResource extends Resource
                     ->required()
                     ->native(false),
                 Forms\Components\TextInput::make('loan_number')
-                ->readOnly(),
+                 ->disabled(),
+                 Hidden::make('loan_number'),
                 Forms\Components\Select::make('from_this_account')
                     ->label('From this Account')
                     ->prefixIcon('fas-wallet')
@@ -180,6 +184,10 @@ class LoanResource extends Resource
     {
         $create_link = new CreateLinks();
         return $table
+         ->headerActions([
+            ExportAction::make()
+                ->exporter(LoanExporter::class)
+        ])
             ->columns([
 
                 Tables\Columns\TextColumn::make('borrower.full_name')
