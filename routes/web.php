@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\CustomerStatementController;
 use App\Http\Controllers\BorrowersController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +29,6 @@ Route::middleware([
 
     Route::resource('borrower',BorrowersController::class);
 });
+
+Route::get('/statement/{record}', [CustomerStatementController::class, 'download'])->name('statement.download');
+

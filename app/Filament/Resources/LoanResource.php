@@ -263,6 +263,19 @@ class LoanResource extends Resource
                     ->label('Loan Number')
                     ->badge()
                     ->searchable(),
+
+Tables\Columns\TextColumn::make('id')
+   
+    ->label('Loan Statement')
+    ->formatStateUsing(function ($state, $record) {
+        $url = route('statement.download', $record->id);
+        return "<a href='{$url}' target='_blank' class='text-primary underline'>Download</a>";
+    })
+ 
+    ->html()
+    ->searchable(),
+
+
                
                 Tables\Columns\TextColumn::make('loan_agreement_file_path')
                 ->label('Loan Agreement Form')
