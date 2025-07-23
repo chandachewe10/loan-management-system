@@ -53,8 +53,8 @@ class LoanResource extends Resource
                     ->relationship('loan_type', 'loan_name')
                     ->searchable()
                     ->preload()
-                    ->live()
-                    ->required(function ($state, Set $set) {
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, Set $set) {
                         if ($state) {
                             $interest_cycle = \App\Models\LoanType::findOrFail($state)->first();
                             $set('duration_period', $interest_cycle->interest_cycle);
@@ -84,8 +84,8 @@ class LoanResource extends Resource
                 Forms\Components\TextInput::make('principal_amount')
                     ->label('Principle Amount')
                     ->prefixIcon('fas-dollar-sign')
-                    ->live()
-                    ->required(function ($state, Set $set, Get $get) {
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         if ($get('loan_type_id')) {
                             $service_fee = \App\Models\LoanType::findOrFail($get('loan_type_id'))->service_fee ?? 0;
                             $set('service_fee', $service_fee);
@@ -108,8 +108,8 @@ class LoanResource extends Resource
                 Forms\Components\TextInput::make('loan_duration')
                     ->label('Loan Duration')
                     ->prefixIcon('fas-clock')
-                    ->live()
-                    ->required(function ($state, Set $set, Get $get) {
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         if ($state && $get('loan_type_id') && $get('principal_amount')) {
                             $duration = $state ?? 0;
                             $principle_amount = $get('principal_amount');
@@ -132,7 +132,7 @@ class LoanResource extends Resource
                 Forms\Components\DatePicker::make('loan_release_date')
                     ->label('Loan Release Date')
                     ->prefixIcon('heroicon-o-calendar')
-                    ->live()
+                    ->live(onBlur: true)
                     ->required()
                     ->native(false)
                     ->maxDate(now()),
