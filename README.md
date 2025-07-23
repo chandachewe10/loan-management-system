@@ -36,9 +36,11 @@ The Loan Management software is a web-based application that helps manage and tr
 
 
 ## Installation
+```bash
 1. You must install XAMPP or WAMP
 2. XAMPP is generally recommended for Windows users because it includes Apache, MySQL, PHP, and phpMyAdmin in one package.
 3. You must also install Composer, a dependency manager for PHP used to install Laravel and other PHP libraries.
+```
 
 ### Clone the repository
 Please follow carefully the installation and use of this web framework of the Loan Management System for better utilisation of it. Do not skip any stage.
