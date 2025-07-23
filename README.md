@@ -35,16 +35,9 @@ The Loan Management software is a web-based application that helps manage and tr
 15. Assign roles, assign permissions, revoke roles Etc 
 
 
-## Demo Credentials
-
-[Website Link](https://lendfy.swift-sms.net/)
-
-1. EMAIL: demo@demo.com
-2. PASSWORD:test1234
-
-
-
 ## Installation
+1. You must install XAMPP or WAMP
+2. XAMPP is generally recommended for Windows users because it includes Apache, MySQL, PHP, and phpMyAdmin in one package.
 
 ### Clone the repository
 Please follow carefully the installation and use of this web framework of the Loan Management System for better utilisation of it. Do not skip any stage.
