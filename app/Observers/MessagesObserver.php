@@ -11,9 +11,9 @@ class MessagesObserver
      */
     public function created(Messages $messages): void
     {
-        if (auth()->hasUser()) {
+       
             $messages->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class MessagesObserver
      */
     public function updated(Messages $messages): void
     {
-        if (auth()->hasUser()) {
-            $messages->organization_id = auth()->user()->organization_id;
-        }
+       
+            
+        
     }
 
     /**

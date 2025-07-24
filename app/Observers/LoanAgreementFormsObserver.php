@@ -11,9 +11,9 @@ class LoanAgreementFormsObserver
      */
     public function created(LoanAgreementForms $loanAgreementForms): void
     {
-        if (auth()->hasUser()) {
+       
             $loanAgreementForms->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class LoanAgreementFormsObserver
      */
     public function updated(LoanAgreementForms $loanAgreementForms): void
     {
-        if (auth()->hasUser()) {
-            $loanAgreementForms->organization_id = auth()->user()->organization_id;
-        }
+       
+           
+        
     }
 
     /**

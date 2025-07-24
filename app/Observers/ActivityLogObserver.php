@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\ActivityLog;
+use Spatie\Activitylog\Models\Activity as ActivityLog;
 
 class ActivityLogObserver
 {
@@ -11,9 +11,9 @@ class ActivityLogObserver
      */
     public function created(ActivityLog $activityLog): void
     {
-        if (auth()->hasUser()) {
+       
             $activityLog->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class ActivityLogObserver
      */
     public function updated(ActivityLog $activityLog): void
     {
-        if (auth()->hasUser()) {
-            $activityLog->organization_id = auth()->user()->organization_id;
-        }
+       
+           
+        
     }
 
     /**

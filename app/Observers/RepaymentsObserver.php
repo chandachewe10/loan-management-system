@@ -11,9 +11,9 @@ class RepaymentsObserver
      */
     public function created(Repayments $repayments): void
     {
-        if (auth()->hasUser()) {
+       
             $repayments->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class RepaymentsObserver
      */
     public function updated(Repayments $repayments): void
     {
-        if (auth()->hasUser()) {
-            $repayments->organization_id = auth()->user()->organization_id;
-        }
+       
+           
+        
     }
 
     /**

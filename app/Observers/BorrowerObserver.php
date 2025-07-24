@@ -11,9 +11,9 @@ class BorrowerObserver
      */
     public function created(Borrower $borrower): void
     {
-        if (auth()->hasUser()) {
+        
             $borrower->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class BorrowerObserver
      */
     public function updated(Borrower $borrower): void
     {
-        if (auth()->hasUser()) {
-            $borrower->organization_id = auth()->user()->organization_id;
-        }
+        
+            
+        
     }
 
     /**

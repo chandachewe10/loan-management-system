@@ -11,9 +11,9 @@ class BorrowerFilesObserver
      */
     public function created(BorrowerFiles $borrowerFiles): void
     {
-        if (auth()->hasUser()) {
+       
             $borrowerFiles->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class BorrowerFilesObserver
      */
     public function updated(BorrowerFiles $borrowerFiles): void
     {
-        if (auth()->hasUser()) {
-            $borrowerFiles->organization_id = auth()->user()->organization_id;
-        }
+       
+           
+        
     }
 
     /**

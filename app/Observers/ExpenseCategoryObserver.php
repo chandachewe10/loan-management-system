@@ -11,9 +11,9 @@ class ExpenseCategoryObserver
      */
     public function created(ExpenseCategory $expenseCategory): void
     {
-        if (auth()->hasUser()) {
+       
             $expenseCategory->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class ExpenseCategoryObserver
      */
     public function updated(ExpenseCategory $expenseCategory): void
     {
-        if (auth()->hasUser()) {
-            $expenseCategory->organization_id = auth()->user()->organization_id;
-        }
+       
+            
+        
     }
 
     /**

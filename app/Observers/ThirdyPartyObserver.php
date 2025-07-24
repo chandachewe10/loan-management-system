@@ -11,9 +11,9 @@ class ThirdyPartyObserver
      */
     public function created(ThirdParty $thirdParty): void
     {
-        if (auth()->hasUser()) {
+       
             $thirdParty->organization_id = auth()->user()->organization_id;
-        }
+        
     }
 
     /**
@@ -21,9 +21,9 @@ class ThirdyPartyObserver
      */
     public function updated(ThirdParty $thirdParty): void
     {
-        if (auth()->hasUser()) {
-            $thirdParty->organization_id = auth()->user()->organization_id;
-        }
+       
+            
+        
     }
 
     /**
