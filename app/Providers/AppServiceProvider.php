@@ -1,11 +1,36 @@
 <?php
 
 namespace App\Providers;
+use App\Observers\ActivityLogObserver;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Filament\CustomLogOutResponse;
+use Spatie\Activitylog\Models\Activity as ActivityLog;
+use App\Models\Borrower;
+use App\Models\BorrowerFiles;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
+use App\Models\Loan;
+use App\Models\LoanAgreementForms;
+use App\Models\LoanSettlementForms;
+use App\Models\LoanType;
+use App\Models\Messages;
+use App\Models\Repayments;
+use App\Models\ThirdParty;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
+use App\Models\User;
+use App\Observers\BorrowerFilesObserver;
+use App\Observers\BorrowerObserver;
+use App\Observers\ExpenseCategoryObserver;
+use App\Observers\ExpenseObserver;
+use App\Observers\LoanObserver;
+use App\Observers\LoanSettlementFormsObserver;
+use App\Observers\LoanTypesObserver;
+use App\Observers\MessagesObserver;
+use App\Observers\RepaymentsObserver;
+use App\Observers\ThirdyPartyObserver;
+use App\Observers\UserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +58,19 @@ class AppServiceProvider extends ServiceProvider
             'Repayments',
             'Addons',
         ]);
+
+        User::observe(UserObserver::class);
+        ThirdParty::observe(ThirdyPartyObserver::class);
+        Repayments::observe(RepaymentsObserver::class);
+        Messages::observe(MessagesObserver::class);
+        LoanType::observe(LoanTypesObserver::class);
+        LoanSettlementForms::observe(LoanSettlementFormsObserver::class);
+        Loan::observe(LoanObserver::class);
+        LoanAgreementForms::observe(LoanAgreementForms::class);
+        Expense::observe(ExpenseObserver::class);
+        ExpenseCategory::observe(ExpenseCategoryObserver::class);
+        Borrower::observe(BorrowerObserver::class);
+        BorrowerFiles::observe(BorrowerFilesObserver::class);
+        ActivityLog::observe(ActivityLogObserver::class);
     }
 }

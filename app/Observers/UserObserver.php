@@ -11,9 +11,12 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        if (auth()->hasUser()) {
-            $user->organization_id = auth()->user()->organization_id;
-        }
+      
+            $sixRandomFigures = random_int(100000, 999999);
+            $userId = $user->id;
+            $organization_id = $userId . $sixRandomFigures; 
+            $user->organization_id = $organization_id;
+        
     }
 
     /**
@@ -21,9 +24,9 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        if (auth()->hasUser()) {
-            $user->organization_id = auth()->user()->organization_id;
-        }
+       
+
+        
     }
 
     /**
