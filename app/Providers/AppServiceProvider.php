@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 use App\Observers\ActivityLogObserver;
+use App\Observers\LoanAgreementFormsObserver;
 use App\Observers\TransferObserver;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Filament\CustomLogOutResponse;
-use Spatie\Activitylog\Models\Activity as ActivityLog;
+use App\Models\ActivityLogs;
 use App\Models\Borrower;
-use App\Models\BorrowerFiles;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\Loan;
@@ -23,7 +23,6 @@ use App\Models\Transaction;
 use App\Models\Transfer;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use App\Models\User;
-use App\Observers\BorrowerFilesObserver;
 use App\Observers\BorrowerObserver;
 use App\Observers\ExpenseCategoryObserver;
 use App\Observers\ExpenseObserver;
@@ -72,11 +71,11 @@ class AppServiceProvider extends ServiceProvider
         LoanType::observe(LoanTypesObserver::class);
         LoanSettlementForms::observe(LoanSettlementFormsObserver::class);
         Loan::observe(LoanObserver::class);
-        LoanAgreementForms::observe(LoanAgreementForms::class);
+        LoanAgreementForms::observe(LoanAgreementFormsObserver::class);
         Expense::observe(ExpenseObserver::class);
         ExpenseCategory::observe(ExpenseCategoryObserver::class);
         Borrower::observe(BorrowerObserver::class);
-        ActivityLog::observe(ActivityLogObserver::class);
+        ActivityLogs::observe(ActivityLogObserver::class);
         Wallet::observe(WalletObserver::class);
         Transfer::observe(TransferObserver::class);
         Transaction::observe(TransactionObserver::class);

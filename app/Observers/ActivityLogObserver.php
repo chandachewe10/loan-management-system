@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use Spatie\Activitylog\Models\Activity as ActivityLog;
+use App\Models\ActivityLogs as ActivityLog;
 
 class ActivityLogObserver
 {
