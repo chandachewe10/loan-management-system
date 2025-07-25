@@ -15,15 +15,15 @@ class MessagesPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_message');
+        return $user->can('view_any_messages');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Messages $message): bool
+    public function view(User $user, Messages $messages): bool
     {
-        return $user->can('view_message');
+        return $user->can('view_messages');
     }
 
     /**
@@ -31,23 +31,23 @@ class MessagesPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_message');
+        return $user->can('create_messages');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Messages $message): bool
+    public function update(User $user, Messages $messages): bool
     {
-        return $user->can('update_message');
+        return $user->can('update_messages');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Messages $message): bool
+    public function delete(User $user, Messages $messages): bool
     {
-        return $user->can('delete_message');
+        return $user->can('delete_messages');
     }
 
     /**
@@ -55,15 +55,15 @@ class MessagesPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_message');
+        return $user->can('delete_any_messages');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Messages $message): bool
+    public function forceDelete(User $user, Messages $messages): bool
     {
-        return $user->can('force_delete_message');
+        return $user->can('force_delete_messages');
     }
 
     /**
@@ -71,15 +71,15 @@ class MessagesPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_message');
+        return $user->can('force_delete_any_messages');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Messages $message): bool
+    public function restore(User $user, Messages $messages): bool
     {
-        return $user->can('restore_message');
+        return $user->can('restore_messages');
     }
 
     /**
@@ -87,15 +87,15 @@ class MessagesPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_message');
+        return $user->can('restore_any_messages');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Messages $message): bool
+    public function replicate(User $user, Messages $messages): bool
     {
-        return $user->can('replicate_message');
+        return $user->can('replicate_messages');
     }
 
     /**
@@ -103,6 +103,6 @@ class MessagesPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_message');
+        return $user->can('reorder_messages');
     }
 }
