@@ -46,6 +46,7 @@
           <nav class="c-nav">
             <input id="dropdown" class="c-nav__toggle" type="checkbox" />
             <div class="c-nav__content">
+               
               <ul class="c-list c-list--flex">
                 <li class="c-list__item">
                   <a href="#pricing" class="c-link c-link--list">Pricing</a>
@@ -54,6 +55,7 @@
                   <a href="#services" class="c-link c-link--list">Services</a>
                 </li>
               </ul>
+              <a href="{{ 'admin/login' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign In</a>
               <a href="{{ 'admin/register' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a>
             </div>
           </nav>
