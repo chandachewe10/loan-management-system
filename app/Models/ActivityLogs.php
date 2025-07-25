@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-use Spatie\Activitylog\Models\Activity  as BaseActivityLogs;;
+use Spatie\Activitylog\Models\Activity  as BaseActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
