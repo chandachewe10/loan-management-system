@@ -16,7 +16,8 @@ class UserObserver
             $userId = $user->id;
             $organization_id = $userId . $sixRandomFigures; 
             $user->organization_id = $organization_id;
-        
+            $user->save();
+            
     }
 
     /**

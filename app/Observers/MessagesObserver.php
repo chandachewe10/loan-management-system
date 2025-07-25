@@ -13,6 +13,7 @@ class MessagesObserver
     {
        
             $messages->organization_id = auth()->user()->organization_id;
+            $messages->save();
         
     }
 

@@ -13,7 +13,7 @@ class RepaymentsObserver
     {
        
             $repayments->organization_id = auth()->user()->organization_id;
-        
+            $repayments->save();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 use App\Observers\ActivityLogObserver;
+use App\Observers\TransferObserver;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +19,8 @@ use App\Models\LoanType;
 use App\Models\Messages;
 use App\Models\Repayments;
 use App\Models\ThirdParty;
+use App\Models\Transaction;
+use App\Models\Transfer;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use App\Models\User;
 use App\Observers\BorrowerFilesObserver;
@@ -30,7 +33,10 @@ use App\Observers\LoanTypesObserver;
 use App\Observers\MessagesObserver;
 use App\Observers\RepaymentsObserver;
 use App\Observers\ThirdyPartyObserver;
+use App\Observers\TransactionObserver;
 use App\Observers\UserObserver;
+use App\Observers\WalletObserver;
+use App\Models\Wallet;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -70,7 +76,9 @@ class AppServiceProvider extends ServiceProvider
         Expense::observe(ExpenseObserver::class);
         ExpenseCategory::observe(ExpenseCategoryObserver::class);
         Borrower::observe(BorrowerObserver::class);
-        BorrowerFiles::observe(BorrowerFilesObserver::class);
         ActivityLog::observe(ActivityLogObserver::class);
+        Wallet::observe(WalletObserver::class);
+        Transfer::observe(TransferObserver::class);
+        Transaction::observe(TransactionObserver::class);
     }
 }

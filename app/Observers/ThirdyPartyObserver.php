@@ -13,7 +13,7 @@ class ThirdyPartyObserver
     {
        
             $thirdParty->organization_id = auth()->user()->organization_id;
-        
+            $thirdParty->save();
     }
 
     /**

@@ -13,7 +13,7 @@ class LoanObserver
     {
         
             $loan->organization_id = auth()->user()->organization_id;
-        
+            $loan->save();
     }
 
     /**

@@ -13,7 +13,7 @@ class LoanAgreementFormsObserver
     {
        
             $loanAgreementForms->organization_id = auth()->user()->organization_id;
-        
+            $loanAgreementForms->save();
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace App\Filament\Resources;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\Select;
-use Bavix\Wallet\Models\Wallet;
-use Bavix\Wallet\Models\Transfer;
+use App\Models\Wallet;
+use App\Models\Transfer;
 use App\Filament\Resources\TransfersResource\Pages;
 use App\Filament\Resources\TransfersResource\RelationManagers;
 use Filament\Forms;

@@ -9,6 +9,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
+
 class Borrower extends Model implements HasMedia
 {
     use HasFactory;
@@ -44,11 +46,7 @@ class Borrower extends Model implements HasMedia
 
     ];
 
-    public function files()
-    {
-        
-        return $this->hasMany(BorrowerFiles::class, 'id','borrower_id');
-    }
+  
 
 
     public function loan()
@@ -62,5 +60,16 @@ class Borrower extends Model implements HasMedia
         return $this->belongsTo(User::class, 'added_by','id');
     }
 
+    protected static function booted(): void
+    {
+       
+        static::addGlobalScope('org', function (Builder $query) {
+          
+            if (auth()->check()) {
+                
+                $query->where('organization_id', auth()->user()->organization_id);
+            }
+        });
+    }
 
 }

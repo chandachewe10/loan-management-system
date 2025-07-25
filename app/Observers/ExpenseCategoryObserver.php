@@ -13,7 +13,7 @@ class ExpenseCategoryObserver
     {
        
             $expenseCategory->organization_id = auth()->user()->organization_id;
-        
+            $expenseCategory->save();
     }
 
     /**

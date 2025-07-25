@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\TransactionsResource\Pages;
 use App\Filament\Resources\TransactionsResource\RelationManagers;
-use Bavix\Wallet\Models\Transaction;
+use App\Models\Transaction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;

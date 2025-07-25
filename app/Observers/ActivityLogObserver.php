@@ -11,9 +11,9 @@ class ActivityLogObserver
      */
     public function created(ActivityLog $activityLog): void
     {
-       
-            $activityLog->organization_id = auth()->user()->organization_id;
-        
+           
+            $activityLog->organization_id = auth()->user()->organization_id ?? null;
+            $activityLog->save();
     }
 
     /**

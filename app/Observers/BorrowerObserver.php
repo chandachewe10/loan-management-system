@@ -13,7 +13,7 @@ class BorrowerObserver
     {
         
             $borrower->organization_id = auth()->user()->organization_id;
-        
+            $borrower->save();
     }
 
     /**
