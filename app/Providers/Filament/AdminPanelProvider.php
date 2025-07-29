@@ -23,6 +23,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Rmsramos\Activitylog\ActivitylogPlugin;
+use App\Http\Middleware\CheckSubscriptionValidity;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -89,6 +90,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                CheckSubscriptionValidity::class
             ])
             ->authMiddleware([
                 Authenticate::class,

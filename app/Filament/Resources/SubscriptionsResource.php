@@ -114,7 +114,14 @@ class SubscriptionsResource extends Resource
     {
         return $table
             ->columns([
-                //
+                 Tables\Columns\TextColumn::make('payment_made_at')
+                ->searchable(),
+                 Tables\Columns\TextColumn::make('transaction_reference')
+                ->searchable(),
+                 Tables\Columns\TextColumn::make('payment_amount')
+                ->searchable(),
+                 Tables\Columns\TextColumn::make('payment_expires_at')
+                ->searchable(),
             ])
             ->filters([
                 //
