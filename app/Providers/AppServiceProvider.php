@@ -37,6 +37,7 @@ use App\Observers\UserObserver;
 use App\Observers\WalletObserver;
 use App\Models\Wallet;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -52,13 +53,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         $this->app->bind(LogoutResponseContract::class, CustomLogOutResponse::class);
         Model::unguard();
         Filament::registerNavigationGroups([
             'Customers',
             'Loan Agreement Forms',
             'Wallets',
-            'Loans',            
+            'Loans',
             'Expenses',
             'Repayments',
             'Addons',
@@ -80,4 +82,6 @@ class AppServiceProvider extends ServiceProvider
         Transfer::observe(TransferObserver::class);
         Transaction::observe(TransactionObserver::class);
     }
+
+
 }

@@ -18,6 +18,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
 
+
 class User extends Authenticatable implements Wallet
 {
     use HasApiTokens;
@@ -29,6 +30,7 @@ class User extends Authenticatable implements Wallet
     use HasRoles;
     use HasPanelShield;
     use LogsActivity;
+
 
 
      public function getActivitylogOptions(): LogOptions
@@ -78,13 +80,13 @@ class User extends Authenticatable implements Wallet
         'profile_photo_url',
     ];
 
-   
+
 protected static function booted(): void
     {
         static::addGlobalScope('org', function (Builder $query) {
             if (auth()->hasUser()) {
                 $query->where('organization_id', auth()->user()->organization_id);
-               
+
             }
         });
     }
