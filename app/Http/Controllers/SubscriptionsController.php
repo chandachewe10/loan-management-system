@@ -79,13 +79,15 @@ public function completeSubscription(Request $request, $amount)
         'data' => $request->input('data'),
         'amount' => $amount,
     ]);
+
+     $paymentData = json_decode($request->input('data'), true);
+     $reference = $paymentData['reference'] ?? null;
         $payment = Payments::create([
             'organization_id' => auth()->user()->organization_id,
             'payer_id' => auth()->id(),
             'payment_amount' => $amount,
-            'transaction_reference' => Str::uuid(),
+            'transaction_reference' => $reference,
             'gateway' => 'LENCO PAYMENT GATEWAY',
-            'payment_method' => 'Mobile Money',
             'payment_made_at' => Carbon::now(),
             'payment_expires_at' => Carbon::now()->addMonth(),
         ]);
