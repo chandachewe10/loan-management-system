@@ -57,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
         // ->brandLogoHeight('4rem')
         // ->favicon(asset('Logos/logo2.png'))
         ->sidebarCollapsibleOnDesktop()
-        
+
         ->login()
         ->registration()
         ->passwordReset()
@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
-                
+
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

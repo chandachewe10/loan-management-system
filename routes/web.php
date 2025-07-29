@@ -1,6 +1,6 @@
 <?php
-use App\Http\Controllers\CustomerStatementController;
-use App\Http\Controllers\BorrowersController;
+use App\Http\Controllers\{BorrowersController,
+SubscriptionsController, CustomerStatementController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +17,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/subscription/{amount}', function ($amount) {
+    return view('gateways.lenco.lencoPayments', ['amount' => decrypt($amount)]);
+})->name('subscription.lenco');
+
+Route::post('completeSubscription/{amount}',[SubscriptionsController::class,'completeSubscription'])
+->name('completeSubscription');
+
+
 
 Route::middleware([
     'auth:sanctum',
