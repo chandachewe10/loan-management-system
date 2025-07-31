@@ -11,13 +11,14 @@ class UserObserver
      */
     public function created(User $user): void
     {
-      
+
             $sixRandomFigures = random_int(100000, 999999);
             $userId = $user->id;
-            $organization_id = $userId . $sixRandomFigures; 
+            $organization_id = $userId . $sixRandomFigures;
             $user->organization_id = $organization_id;
             $user->save();
-            
+            $user->assignRole('super_admin');
+
     }
 
     /**
@@ -25,9 +26,9 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-       
 
-        
+
+
     }
 
     /**
