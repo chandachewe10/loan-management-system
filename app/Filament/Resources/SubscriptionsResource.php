@@ -57,7 +57,7 @@ class SubscriptionsResource extends Resource
         ->label('Subscribe')
         ->button()
         ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(1)])) //480
+        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(480)]))
 ])->columnSpan(1),
 
              Card::make([
