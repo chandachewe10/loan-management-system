@@ -13,7 +13,7 @@ class Loan extends Model
 {
     use HasFactory;
     use LogsActivity;
-    
+
  public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -21,17 +21,17 @@ class Loan extends Model
     }
     public function loan_type()
     {
-        
+
         return $this->belongsTo(LoanType::class, 'loan_type_id','id');
     }
 
     public function borrower()
     {
-        
+
         return $this->belongsTo(Borrower::class, 'borrower_id','id');
     }
 
-   
+
 
     protected $casts = [
         'activate_loan_agreement_form' => 'boolean',
@@ -49,12 +49,13 @@ class Loan extends Model
 
     protected static function booted(): void
     {
-       
+
         static::addGlobalScope('org', function (Builder $query) {
-          
+
             if (auth()->check()) {
-                
-                $query->where('organization_id', auth()->user()->organization_id);
+
+                $query->where('organization_id', auth()->user()->organization_id)
+                ->orWhere('organization_id',"=",NULL);
             }
         });
     }

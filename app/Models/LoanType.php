@@ -18,7 +18,7 @@ class LoanType extends Model
         return LogOptions::defaults()
         ->logAll();
     }
-    
+
     public function loan()
     {
     return $this->hasMany(Loan::class, 'id','loan_type_id');
@@ -26,12 +26,13 @@ class LoanType extends Model
 
     protected static function booted(): void
     {
-       
+
         static::addGlobalScope('org', function (Builder $query) {
-          
+
             if (auth()->check()) {
-                
-                $query->where('organization_id', auth()->user()->organization_id);
+
+                $query->where('organization_id', auth()->user()->organization_id)
+                ->orWhere('organization_id',"=",NULL);
             }
         });
     }

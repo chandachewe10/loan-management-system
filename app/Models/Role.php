@@ -14,7 +14,8 @@ class Role extends BaseSpatieRole
 {
     static::addGlobalScope('org', function (Builder $query) {
         if (auth()->check()) {
-            $query->where('roles.organization_id', auth()->user()->organization_id);
+            $query->where('roles.organization_id', auth()->user()->organization_id)
+            ->orWhere('roles.organization_id',"=",NULL);
         }
     });
 }

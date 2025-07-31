@@ -18,21 +18,22 @@ public function getActivitylogOptions(): LogOptions
         return LogOptions::defaults()
         ->logAll();
     }
-    
+
     public function loan_type()
     {
-        
+
         return $this->belongsTo(LoanType::class, 'loan_type_id','id');
     }
 
    protected static function booted(): void
     {
-       
+
         static::addGlobalScope('org', function (Builder $query) {
-          
+
             if (auth()->check()) {
-                
-                $query->where('organization_id', auth()->user()->organization_id);
+
+                $query->where('organization_id', auth()->user()->organization_id)
+                ->orWhere('organization_id',"=",NULL);
             }
         });
     }

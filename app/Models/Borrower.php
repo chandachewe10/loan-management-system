@@ -23,7 +23,7 @@ class Borrower extends Model implements HasMedia
         return LogOptions::defaults()
         ->logAll();
     }
-   
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,12 +46,12 @@ class Borrower extends Model implements HasMedia
 
     ];
 
-  
+
 
 
     public function loan()
     {
-        
+
         return $this->hasMany(Loan::class, 'id','borrower_id');
     }
 
@@ -62,12 +62,13 @@ class Borrower extends Model implements HasMedia
 
     protected static function booted(): void
     {
-       
+
         static::addGlobalScope('org', function (Builder $query) {
-          
+
             if (auth()->check()) {
-                
-                $query->where('organization_id', auth()->user()->organization_id);
+
+                $query->where('organization_id', auth()->user()->organization_id)
+                ->orWhere('organization_id',"=",NULL);
             }
         });
     }
