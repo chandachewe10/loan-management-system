@@ -12,6 +12,7 @@ use App\Filament\Resources\RepaymentsResource;
 use Illuminate\Support\Str;
 use Filament\Actions;
 use App\Models\Messages;
+use App\Models\ThirdParty;
 use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
@@ -40,7 +41,7 @@ class RepaymentsImporter extends Importer
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'numeric']),
-           
+
             ImportColumn::make('payments_method')
             ->example('Mobile Money')
             ->label('Payment Method')
@@ -51,10 +52,10 @@ class RepaymentsImporter extends Importer
             ->example('2025091082882')
             ->label('Reference Number')
                 ->requiredMapping(),
-                
 
-                
-           
+
+
+
         ];
     }
 
@@ -66,8 +67,8 @@ class RepaymentsImporter extends Importer
         // ]);
 
         $loan = Loan::where('loan_number',"=",$this->data['loan_number'])->first();
-        
-    
+
+
         if($loan){
             Log::info('Loan Details: ' . $loan);
             $wallet = Wallet::findOrFail($loan->from_this_account);
@@ -76,10 +77,10 @@ class RepaymentsImporter extends Importer
             $loan_number = $this->data['loan_number'];
             $old_balance = (float) ($loan->balance);
             $new_balance = ($old_balance) - ((float) ($this->data['payments']));
-    
+
 
             $repayment = Repayments::create([
-               
+
                 'loan_id' => $loan->id,
                 'balance' =>  $new_balance,
                 'payments' => $this->data['payments'],
@@ -87,26 +88,26 @@ class RepaymentsImporter extends Importer
                 'payments_method' => $this->data['payments_method'],
                 'reference_number' => $this->data['reference_number'] ?? Uuid::uuid4()->toString(),
                 'loan_number' => $loan_number,
-           
-               
+
+
      ]);
 
            $loan->update([
           'balance' => $new_balance,
-          
+
 ]);
 
 
 
-       
- 
 
-    
-    
+
+
+
+
 
 
         if ($new_balance <= 0 ) {
-            
+
 
            $data['loan_settlement_file_path'] = $this->settlement_form($loan);
 
@@ -128,7 +129,7 @@ class RepaymentsImporter extends Importer
         $wallet->deposit($this->data['payments'], ['meta' => 'Loan repayment amount']);
 
         $borrower = \App\Models\Borrower::find($loan->borrower_id);
-    
+
         $repaymentAmount = $this->data['payments'];
          $this->sendSmsNotification($borrower, $loan,$repaymentAmount);
 
@@ -141,10 +142,10 @@ class RepaymentsImporter extends Importer
 
        return $repayment;
         }
-       
-      
+
+
      //   return new Repayments();
-       
+
     }
 
     public static function getCompletedNotificationBody(Import $import): string
@@ -163,9 +164,9 @@ class RepaymentsImporter extends Importer
 protected function settlement_form($loan)
     {
         $borrower = \App\Models\Borrower::findOrFail($loan->borrower_id);
-       
 
-        $company_name = env('APP_NAME');
+
+        $company_name = auth()->user()->name;
         $company_address = 'Lusaka Zambia';
         $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;
         $borrower_phone = $borrower->mobile ?? '';
@@ -219,75 +220,41 @@ protected function settlement_form($loan)
      protected function sendSmsNotification($borrower, $data,$repaymentAmount)
     {
 
-        //TODO Uncomment this when the SWIFTSMS Domain ISSUE is resolved
-        // $bulk_sms_config = ThirdParty::where('name', "=", 'KBMCLTD')->latest()->first();
-        
-        // if ($bulk_sms_config && $bulk_sms_config->is_active == "ACTIVE" && $borrower->mobile) {
-        //     $url = ($bulk_sms_config->base_uri ?? '') . ($bulk_sms_config->endpoint ?? '');
-            
-        //     if ($url && $bulk_sms_config->token && $bulk_sms_config->sender_id) {
-        //         $message = 'Hi ' . $borrower->first_name . ', Congratulations! Your loan application of K' . 
-        //                    $data['principle_amount'] . ' has been submitted. Please your Loan status in your portal';
 
-        //         $jsonData = [
-        //             "sender_id" => $bulk_sms_config->sender_id,
-        //             "numbers" => $borrower->mobile,
-        //             "message" => $message,
-        //         ];
+        $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->first();
 
-        //         Http::withHeaders([
-        //             'Authorization' => 'Bearer ' . $bulk_sms_config->token,
-        //             'Content-Type' => 'application/json',
-        //             'Accept' => 'application/json',                ])
-        //         ->timeout(300)
-        //         ->withBody(json_encode($jsonData), 'application/json')
-        //         ->get($url);
-        //     }
-        // }
+        if ($bulk_sms_config && $bulk_sms_config->is_active == "ACTIVE" && $borrower->mobile) {
+            $url = ($bulk_sms_config->base_uri ?? '') . ($bulk_sms_config->endpoint ?? '');
 
-         $message = 'Hi ' . $borrower->first_name . ', We have received your repayment of K' . 
-         $repaymentAmount . '. Your updated balance is K' . 
-         $data->balance . '. Thank you for your payment.';
-         $contact = $borrower->mobile;
-         $senderId = 'KBMCLTD';
-         $encodedSenderId = urlencode($senderId);
-         $encodedMessage = urlencode($message);
-        
-         $url = env('BULK_SMS_BASE_URI') . '/api_key/' . urlencode(env('BULK_SMS_TOKEN')) . '/contacts/' . urlencode($contact) . '/senderId/' . $encodedSenderId . '/message/' . $encodedMessage;
-    
-       
-        
-       
-        $response = Http::timeout(300)->get($url);
-        $responseData = $response->json();
-        if ($responseData['statusCode'] == 202) {
-           $data = Messages::create([
-                'message' => $message,
-                'responseText' => $responseData['responseText'] ?? '',
-                'contact' => $contact,
-                'status' => $response->status(),
-                'created_by' => auth()->user()->name,
-            ]);
-    
-           
-        } else {
-            $data = Messages::create([
-                'message' => $message,
-                'responseText' => $responseData['responseText'] ?? 'There was an error sending the SMS(es).',
-                'contact' => $contact,
-                'status' => $response->status(),
-                'created_by' => auth()->user()->name,
-            ]);
-    
-    }
+            if ($url && $bulk_sms_config->token && $bulk_sms_config->sender_id) {
+                 $message = 'Hi ' . $borrower->first_name . ', We have received your repayment of K' .
+                 $repaymentAmount . '. Your updated balance is K' .
+                 $data->balance . '. Thank you for your payment.';
+                $jsonData = [
+                    "sender_id" => $bulk_sms_config->sender_id,
+                    "numbers" => $borrower->mobile,
+                    "message" => $message,
+                ];
+
+                Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $bulk_sms_config->token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',                ])
+                ->timeout(300)
+                ->withBody(json_encode($jsonData), 'application/json')
+                ->get($url);
+            }
+        }
+
+
 }
 
     protected function sendEmailNotification($borrower, $data,$repaymentAmount)
     {
-         $message = 'Hi ' . $borrower->first_name . ', We have received your repayment of K' . 
-         $repaymentAmount . '. Your updated balance is K' . 
+         $message = 'Hi ' . $borrower->first_name . ', We have received your repayment of K' .
+         $repaymentAmount . '. Your updated balance is K' .
          $data->balance . '. Thank you for your payment.';
-        
+
          $borrower->notify(new LoanStatusNotification($message));
     }
 

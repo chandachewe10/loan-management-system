@@ -34,8 +34,8 @@ class EditLoan extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-       
-        
+
+
         $loan = \App\Models\Loan::where('loan_number',"=",$data['loan_number'])->first();
 //Disable editing an already approved loan
         if ($loan->loan_status == 'approved') {
@@ -47,12 +47,12 @@ class EditLoan extends EditRecord
                  ->send();
 
             $this->halt();
-        } 
+        }
 
 
 
 
-        
+
         $wallet = Wallet::where('name', "=", $data['from_this_account'])->first();
         // Check if the loan is being approved and they want to compile the Loan Agreement Form
         if ($data['loan_status'] === 'approved') {
@@ -62,7 +62,7 @@ class EditLoan extends EditRecord
 // if($loan->loan_status != 'approved'){
 //     $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
 // }
- 
+
 
 
 
@@ -88,10 +88,10 @@ class EditLoan extends EditRecord
                //  $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'field' => 'loan_number', 'length' => 10, 'prefix' => 'LN-']);
 
 
-               
+
 
                 $loan_cycle = \App\Models\LoanType::findOrFail($data['loan_type_id'])->interest_cycle;
-                
+
                 $loan_duration = $data['loan_duration'];
                 $loan_release_date = $data['loan_release_date'];
                 $loan_date = Carbon::createFromFormat('Y-m-d', $loan_release_date);
@@ -112,7 +112,7 @@ class EditLoan extends EditRecord
                 $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
                 $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id']);
 
-                $company_name = env('APP_NAME');
+                $company_name = auth()->user()->name;
                 $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;
                 $borrower_email = $borrower->email ?? '';
                 $borrower_phone = $borrower->mobile ?? '';
@@ -191,12 +191,12 @@ class EditLoan extends EditRecord
                 $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
                 $objWriter->save($path . '/' . $file_name);
                 $data['loan_agreement_file_path'] = 'LOAN_AGREEMENT_FORMS/' . $current_year . '/DOCX' . '/' . $file_name;
-               
+
             }
 
 
 
-           
+
         }
 
 
@@ -278,7 +278,7 @@ class EditLoan extends EditRecord
 // send via Email too if email is not Null
 if(!is_null($borrower->email)){
     //dd('email is not null');
-    $message = 'Hi ' . $borrower->first_name . ', ';    
+    $message = 'Hi ' . $borrower->first_name . ', ';
     $loan_amount = $data['principal_amount'];
     $loan_duration = $data['loan_duration'];
     $loan_release_date = $data['loan_release_date'];
@@ -294,7 +294,7 @@ if(!is_null($borrower->email)){
         case 'approved':
             $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
             break;
-            
+
         case 'processing':
             $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
             break;

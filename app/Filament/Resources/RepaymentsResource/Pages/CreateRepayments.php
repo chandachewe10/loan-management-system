@@ -64,7 +64,7 @@ class CreateRepayments extends CreateRecord
             'principal' => $principal_amount,
 
         ]);
-      
+
 
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
@@ -98,7 +98,7 @@ class CreateRepayments extends CreateRecord
         $borrower = \App\Models\Borrower::findOrFail($loan->borrower_id);
 
 
-        $company_name = env('APP_NAME');
+        $company_name = auth()->user()->name;
         $company_address = 'Lusaka Zambia';
         $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;
         $borrower_phone = $borrower->mobile ?? '';
@@ -161,5 +161,5 @@ class CreateRepayments extends CreateRecord
 
 
 
-    
+
 }
