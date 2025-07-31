@@ -24,6 +24,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Rmsramos\Activitylog\ActivitylogPlugin;
 use App\Http\Middleware\CheckSubscriptionValidity;
+use App\Filament\Pages\Auth\Register;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -60,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
         ->sidebarCollapsibleOnDesktop()
 
         ->login()
-        ->registration()
+        ->registration(Register::class)
         ->passwordReset()
         ->emailVerification()
         ->profile()
