@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\Permission\Traits\HasRoles;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Traits\HasWallets;
@@ -19,7 +19,7 @@ use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
 
 
-class User extends Authenticatable implements Wallet
+class User extends Authenticatable implements Wallet,MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;

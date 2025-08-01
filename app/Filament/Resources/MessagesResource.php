@@ -25,7 +25,7 @@ class MessagesResource extends Resource
     {
         return $form
             ->schema([
-               
+
                 Forms\Components\Repeater::make('contact')
                     ->label('Phone Number(s)')
                     ->schema([
@@ -64,23 +64,15 @@ public static function table(Table $table): Table
             ExportAction::make()
                 ->exporter(MessagesExporter::class)
         ])
-       
+
             ->columns([
                 Tables\Columns\TextColumn::make('index')
                 ->label('No')
                 ->rowIndex(),
                 Tables\Columns\TextColumn::make('message')
-                
-                    ->searchable(),
-                    Tables\Columns\TextColumn::make('message_type')
-                ->label('Message')
-                    ->searchable(),
-                    Tables\Columns\TextColumn::make('created_by')
-                    ->label('Created By')
-                        ->searchable(),
 
+                    ->searchable(),
 
-                    
                 Tables\Columns\TextColumn::make('contact')
                 ->label('Destination')
                 ->badge()
@@ -93,7 +85,7 @@ public static function table(Table $table): Table
                 Tables\Columns\TextColumn::make('responseText')
                 ->label('Message Status')
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
