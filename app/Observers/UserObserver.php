@@ -21,7 +21,7 @@ class UserObserver
             $user->assignRole('super_admin');
 
             // Create 7 Days free trial
-             $payment = Payments::create([
+             Payments::create([
             'organization_id' => $organization_id,
             'payer_id' => $user->id,
             'payment_amount' => 0.00,
