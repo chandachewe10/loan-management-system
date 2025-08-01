@@ -16,7 +16,7 @@ class LoanStatusNotification extends Notification
      */
     public function __construct($message)
     {
-        $this->message = $message; 
+        $this->message = $message;
     }
 
     /**
@@ -35,7 +35,7 @@ class LoanStatusNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-        ->greeting('Loan Status')
+        ->greeting('LOAN STATUS: '.strtoupper(auth()->user()->name))
         ->line($this->message)
         ->action('Go to Site', url('/'))
         ->line('Thank you!');
