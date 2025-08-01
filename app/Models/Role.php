@@ -10,12 +10,16 @@ class Role extends BaseSpatieRole
 {
     use HasFactory;
 
-    protected static function booted(): void
+ // app/Models/Role.php
+protected static function booted(): void
 {
+
+
+    // Keep your existing org scope
     static::addGlobalScope('org', function (Builder $query) {
         if (auth()->check()) {
             $query->where('roles.organization_id', auth()->user()->organization_id)
-            ->orWhere('roles.organization_id',"=",NULL);
+                ->orWhereNull('roles.organization_id');
         }
     });
 }

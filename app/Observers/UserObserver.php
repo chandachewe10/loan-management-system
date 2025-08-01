@@ -2,7 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\User;
+use App\Models\{User,Payments};
+use Carbon\Carbon;
 
 class UserObserver
 {
@@ -18,6 +19,17 @@ class UserObserver
             $user->organization_id = $organization_id;
             $user->save();
             $user->assignRole('super_admin');
+
+            // Create 7 Days free trial
+             $payment = Payments::create([
+            'organization_id' => $organization_id,
+            'payer_id' => $user->id,
+            'payment_amount' => 0.00,
+            'transaction_reference' => random_int(100000, 999999),
+            'gateway' => '7 DAYS FREE TRIAL',
+            'payment_made_at' => Carbon::now(),
+            'payment_expires_at' => Carbon::now()->addDays(7),
+        ]);
 
     }
 
