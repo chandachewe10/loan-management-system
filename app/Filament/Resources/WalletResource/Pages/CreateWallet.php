@@ -23,6 +23,9 @@ class CreateWallet extends CreateRecord
             'description' => strip_tags($data['description']),
         ])->deposit($data['amount']);
 
+       $wallet->organization_id =  auth()->user()->organization_id;
+       $wallet->save();
+
         return $wallet;
     }
 
