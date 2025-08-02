@@ -74,7 +74,10 @@ class CreateLoan extends CreateRecord
 
         // Send an SMS to the Client depending on the status of the Loan Stage
 
-        $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
+       $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
         $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
 
         $base_uri = $bulk_sms_config->base_uri ?? '';
@@ -145,7 +148,7 @@ class CreateLoan extends CreateRecord
         }
 
 // send via Email too if email is not Null
-if(is_null($borrower->email)){
+if(!is_null($borrower->email)){
     //dd('email is not null');
     $message = 'Hi ' . $borrower->first_name . ', ';
     $loan_amount = $data['principal_amount'];

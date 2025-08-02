@@ -203,13 +203,17 @@ class EditLoan extends EditRecord
 
         // Send an SMS to the Client depending on the status of the Loan Stage
 
-        $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
+      $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+    ->where('name', 'SWIFT-SMS')
+    ->latest()
+    ->first();
+
         $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
 
         if (
-            $bulk_sms_config && $bulk_sms_config->is_active == 1 && isset($borrower->mobile)
+            $bulk_sms_config && $bulk_sms_config->is_active == 'Active' && isset($borrower->mobile)
             && isset($base_uri) && isset($end_point) && isset($bulk_sms_config->token)
             && isset($bulk_sms_config->sender_id)
         ) {
@@ -284,7 +288,6 @@ if(!is_null($borrower->email)){
     $loan_release_date = $data['loan_release_date'];
     $loan_repayment_amount = $data['repayment_amount'];
     $loan_interest_amount = $data['interest_amount'];
-    $loan_due_date = $data['loan_due_date'];
     $loan_number = $data['loan_number'];
 
     // Assuming $data['loan_status'] contains the current status
