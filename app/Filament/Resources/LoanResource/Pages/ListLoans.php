@@ -29,19 +29,19 @@ class ListLoans extends ListRecords
        ->modifyQueryUsing(fn (Builder $query) => $query->where('loan_status', 'fully_paid')),
        'Processing' => Tab::make('Processing')
        ->icon('heroicon-m-home')
-       ->modifyQueryUsing(fn (Builder $query) => $query->where('loan_status', 'processing')),
+       ->modifyQueryUsing(fn (Builder $query) => $query->where('loan_status', 'processing')->orWhere('loan_status', 'requested')),
        'Over Due' => Tab::make('Over Due')
        ->icon('heroicon-m-home')
        ->modifyQueryUsing(fn (Builder $query) => $query->where('loan_status', 'defaulted')),
        'Failed' => Tab::make('Failed')
        ->icon('heroicon-m-home')
        ->modifyQueryUsing(fn (Builder $query) => $query->where('loan_status', 'denied')),
-      
-      
-   
+
+
+
         ];
-        
-    
+
+
 
 }
 }
