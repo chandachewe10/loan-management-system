@@ -52,6 +52,7 @@ class LoanResource extends Resource
                     ->prefixIcon('heroicon-o-wallet')
                     ->relationship('loan_type', 'loan_name')
                     ->searchable()
+                    ->required()
                     ->preload()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Set $set) {
@@ -83,6 +84,7 @@ class LoanResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('principal_amount')
                     ->label('Principle Amount')
+                    ->required()
                     ->prefixIcon('fas-dollar-sign')
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
