@@ -36,7 +36,7 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
      public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll();
+        ->logExcept(['password']);
     }
 
     /**
@@ -48,6 +48,7 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
         'name',
         'email',
         'password',
+        'organization_id'
     ];
 
     /**

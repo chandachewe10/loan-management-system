@@ -21,6 +21,7 @@ use App\Models\Repayments;
 use App\Models\ThirdParty;
 use App\Models\Transaction;
 use App\Models\Transfer;
+use App\Models\Role;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use App\Models\User;
 use App\Observers\BorrowerObserver;
@@ -35,6 +36,7 @@ use App\Observers\ThirdyPartyObserver;
 use App\Observers\TransactionObserver;
 use App\Observers\UserObserver;
 use App\Observers\WalletObserver;
+use App\Observers\RoleObserver;
 use App\Models\Wallet;
 
 
@@ -81,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
         Wallet::observe(WalletObserver::class);
         Transfer::observe(TransferObserver::class);
         Transaction::observe(TransactionObserver::class);
+        Role::observe(RoleObserver::class);
     }
 
 

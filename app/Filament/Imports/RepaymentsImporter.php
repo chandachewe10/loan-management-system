@@ -71,7 +71,8 @@ class RepaymentsImporter extends Importer
 
         if($loan){
             Log::info('Loan Details: ' . $loan);
-            $wallet = Wallet::findOrFail($loan->from_this_account);
+           $wallet = Wallet::where('name', "=", $loan->from_this_account)->where('organization_id',"=",
+           auth()->user()->organization_id)->first();
             Log::info('Wallet Details: ' . $wallet);
             $principal_amount = $loan->principal_amount;
             $loan_number = $this->data['loan_number'];
@@ -221,9 +222,16 @@ protected function settlement_form($loan)
     {
 
 
-        $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->first();
+        $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
 
-        if ($bulk_sms_config && $bulk_sms_config->is_active == "ACTIVE" && $borrower->mobile) {
+        if(
+            $bulk_sms_config && $bulk_sms_config->is_active == "Active" && isset($borrower->mobile)
+            && isset($bulk_sms_config->base_uri) && isset($bulk_sms_config->endpoint) && isset($bulk_sms_config->token)
+            && isset($bulk_sms_config->sender_id)
+        ) {
             $url = ($bulk_sms_config->base_uri ?? '') . ($bulk_sms_config->endpoint ?? '');
 
             if ($url && $bulk_sms_config->token && $bulk_sms_config->sender_id) {

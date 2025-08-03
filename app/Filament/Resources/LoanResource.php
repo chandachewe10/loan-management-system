@@ -38,7 +38,7 @@ class LoanResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $options = Wallet::all()->map(function ($wallet) {
+        $options = Wallet::where('organization_id',"=",auth()->user()->organization_id)->get()->map(function ($wallet) {
             return [
                 'value' => $wallet->id, // Set the wallet ID as the 'value'
                 'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)

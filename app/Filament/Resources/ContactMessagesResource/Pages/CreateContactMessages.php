@@ -41,7 +41,10 @@ class CreateContactMessages extends CreateRecord
 
         $encodedContacts = urlencode($contactsFromArray);
         $encodedMessage = urlencode($message);
-        $bulk_sms_config = ThirdParty::where('name', 'SWIFT-SMS')->latest()->first();
+         $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
 
 
     $base_uri = $bulk_sms_config->base_uri ?? '';
@@ -98,6 +101,8 @@ class CreateContactMessages extends CreateRecord
             ->body($responseText)
             ->success()
             ->send();
+            return $messageRecord;
+
     } else {
         Notification::make()
             ->title('Failed to send message(s)')
@@ -118,6 +123,7 @@ class CreateContactMessages extends CreateRecord
                 'responseText' => $e->getMessage(),
             ];
         }
+
 
 }
 

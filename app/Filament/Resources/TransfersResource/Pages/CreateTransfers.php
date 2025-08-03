@@ -14,12 +14,12 @@ class CreateTransfers extends CreateRecord
     protected static string $resource = TransfersResource::class;
     protected static ?string $navigationIcon = 'fas-wallet';
     protected static ?string $navigationGroup = 'Wallets';
-    
+
     protected ?string $heading = 'Funds Transfer';
 
     protected function handleRecordCreation(array $data): Model
     {
-       
+
 
 
         $firstWallet = Wallet::findOrFail($data['from_this_account']);
@@ -35,7 +35,7 @@ class CreateTransfers extends CreateRecord
              from '.strtoupper($firstWalletCurrency) .' to '. strtoupper($lastWalletCurrency))
             ->persistent()
             ->send();
-            $this->halt(); 
+            $this->halt();
 }
 
 
@@ -46,7 +46,7 @@ class CreateTransfers extends CreateRecord
             ->body('You cant transfer to the same wallet. Please choose a different wallet')
             ->persistent()
             ->send();
-            $this->halt(); 
+            $this->halt();
 }
 
 
@@ -56,7 +56,10 @@ class CreateTransfers extends CreateRecord
 
 
 
-            $firstWallet->transfer($lastWallet, $data['amount_to_transfer']);
+            $firstWallet->transfer($lastWallet, $data['amount_to_transfer'], [
+           'organization_id' => auth()->user()->organization_id,
+]);
+
         }
 
         catch(\Exception $e){
@@ -68,8 +71,8 @@ class CreateTransfers extends CreateRecord
             ->send();
             $this->halt();
         }
-        
-       
+
+
 
         return $firstWallet;
     }

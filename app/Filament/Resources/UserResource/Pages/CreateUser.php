@@ -14,22 +14,23 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-      
+
         $user = \App\Models\User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
-            
+            'organization_id' => auth()->user()->organization_id,
+
         ]);
 
         // if($user){
         //     $roleNames = $data['roles'];
 
-            
+
         //     $roles = Role::whereIn('name', $roleNames)->get();
-            
-            
-        //     $user->assignRole($roles);   
+
+
+        //     $user->assignRole($roles);
         // }
         return $user;
     }

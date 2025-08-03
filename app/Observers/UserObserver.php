@@ -16,9 +16,13 @@ class UserObserver
             $sixRandomFigures = random_int(100000, 999999);
             $userId = $user->id;
             $organization_id = $userId . $sixRandomFigures;
+
+            $user->assignRole('super_admin');
+
+            if(is_null($user->organization_id) || empty($user->organization_id)){
             $user->organization_id = $organization_id;
             $user->save();
-            $user->assignRole('super_admin');
+            }
 
             // Create 7 Days free trial
              Payments::create([
@@ -30,6 +34,7 @@ class UserObserver
             'payment_made_at' => Carbon::now(),
             'payment_expires_at' => Carbon::now()->addDays(7),
         ]);
+
 
     }
 
