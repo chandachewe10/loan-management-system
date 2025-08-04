@@ -18,8 +18,7 @@ class ActivityLogs extends BaseActivityLogs
 
             if (auth()->check()) {
 
-                $query->where('organization_id', auth()->user()->organization_id)
-                 ->orWhere('organization_id',"=",NULL);
+                $query->where('organization_id', auth()->user()->organization_id);
             }
         });
     }
