@@ -235,7 +235,7 @@
           <div class="section__title-wrapper">
             <h2 class="heading heading--2">Simple pricing</h2>
             <h4 class="heading heading--4">
-              LendFy is a SAAS platform and our pricing model is based on your growth. It starts from $24 per month and increases as your business grows.
+              LendFy is a SAAS platform and our pricing model is based on your growth. It starts from $45 per month and increases as your business grows.
             </h4>
           </div>
 
@@ -300,7 +300,7 @@
               <ul class="c-list">
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
-                  <div class="c-list__text">Unlimited Users</div>
+                  <div class="c-list__text">2 Users</div>
                 </li>
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
