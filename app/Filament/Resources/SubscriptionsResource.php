@@ -39,15 +39,15 @@ class SubscriptionsResource extends Resource
         ])
         ->schema([
             Card::make([
-                Placeholder::make('$24/m')
-                    ->label(new HtmlString('<h2 class="text-xl font-bold">$24/m</h2>'))
+                Placeholder::make('$45/m')
+                    ->label(new HtmlString('<h2 class="text-xl font-bold">$45/m</h2>'))
 
                     ->content(new HtmlString('
                     <hr class="my-2 border-gray-300">
             <ul class="list-none pl-5 space-y-1">
-                <li>✔ Unlimited Users</li>
+                <li>✔ 1 User</li>
                 <li>✔ Unlimited Borrowers</li>
-                <li>✔ Unlimited Messages</li>
+                <li>✔ 500 Messages</li>
                 <li>✔ 1000 Loans Max</li>
                 <li>✔ All other features included</li>
             </ul>
@@ -57,20 +57,20 @@ class SubscriptionsResource extends Resource
         ->label('Subscribe')
         ->button()
         ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(550)]))
+        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(990)]))
 ])->columnSpan(1),
 
              Card::make([
-                Placeholder::make('$54/m')
-                    ->label(new HtmlString('<h2 class="text-xl font-bold">$54/m</h2>'))
+                Placeholder::make('$60/m')
+                    ->label(new HtmlString('<h2 class="text-xl font-bold">$60/m</h2>'))
 
                     ->content(new HtmlString('
                     <hr class="my-2 border-gray-300">
             <ul class="list-none pl-5 space-y-1">
-                <li>✔ Unlimited Users</li>
+                <li>✔ 2 Users</li>
                 <li>✔ Unlimited Borrowers</li>
-                <li>✔ Unlimited Messages</li>
-                <li>✔ 1000 Loans Max</li>
+                <li>✔ 1000 Messages</li>
+                <li>✔ 10,000 Loans Max</li>
                 <li>✔ All other features included</li>
             </ul>
         ')),
@@ -79,7 +79,7 @@ class SubscriptionsResource extends Resource
         ->label('Subscribe')
         ->button()
         ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(1296)]))
+        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(1320)]))
 ])->columnSpan(1),
 
 
@@ -102,7 +102,7 @@ class SubscriptionsResource extends Resource
         ->label('Subscribe')
         ->button()
         ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(2880)]))
+        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(2640)]))
 ])->columnSpan(1),
 
         ]),

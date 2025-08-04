@@ -29,7 +29,7 @@ if($payments->payment_amount == 0){
             $this->halt();
 }
 
-if($payments->payment_amount == 550){
+if($payments->payment_amount == 990){
 
      Notification::make()
             ->warning()
@@ -39,7 +39,7 @@ if($payments->payment_amount == 550){
             ->send();
             $this->halt();
 }
-elseif($payments->payment_amount == 1296 && $maximumUsersAllowed == 2){
+elseif($payments->payment_amount == 1320 && $maximumUsersAllowed == 2){
  Notification::make()
             ->warning()
             ->title('Upgrade Payment Plan')
