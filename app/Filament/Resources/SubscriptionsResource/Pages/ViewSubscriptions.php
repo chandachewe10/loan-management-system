@@ -10,10 +10,10 @@ class ViewSubscriptions extends ViewRecord
 {
     protected static string $resource = SubscriptionsResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\EditAction::make(),
-        ];
-    }
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         Actions\EditAction::make(),
+    //     ];
+    // }
 }

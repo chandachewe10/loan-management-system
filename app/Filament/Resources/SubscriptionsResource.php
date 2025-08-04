@@ -39,8 +39,8 @@ class SubscriptionsResource extends Resource
         ])
         ->schema([
             Card::make([
-                Placeholder::make('$20/m')
-                    ->label(new HtmlString('<h2 class="text-xl font-bold">$20/m</h2>'))
+                Placeholder::make('$24/m')
+                    ->label(new HtmlString('<h2 class="text-xl font-bold">$24/m</h2>'))
 
                     ->content(new HtmlString('
                     <hr class="my-2 border-gray-300">
@@ -57,7 +57,7 @@ class SubscriptionsResource extends Resource
         ->label('Subscribe')
         ->button()
         ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(480)]))
+        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(550)]))
 ])->columnSpan(1),
 
              Card::make([
@@ -127,8 +127,8 @@ class SubscriptionsResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use Spatie\Permission\Models\Role;
+use App\Models\Payments;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,43 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+$maximumUsersAllowed = \App\Models\User::where('organization_id',auth()->user()->organization_id)->count();
+$payments = Payments::where('organization_id',auth()->user()->organization_id)->latest()->first();
+
+if($payments->payment_amount == 0){
+
+     Notification::make()
+            ->warning()
+            ->title('Upgrade Payment Plan')
+            ->body('Please upgrade your payment plan. Your current payment plan of free trial is limited to one user.')
+            ->persistent()
+            ->send();
+            $this->halt();
+}
+
+if($payments->payment_amount == 550){
+
+     Notification::make()
+            ->warning()
+            ->title('Upgrade Payment Plan')
+            ->body('Please upgrade your payment plan. Your current payment plan is limited to one user.')
+            ->persistent()
+            ->send();
+            $this->halt();
+}
+elseif($payments->payment_amount == 1296 && $maximumUsersAllowed == 2){
+ Notification::make()
+            ->warning()
+            ->title('Upgrade Payment Plan')
+            ->body('Please upgrade your payment plan. Your current payment plan is limited to two users.')
+            ->persistent()
+            ->send();
+            $this->halt();
+}
+
+else{
+
+
 
         $user = \App\Models\User::create([
             'name' => $data['name'],
@@ -33,6 +71,7 @@ class CreateUser extends CreateRecord
         //     $user->assignRole($roles);
         // }
         return $user;
+    }
     }
 
     protected function getRedirectUrl(): string

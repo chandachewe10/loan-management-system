@@ -39,8 +39,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-       // return $user->can('update_role');
-       return false;
+        return false; //$user->can('update_role');
     }
 
     /**
@@ -48,8 +47,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-       // return $user->can('delete_role');
-       return false;
+        return false; //$user->can('delete_role');
     }
 
     /**
@@ -57,8 +55,7 @@ class RolePolicy
      */
     public function deleteAny(User $user): bool
     {
-       // return $user->can('delete_any_role');
-       return false;
+        return $user->can('delete_any_role');
     }
 
     /**
@@ -66,8 +63,7 @@ class RolePolicy
      */
     public function forceDelete(User $user, Role $role): bool
     {
-       // return $user->can('{{ ForceDelete }}');
-        return false;
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -75,8 +71,7 @@ class RolePolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-       // return $user->can('{{ ForceDeleteAny }}');
-       return false;
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
