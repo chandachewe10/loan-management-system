@@ -3,7 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Borrower;
-
+Use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 class BorrowerObserver
 {
     /**
@@ -11,9 +12,18 @@ class BorrowerObserver
      */
     public function created(Borrower $borrower): void
     {
-        
+
             $borrower->organization_id = auth()->user()->organization_id;
             $borrower->save();
+
+            // Create the Borrower as a User for Future Authentication
+            User::create([
+                'name' =>$borrower->first_name. ' '.$borrower->last_name,
+                'email' => $borrower->email,
+                'organization_id' => auth()->user()->organization_id,
+                'password' => Hash::make('test1234'),
+
+            ]);
     }
 
     /**
@@ -21,9 +31,9 @@ class BorrowerObserver
      */
     public function updated(Borrower $borrower): void
     {
-        
-            
-        
+
+
+
     }
 
     /**
