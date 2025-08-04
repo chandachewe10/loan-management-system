@@ -36,7 +36,7 @@ class RepaymentsImporter extends Importer
             ->rules(['max:255']),
 
             ImportColumn::make('payments')
-            ->example('1')
+            ->example('1000')
             ->label('Payment')
                 ->requiredMapping()
                 ->numeric()
