@@ -8,6 +8,7 @@ use Filament\Notifications\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Bavix\Wallet\Models\Wallet;
 use App\Models\Expense;
+use App\Models\Borrower;
 use App\Filament\Resources\RepaymentsResource;
 use App\Models\Repayments;
 use Illuminate\Support\Str;
@@ -16,6 +17,9 @@ use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use App\Models\Loan;
+use App\Notifications\LoanStatusNotification;
+use App\Models\ThirdParty;
+use Illuminate\Support\Facades\Http;
 
 
 
@@ -47,7 +51,8 @@ class CreateRepayments extends CreateRecord
         $loan = Loan::findOrFail($data['loan_id']);
         Log::info('Loan Details: ' . $loan);
 
-        $wallet = Wallet::where('name', "=", $loan->from_this_account)->first();
+        $wallet = Wallet::where('name', "=", $loan->from_this_account)->where('organization_id',"=",
+        auth()->user()->organization_id)->first();
         Log::info('Wallet Details: ' . $wallet);
         $principal_amount = $loan->principal_amount;
         $loan_number = $loan->loan_number;
@@ -64,7 +69,7 @@ class CreateRepayments extends CreateRecord
             'principal' => $principal_amount,
 
         ]);
-      
+
 
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
@@ -86,8 +91,14 @@ class CreateRepayments extends CreateRecord
             ]);
         }
 
+          $borrower = Borrower::find($loan->borrower_id);
+          $repaymentAmount = $data['payments'];
+          $this->sendSmsNotification($borrower, $loan,$repaymentAmount);
 
-
+        // // Send email if available
+        if (!is_null($borrower->email)) {
+            $this->sendEmailNotification($borrower, $loan,$repaymentAmount);
+        }
 
         return $repayment;
     }
@@ -98,7 +109,7 @@ class CreateRepayments extends CreateRecord
         $borrower = \App\Models\Borrower::findOrFail($loan->borrower_id);
 
 
-        $company_name = env('APP_NAME');
+        $company_name = auth()->user()->name;
         $company_address = 'Lusaka Zambia';
         $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;
         $borrower_phone = $borrower->mobile ?? '';
@@ -145,6 +156,59 @@ class CreateRepayments extends CreateRecord
         return $path;
     }
 
+
+protected function sendSmsNotification($borrower, $data,$repaymentAmount)
+    {
+
+
+       $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
+
+        if(
+            $bulk_sms_config && $bulk_sms_config->is_active == "Active" && isset($borrower->mobile)
+            && isset($bulk_sms_config->base_uri) && isset($bulk_sms_config->endpoint) && isset($bulk_sms_config->token)
+            && isset($bulk_sms_config->sender_id)
+        ) {
+            $url = ($bulk_sms_config->base_uri ?? '') . ($bulk_sms_config->endpoint ?? '');
+
+            if ($url && $bulk_sms_config->token && $bulk_sms_config->sender_id) {
+                 $message = 'Hi ' . $borrower->first_name . ', We have received your repayment of K' .
+                 $repaymentAmount . '. Your updated balance is K' .
+                 $data->balance . '. Thank you for your payment.';
+                $jsonData = [
+                    "sender_id" => $bulk_sms_config->sender_id,
+                    "numbers" => $borrower->mobile,
+                    "message" => $message,
+                ];
+
+
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $bulk_sms_config->token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',                ])
+                ->timeout(300)
+                ->withBody(json_encode($jsonData), 'application/json')
+                ->get($url);
+
+
+            }
+        }
+
+
+}
+
+    protected function sendEmailNotification($borrower, $data,$repaymentAmount)
+    {
+         $message = 'Hi ' . $borrower->first_name . ', We have received your repayment of K' .
+         $repaymentAmount . '. Your updated balance is K' .
+         $data->balance . '. Thank you for your payment.';
+
+         $borrower->notify(new LoanStatusNotification($message));
+    }
+
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -161,5 +225,5 @@ class CreateRepayments extends CreateRecord
 
 
 
-    
+
 }

@@ -24,13 +24,16 @@ class CreateMessages extends CreateRecord
     }, $contacts);
 
     $contactsString = implode(',', $contactStrings);
- 
-    $bulk_sms_config = ThirdParty::where('name', 'SWIFT-SMS')->latest()->first();
-   
+
+     $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
+
 
     $base_uri = $bulk_sms_config->base_uri ?? '';
     $end_point = $bulk_sms_config->endpoint ?? '';
-    $responseData = null; 
+    $responseData = null;
 
     if (
         $bulk_sms_config &&
@@ -41,9 +44,9 @@ class CreateMessages extends CreateRecord
         !empty($bulk_sms_config->token) &&
         !empty($bulk_sms_config->sender_id)
     ) {
-        
+
         $url = $base_uri . $end_point;
-        
+
         $payload = [
             'sender_id' => $bulk_sms_config->sender_id,
             'numbers' => implode(',', $contactStrings),
@@ -59,8 +62,9 @@ class CreateMessages extends CreateRecord
                 ->timeout(30)
                 ->get($url, $payload);
 
-            $responseData = $response->json(); 
-           
+            $responseData = $response->json();
+
+
         } catch (\Throwable $e) {
             $responseData = [
                 'statusCode' => 500,
@@ -70,7 +74,7 @@ class CreateMessages extends CreateRecord
     }
 
     $statusCode = $responseData['success'] ?? 500;
-  
+
     $responseText = $responseData['message'] ?? 'Unknown error';
 
     $messageRecord = Messages::create([
@@ -78,7 +82,7 @@ class CreateMessages extends CreateRecord
         'responseText' => $responseText,
         'contact' => $contactsString,
         'status' => $statusCode,
-        
+
     ]);
 
     if ($statusCode == 'true') {
@@ -103,9 +107,9 @@ class CreateMessages extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-       
+
         return $this->getResource()::getUrl('index');
     }
 
-   
-}    
+
+}

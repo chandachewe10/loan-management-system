@@ -35,15 +35,19 @@ The Loan Management software is a web-based application that helps manage and tr
 15. Assign roles, assign permissions, revoke roles Etc 
 
 
+## Demo Credentials
+
+[Website Demo Link](https://lendfy-development.macroit.org)
+
+1. EMAIL: demo@demo.com
+2. PASSWORD:qwertyuiop
+
+
+
 ## Installation
-```bash
-1. You must install XAMPP or WAMP
-2. XAMPP is generally recommended for Windows users because it includes Apache, MySQL, PHP, and phpMyAdmin in one package.
-3. You must also install Composer, a dependency manager for PHP used to install Laravel and other PHP libraries.
-```
 
 ### Clone the repository
-Please follow carefully the installation and use of this web framework of the Loan Management System for better utilisation of it. Do not skip any stage.
+Please follow carefully the installation and use of this web framework of the Loan Management System for better utilization of it. Do not skip any stage.
 
 ```bash
 1. git clone https://github.com/chandachewe10/loan-management-system.git
@@ -90,5 +94,5 @@ Copy the mail credentials for your Laravel app from Mailtrap and update the corr
 Contributions to the Loan Management software are welcome! If you have suggestions, bug reports, or feature requests, please submit an issue or a pull request on the GitHub repository.
 
 ## License
-The Loan Management software source code is publicly available but is licensed under the Proprietary License Agreement attached in this repo. Modifications, enhancements and improvements are allowed, but redistribution and commercial use require written consent from MACROIT
+The Loan Management software source code is publicly available but is licensed under the Proprietary License Agreement attached in this repo. Modifications, enhancements and improvements are allowed, but redistribution and commercial use require written consent from MACROIT INFORMATION TECHNOLOGY
 

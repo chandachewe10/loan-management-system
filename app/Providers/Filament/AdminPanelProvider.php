@@ -23,6 +23,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Rmsramos\Activitylog\ActivitylogPlugin;
+use App\Http\Middleware\CheckSubscriptionValidity;
+use App\Filament\Pages\Auth\Register;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -57,9 +59,9 @@ class AdminPanelProvider extends PanelProvider
         // ->brandLogoHeight('4rem')
         // ->favicon(asset('Logos/logo2.png'))
         ->sidebarCollapsibleOnDesktop()
-        
+
         ->login()
-        ->registration()
+        ->registration(Register::class)
         ->passwordReset()
         ->emailVerification()
         ->profile()
@@ -72,7 +74,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
-                
+
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -89,6 +91,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                CheckSubscriptionValidity::class
             ])
             ->authMiddleware([
                 Authenticate::class,

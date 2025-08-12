@@ -3,8 +3,8 @@
 namespace App\Filament\Resources;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\Select;
-use Bavix\Wallet\Models\Wallet;
-use Bavix\Wallet\Models\Transfer;
+use App\Models\Wallet;
+use App\Models\Transfer;
 use App\Filament\Resources\TransfersResource\Pages;
 use App\Filament\Resources\TransfersResource\RelationManagers;
 use Filament\Forms;
@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Exports\TransferExporter;
 use Filament\Tables\Actions\ExportAction;
+use Auth;
 
 class TransfersResource extends Resource
 {
@@ -27,17 +28,17 @@ class TransfersResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationBadge(): ?string
-    {
-        return Transfer::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return Transfer::count();
+    // }
 
 
     public static function form(Form $form): Form
     {
         $options = Wallet::all()->map(function ($wallet) {
             return [
-                'value' => $wallet->id, 
+                'value' => $wallet->id,
                 'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
             ];
         });
@@ -67,14 +68,19 @@ class TransfersResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        //  ->headerActions([
-        //     ExportAction::make()
-        //         ->exporter(TransferExporter::class)
-        // ])
+      ->modifyQueryUsing(function ($query) {
+            $query->whereHas('from', function ($q) {
+                $q->where('organization_id', Auth::user()->organization_id);
+            });
+        })
+
             ->columns([
                 Tables\Columns\TextColumn::make('from.name')
                     ->badge()
                     ->searchable(),
+                    //  Tables\Columns\TextColumn::make('from.organization_id')
+                    // ->badge()
+                    // ->searchable(), this can show an organization_id how can I fiter using auth user->or_id
                 Tables\Columns\TextColumn::make('to.name')
                     ->badge()
                     ->searchable(),

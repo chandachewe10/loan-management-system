@@ -38,7 +38,7 @@ class LoanResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $options = Wallet::all()->map(function ($wallet) {
+        $options = Wallet::where('organization_id',"=",auth()->user()->organization_id)->get()->map(function ($wallet) {
             return [
                 'value' => $wallet->id, // Set the wallet ID as the 'value'
                 'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
@@ -52,13 +52,14 @@ class LoanResource extends Resource
                     ->prefixIcon('heroicon-o-wallet')
                     ->relationship('loan_type', 'loan_name')
                     ->searchable()
+                    ->required()
                     ->preload()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Set $set) {
                         if ($state) {
                             $interest_cycle = \App\Models\LoanType::findOrFail($state)->first();
                             $set('duration_period', $interest_cycle->interest_cycle);
-                            
+
                         }
                         return true;
                     }),
@@ -83,6 +84,7 @@ class LoanResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('principal_amount')
                     ->label('Principle Amount')
+                    ->required()
                     ->prefixIcon('fas-dollar-sign')
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
@@ -99,7 +101,7 @@ class LoanResource extends Resource
                             $set('interest_amount', number_format($interest_amount));
                             $set('interest_rate', $loan_percent);
                             $set('disbursed_amount', $disbursement_amount);
-                           
+
                         }
                         return true;
                     })
@@ -108,6 +110,7 @@ class LoanResource extends Resource
                 Forms\Components\TextInput::make('loan_duration')
                     ->label('Loan Duration')
                     ->prefixIcon('fas-clock')
+                    ->required()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         if ($state && $get('loan_type_id') && $get('principal_amount')) {
@@ -265,28 +268,28 @@ class LoanResource extends Resource
                     ->searchable(),
 
 Tables\Columns\TextColumn::make('id')
-   
+
     ->label('Loan Statement')
     ->formatStateUsing(function ($state, $record) {
         $url = route('statement.download', $record->id);
         return "<a href='{$url}' target='_blank' class='text-primary underline'>Download</a>";
     })
- 
+
     ->html()
     ->searchable(),
 
 
-               
+
                 Tables\Columns\TextColumn::make('loan_agreement_file_path')
                 ->label('Loan Agreement Form')
                 ->formatStateUsing(
-                    
+
                     fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan agreement form'),
                 ),
                 Tables\Columns\TextColumn::make('loan_settlement_file_path')
                 ->label('Loan Settlement Form')
                 ->formatStateUsing(
-                    
+
                     fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan settlement form'),
                 )
             ])

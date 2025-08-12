@@ -8,6 +8,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Builder;
 
 class Expense extends Model implements HasMedia
 {
@@ -27,7 +28,7 @@ class Expense extends Model implements HasMedia
         'expense_vendor',
         'expense_attachment',
         'expense_date',
-                
+
     ];
 
 
@@ -35,8 +36,22 @@ class Expense extends Model implements HasMedia
 
     public function expense_category()
     {
-        
+
         return $this->belongsTo(ExpenseCategory::class, 'category_id','id');
-    } 
+    }
+
+
+    protected static function booted(): void
+    {
+
+        static::addGlobalScope('org', function (Builder $query) {
+
+            if (auth()->check()) {
+
+                $query->where('organization_id', auth()->user()->organization_id)
+                ->orWhere('organization_id',"=",NULL);
+            }
+        });
+    }
 
 }

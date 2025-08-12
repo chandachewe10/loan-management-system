@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\TransactionsResource\Pages;
 use App\Filament\Resources\TransactionsResource\RelationManagers;
-use Bavix\Wallet\Models\Transaction;
+use App\Models\Transaction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Exports\TransactionExporter;
 use Filament\Tables\Actions\ExportAction;
+use Auth;
 
 class TransactionsResource extends Resource
 {
@@ -21,10 +22,10 @@ class TransactionsResource extends Resource
     protected static ?string $navigationGroup = 'Wallets';
     protected static ?string $navigationLabel = 'Transactions';
     protected static ?int $navigationSort = 3;
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function form(Form $form): Form
     {
@@ -37,6 +38,13 @@ class TransactionsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
+ ->modifyQueryUsing(function ($query) {
+            $query->whereHas('wallet', function ($q) {
+                $q->where('organization_id', Auth::user()->organization_id);
+            });
+        })
+
           ->headerActions([
             ExportAction::make()
                 ->exporter(TransactionExporter::class)

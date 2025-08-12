@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\ContactMessagesResource;
 use Filament\Actions;
 use App\Models\Borrower as Contact;
-use App\Models\Messages; 
+use App\Models\Messages;
+use App\Models\ThirdParty;
 use App\Models\SenderId;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Http;
-use Filament\Notifications\Notification; 
+use Filament\Notifications\Notification;
 
 class CreateContactMessages extends CreateRecord
 {
@@ -18,89 +19,120 @@ class CreateContactMessages extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-       
+
         try{
         // Fetch contacts using findMany
         $ids = $data['contact'];
         $contacts = Contact::findMany($ids);
-      
+
         $contactStrings = $contacts->map(function($contact) {
-            return $contact->mobile; 
+            return $contact->mobile;
         })->toArray();
-        
-        // Get the sender ID and message
-        $senderId = 'MACROIT'; // Default sender ID, can be replaced with dynamic fetching
+
         $message = $data['message'];
-       
 
-      
 
-      
+
+
+
         // Convert the array of contact strings into a comma-separated string
-        $contactsString = implode(',', $contactStrings);
-        
-        // TODO Replace with SWIFTSMS APIS
-        $encodedContacts = urlencode($contactsString);
-        $encodedSenderId = urlencode($senderId);
+        $contactsFromArray = implode(',', $contactStrings);
+
+
+        $encodedContacts = urlencode($contactsFromArray);
         $encodedMessage = urlencode($message);
-        
-        // Construct the URL with properly encoded components
-        $url = env('BULK_SMS_BASE_URI') . '/api_key/' . urlencode(env('BULK_SMS_TOKEN')) . '/contacts/' . $encodedContacts . '/senderId/' . $encodedSenderId . '/message/' . $encodedMessage;
-        
-        // Send the HTTP request
-        $response = Http::timeout(300)->get($url);
+         $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
 
-        
-        // Handle the response
-        $responseData = $response->json();
-       
-        // Prepare data for message record creation
-        $messageData = [
-            'message' => $message,
-            'responseText' => $responseData['responseText'] ?? '',
-            'contact' => $contactsString,
-            'status' => $response->status(),
-           
+
+    $base_uri = $bulk_sms_config->base_uri ?? '';
+    $end_point = $bulk_sms_config->endpoint ?? '';
+    $responseData = null;
+
+    if (
+        $bulk_sms_config &&
+        $bulk_sms_config->is_active == "Active" &&
+        !empty($contactStrings) &&
+        !empty($base_uri) &&
+        !empty($end_point) &&
+        !empty($bulk_sms_config->token) &&
+        !empty($bulk_sms_config->sender_id)
+    ) {
+
+        $url = $base_uri . $end_point;
+
+        $payload = [
+            'sender_id' => $bulk_sms_config->sender_id,
+            'numbers' => $encodedContacts,
+            'message' => $encodedMessage,
         ];
-        
-   
-        $data = Messages::create($messageData);
 
-        if ($responseData['statusCode'] == 202) {
-       
-            
-            Notification::make()
-                ->title('Message(s) Sent')
-                ->body($responseData['responseText'] ?? 'SMS(es) have been queued for delivery.')
-                ->success()
-                ->send();
-        } else {
-            Notification::make()
-                ->title('Failed to Send Message(s)')
-                ->body($responseData['responseText'] ?? 'There was an error sending the SMS(es).')
-                ->danger()
-                ->send();
-        }
-        
-        
-        return $data;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $bulk_sms_config->token,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+                ->timeout(30)
+                ->get($url, $payload);
+
+            $responseData = $response->json();
+
+
+
+
+    $statusCode = $responseData['success'] ?? 500;
+
+    $responseText = $responseData['message'] ?? 'Unknown error';
+
+    $messageRecord = Messages::create([
+        'message' => $message,
+        'responseText' => $responseText,
+        'contact' => $encodedContacts,
+        'status' => $statusCode,
+
+    ]);
+
+    if ($statusCode == 'true') {
+        Notification::make()
+            ->title('Message(s) sent')
+            ->body($responseText)
+            ->success()
+            ->send();
+            return $messageRecord;
+
+    } else {
+        Notification::make()
+            ->title('Failed to send message(s)')
+            ->body($responseText)
+            ->danger()
+            ->send();
     }
-        catch (\Exception $e) {
-            Notification::make()
-                ->title('Error')
-                ->body('An error occurred while sending the message: ' . $e->getMessage())
-                ->danger()
-                ->send();
-            $this->halt(); 
-           
-            
+
+    $this->halt();
+
+    return $messageRecord;
+}
         }
-    }
+
+ catch (\Throwable $e) {
+            $responseData = [
+                'statusCode' => 500,
+                'responseText' => $e->getMessage(),
+            ];
+        }
+
+
+}
+
+
 
 
       protected function getRedirectUrl(): string
     {
-       
+
         return $this->getResource()::getUrl('index');
     }
 

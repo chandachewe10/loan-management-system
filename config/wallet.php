@@ -31,9 +31,6 @@ use Bavix\Wallet\Internal\Service\TranslatorService;
 use Bavix\Wallet\Internal\Service\UuidFactoryService;
 use Bavix\Wallet\Internal\Transform\TransactionDtoTransformer;
 use Bavix\Wallet\Internal\Transform\TransferDtoTransformer;
-use Bavix\Wallet\Models\Transaction;
-use Bavix\Wallet\Models\Transfer;
-use Bavix\Wallet\Models\Wallet;
 use Bavix\Wallet\Services\AssistantService;
 use Bavix\Wallet\Services\AtmService;
 use Bavix\Wallet\Services\AtomicService;
@@ -165,7 +162,7 @@ return [
      */
     'transaction' => [
         'table' => 'transactions',
-        'model' => Transaction::class,
+        'model' => App\Models\Transaction::class,
     ],
 
     /**
@@ -173,7 +170,8 @@ return [
      */
     'transfer' => [
         'table' => 'transfers',
-        'model' => Transfer::class,
+        'model' => App\Models\Transfer::class,
+        
     ],
 
     /**
@@ -181,7 +179,7 @@ return [
      */
     'wallet' => [
         'table' => 'wallets',
-        'model' => Wallet::class,
+        'model' => App\Models\Wallet::class,
         'creating' => [],
         'default' => [
             'name' => 'Default Wallet',

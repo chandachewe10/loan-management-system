@@ -46,6 +46,7 @@
           <nav class="c-nav">
             <input id="dropdown" class="c-nav__toggle" type="checkbox" />
             <div class="c-nav__content">
+
               <ul class="c-list c-list--flex">
                 <li class="c-list__item">
                   <a href="#pricing" class="c-link c-link--list">Pricing</a>
@@ -54,13 +55,14 @@
                   <a href="#services" class="c-link c-link--list">Services</a>
                 </li>
               </ul>
+              <a href="{{ 'admin/login' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign In</a>
               <a href="{{ 'admin/register' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a>
             </div>
           </nav>
         </div>
       </div>
     </header>
-<style> 
+<style>
 .c-hero__button-group {
   position: relative;
   z-index: 100; /* Ensure it stays above other elements */
@@ -80,7 +82,7 @@
     align-items: center;
     gap: 12px; /* Replaces the <br> with better spacing */
   }
-  
+
   .c-button {
     width: 100%;
     max-width: 200px; /* Limits width but keeps buttons sizable */
@@ -99,13 +101,13 @@
                 Lendfy is a loan management software that helps lenders automate workflows, reduce manual work, and launch new products with ease.
               </h4>
               <div class="c-hero__button-group">
-  <a href="{{ 'admin/login' }}" 
-     class="c-button c-button--primary" 
+  <a href="{{ 'admin/login' }}"
+     class="c-button c-button--primary"
      style="color:white; text-decoration:none; display: inline-block; min-width: 120px; min-height: 44px; padding: 12px 24px; margin: 8px 0;">
      Login
   </a>
-  <a href="{{ 'admin/register' }}" 
-     class="c-button c-button--secondary" 
+  <a href="{{ 'admin/register' }}"
+     class="c-button c-button--secondary"
      style="color:white; text-decoration:none; display: inline-block; min-width: 120px; min-height: 44px; padding: 12px 24px; margin: 8px 0;">
      Sign Up
   </a>
@@ -153,7 +155,7 @@
                   Live Updates
                 </h3>
                 <p class="c-paragraph c-card__text">
-                  Give customers instant reports to the status of their loan details, repayment schedules, and application statuses through <a href="https://swift-sms.net">Bulk SMS</a> Portal 
+                  Give customers instant reports to the status of their loan details, repayment schedules, and application statuses through <a href="https://swiftsms.macroit.org">Bulk SMS</a> Portal
                 </p>
               </div>
               <div class="c-card__img-holder">
@@ -224,7 +226,7 @@
             </article>
           </div>
 
-         
+
         </div>
       </section>
 
@@ -233,7 +235,7 @@
           <div class="section__title-wrapper">
             <h2 class="heading heading--2">Simple pricing</h2>
             <h4 class="heading heading--4">
-              LendFy is a SAAS platform and our pricing model is based on your growth. It starts from $20 per month and increases as your business grows.
+              LendFy is a SAAS platform and our pricing model is based on your growth. It starts from $45 per month and increases as your business grows.
             </h4>
           </div>
 
@@ -243,7 +245,7 @@
                 <div class="c-price__amount">
                   <h3 class="c-price__amount--title heading heading--3">
                     <span class="c-price__amount--secondary">$</span>
-                    <span class="c-price__amount--primary">20</span>
+                    <span class="c-price__amount--primary">45</span>
                     <span class="c-price__amount--secondary">/m</span>
                   </h3>
                 </div>
@@ -257,18 +259,26 @@
               <ul class="c-list">
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
-                  <div class="c-list__text">Unlimited Users</div>
+                  <div class="c-list__text">1 User</div>
                 </li>
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">1000 Loans Max</div>
+                </li>
+                 <li class="c-list__item c-price__list-item">
+                  <div class="c-list__icon c-list__icon--check"></div>
+                  <div class="c-list__text">Unlimited Emails</div>
+                </li>
+                 <li class="c-list__item c-price__list-item">
+                  <div class="c-list__icon c-list__icon--check"></div>
+                  <div class="c-list__text">500 SMSes</div>
                 </li>
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">All other features Included</div>
                 </li>
               </ul>
-             
+
             </article>
 
             <article class="c-price c-price--highlight">
@@ -276,7 +286,7 @@
                 <div class="c-price__amount">
                   <h3 class="c-price__amount--title heading heading--3">
                     <span class="c-price__amount--secondary">$</span>
-                    <span class="c-price__amount--primary">54</span>
+                    <span class="c-price__amount--primary">60</span>
                     <span class="c-price__amount--secondary">/m</span>
                   </h3>
                 </div>
@@ -290,7 +300,7 @@
               <ul class="c-list">
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
-                  <div class="c-list__text">Unlimited Users</div>
+                  <div class="c-list__text">2 Users</div>
                 </li>
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
@@ -298,10 +308,18 @@
                 </li>
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
+                  <div class="c-list__text">Unlimited Emails</div>
+                </li>
+                <li class="c-list__item c-price__list-item">
+                  <div class="c-list__icon c-list__icon--check"></div>
+                  <div class="c-list__text">1000 SMSes</div>
+                </li>
+                <li class="c-list__item c-price__list-item">
+                  <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">All other features Included</div>
                 </li>
               </ul>
-             
+
             </article>
 
             <article class="c-price">
@@ -331,10 +349,18 @@
                 </li>
                 <li class="c-list__item c-price__list-item">
                   <div class="c-list__icon c-list__icon--check"></div>
+                  <div class="c-list__text">Unlimited Emails</div>
+                </li>
+                <li class="c-list__item c-price__list-item">
+                  <div class="c-list__icon c-list__icon--check"></div>
+                  <div class="c-list__text">Unlimited SMSes</div>
+                </li>
+                <li class="c-list__item c-price__list-item">
+                  <div class="c-list__icon c-list__icon--check"></div>
                   <div class="c-list__text">All other features Included</div>
                 </li>
               </ul>
-             
+
             </article>
           </div>
         </div>
@@ -346,7 +372,7 @@
             <h2 class="heading heading--2 c-banner__title">
               Request a Meeting
             </h2>
-            <a href="#" class="c-button c-button--primary">Request now</a>
+            <a href="mailto:lendfy@macroit.org" class="c-button c-button--primary">Request now</a>
           </div>
         </div>
       </section>

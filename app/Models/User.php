@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\Permission\Traits\HasRoles;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Traits\HasWallets;
@@ -16,8 +16,10 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Builder;
 
-class User extends Authenticatable implements Wallet
+
+class User extends Authenticatable implements Wallet,MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -30,10 +32,11 @@ class User extends Authenticatable implements Wallet
     use LogsActivity;
 
 
+
      public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll();
+        ->logExcept(['password']);
     }
 
     /**
@@ -45,6 +48,7 @@ class User extends Authenticatable implements Wallet
         'name',
         'email',
         'password',
+        'organization_id'
     ];
 
     /**
@@ -76,4 +80,18 @@ class User extends Authenticatable implements Wallet
     protected $appends = [
         'profile_photo_url',
     ];
+
+
+protected static function booted(): void
+    {
+        static::addGlobalScope('org', function (Builder $query) {
+            if (auth()->hasUser()) {
+                $query->where('organization_id', auth()->user()->organization_id)
+                ->orWhere('organization_id',"=",NULL);
+
+            }
+        });
+    }
+
+
 }

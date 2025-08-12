@@ -27,7 +27,7 @@ class CreateLoan extends CreateRecord
 
  //Check if they have the Loan Agreement Form template for this type of loan
  $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", $data['loan_type_id'])->first();
-           
+
  if (!$loan_agreement_text && $data['activate_loan_agreement_form'] == 1) {
      Notification::make()
          ->warning()
@@ -42,7 +42,7 @@ class CreateLoan extends CreateRecord
          ->send();
 
      $this->halt();
- } 
+ }
 
 
         $wallet = Wallet::findOrFail($data['from_this_account']);
@@ -74,9 +74,12 @@ class CreateLoan extends CreateRecord
 
         // Send an SMS to the Client depending on the status of the Loan Stage
 
-        $bulk_sms_config = ThirdParty::where('name', "=", 'SWIFT-SMS')->latest()->get()->first();
+       $bulk_sms_config = ThirdParty::withoutGlobalScope('org')
+       ->where('name', 'SWIFT-SMS')
+       ->latest()
+      ->first();
         $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
-        
+
         $base_uri = $bulk_sms_config->base_uri ?? '';
         $end_point = $bulk_sms_config->endpoint ?? '';
         if (
@@ -103,7 +106,7 @@ class CreateLoan extends CreateRecord
                 case 'approved':
                     $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
                     break;
-                    
+
                 case 'processing':
                     $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
                     break;
@@ -145,9 +148,9 @@ class CreateLoan extends CreateRecord
         }
 
 // send via Email too if email is not Null
-if(is_null($borrower->email)){
+if(!is_null($borrower->email)){
     //dd('email is not null');
-    $message = 'Hi ' . $borrower->first_name . ', ';    
+    $message = 'Hi ' . $borrower->first_name . ', ';
     $loan_amount = $data['principal_amount'];
     $loan_duration = $data['loan_duration'];
     $loan_release_date = $data['loan_release_date'];
@@ -163,7 +166,7 @@ if(is_null($borrower->email)){
         case 'approved':
             $message .= 'Congratulations! Your loan application of K' . $loan_amount . ' has been approved successfully. The total repayment amount is K' . $loan_repayment_amount . ' to be repaid in ' . $loan_duration . ' ' . $loan_cycle;
             break;
-            
+
         case 'processing':
             $message .= 'Your loan application of K' . $loan_amount . ' is currently under review. We will notify you once the review process is complete.';
             break;
@@ -201,7 +204,7 @@ catch(\Exception $e){
     ->title('Problem With Wallet')
     ->body('Whoops, something went wrong: ' . $e->getMessage())
     ->persistent()
-  
+
     ->send();
 
 $this->halt();
@@ -209,15 +212,15 @@ $this->halt();
 
 
 
-           
-            
+
+
             if (isset($loan_agreement_text) && $data['activate_loan_agreement_form'] == 1) {
 
 
                 $borrower = \App\Models\Borrower::findOrFail($data['borrower_id']);
                 $loan_type = \App\Models\LoanType::findOrFail($data['loan_type_id']);
 
-                $company_name = env('APP_NAME');
+                $company_name = auth()->user()->name;
                 $borrower_name = $borrower->first_name . ' ' . $borrower->last_name;
                 $borrower_email = $borrower->email ?? '';
                 $borrower_phone = $borrower->mobile ?? '';
@@ -238,7 +241,7 @@ $this->halt();
                 // The original content with placeholders
                 $template_content = $loan_agreement_text->loan_agreement_text;
 
-                
+
                 // Replace placeholders with actual data
                 $template_content = str_replace('[Company Name]', $company_name, $template_content);
                 $template_content = str_replace('[Borrower Name]', $borrower_name, $template_content);
@@ -316,7 +319,7 @@ $this->halt();
 
        protected function getRedirectUrl(): string
     {
-       
+
         return $this->getResource()::getUrl('index');
     }
 

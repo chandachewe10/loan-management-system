@@ -18,6 +18,7 @@ yarn-error.log
 /.idea
 /.vscode
 /public/LOAN_AGREEMENT_FORMS
+/public/LOAN_SETTLEMENT_FORMS
 /public/BORROWERS
 /public/EXPENSES
 /public/Logos

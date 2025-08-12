@@ -170,7 +170,7 @@ class BorrowerResource extends Resource
                     ->label('Email address')
                     ->prefixIcon('heroicon-o-envelope')
                     ->email()
-
+                    ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('address')
                     ->label('Address')

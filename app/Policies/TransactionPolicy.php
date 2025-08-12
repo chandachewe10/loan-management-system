@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Bavix\Wallet\Models\Transaction;
+use App\Models\Transaction;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TransactionPolicy

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Exports;
-use Bavix\Wallet\Models\Transfer;
+use App\Models\Transfer;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
