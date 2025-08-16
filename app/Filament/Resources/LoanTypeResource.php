@@ -1,17 +1,20 @@
 <?php
 
 namespace App\Filament\Resources;
+
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\LoanTypeResource\Pages;
 use App\Filament\Resources\LoanTypeResource\RelationManagers;
 use App\Models\LoanType;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Exports\LoanTypeExporter;
 use Filament\Tables\Actions\ExportAction;
+
 
 
 class LoanTypeResource extends Resource
@@ -40,8 +43,7 @@ class LoanTypeResource extends Resource
                     ->label('Interest Rate')
                     ->prefixIcon('fas-percentage')
                     ->required()
-                    ->numeric()
-                ,
+                    ->numeric(),
                 Forms\Components\Select::make('interest_cycle')
                     ->label('Interest Cycle')
                     ->prefixIcon('fas-sync-alt')
@@ -53,20 +55,67 @@ class LoanTypeResource extends Resource
 
                     ])
                     ->required(),
-                      Forms\Components\TextInput::make('service_fee')
-                    ->label('Processing Fee (optional)')
-                    ->prefixIcon('fas-sync-alt')
-                     ->helperText('The processing fee will be removed from the loan to be disbursed')
+
+
+                Forms\Components\Radio::make('service_fee_type')
+                    ->label('Select Service Fee Type')
+                    ->helperText('Is your service fee a percentage or just a custom amount?')
+                    ->options([
+                        'service_fee_percentage' => "percentage",
+                        'service_fee_custom_amount' => 'Custom Amount',
+                        'none' => 'We dont Apply Service Fee',
+                    ])
+                    ->required()
+                    ->live(),
+
+                Forms\Components\TextInput::make('service_fee_percentage')
+                    ->label('Enter Service/Processing fee')
+                    ->numeric()
+                    ->required()
+                    ->visible(fn(Get $get) => $get('service_fee_type') === 'service_fee_percentage'),
+
+                Forms\Components\TextInput::make('service_fee_custom_amount')
+                    ->label('Enter Service/Processing fee amount')
+                    ->numeric()
+                    ->required()
+                    ->visible(fn(Get $get) => $get('service_fee_type') === 'service_fee_custom_amount'),
+
+
+
+                Forms\Components\Radio::make('penalty_fee_type')
+                    ->label('Select Penalty Fee Type')
+                    ->helperText('Is your penalty fee a percentage or just a custom amount?')
+                    ->options([
+                        'penalty_fee_percentage' => "percentage",
+                        'penalty_fee_custom_amount' => 'Custom Amount',
+                        'none' => 'We dont Apply Penalties',
+                    ])
+                    ->required()
+                    ->live(),
+
+                Forms\Components\TextInput::make('penalty_fee_percentage')
+                    ->label('Enter Penalty fee')
+                    ->numeric()
+                    ->required()
+                    ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_percentage'),
+
+                Forms\Components\TextInput::make('penalty_fee_custom_amount')
+                    ->label('Enter penalty fee amount')
+                    ->numeric()
+                    ->required()
+                    ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_custom_amount'),
+
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-          ->headerActions([
-            ExportAction::make()
-                ->exporter(LoanTypeExporter::class)
-        ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(LoanTypeExporter::class)
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('loan_name')
                     ->searchable(),
@@ -77,8 +126,8 @@ class LoanTypeResource extends Resource
                 Tables\Columns\TextColumn::make('interest_cycle')
                     ->badge()
                     ->searchable(),
-                     Tables\Columns\TextColumn::make('service_fee')
-                     ->label('Processing Fee')
+                Tables\Columns\TextColumn::make('service_fee')
+                    ->label('Processing Fee')
                     ->badge()
                     ->searchable(),
             ])
