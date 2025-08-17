@@ -35,7 +35,12 @@ class LoanRestructureResource extends Resource
     protected static ?string $modelLabel = 'Loan Restructure';
     protected static ?string $pluralModelLabel = 'Loan Restructure';
     protected static ?int $navigationSort = 2;
+    protected static ?string $navigationUrl = 'create';
 
+    public static function getNavigationUrl(): string
+    {
+        return static::getUrl('create'); 
+    }
     public static function form(Form $form): Form
 
     {
@@ -49,195 +54,7 @@ class LoanRestructureResource extends Resource
 
         return $form
             ->schema([
-                Forms\Components\Select::make('loan_type_id')
-                    ->prefixIcon('heroicon-o-wallet')
-                    ->relationship('loan_type', 'loan_name')
-                    ->searchable()
-                    ->required()
-                    ->preload()
-                    ->live()
-                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                        if ($state) {
-                            $interest_cycle = \App\Models\LoanType::findOrFail($state)->first();
-                            $set('duration_period', $interest_cycle->interest_cycle);
-
-                            $service_fee = 0.00;
-                            $service_fee_data = \App\Models\LoanType::findOrFail($state);
-
-                            if ($service_fee_data->service_fee_type === 'service_fee_percentage') {
-                                $service_fee = ($get('principal_amount') * $service_fee_data->service_fee_percentage) / 100;
-                            } elseif ($service_fee_data->service_fee_type === 'service_fee_custom_amount') {
-                                $service_fee = $service_fee_data->service_fee_custom_amount;
-                            } elseif ($service_fee_data->service_fee_type === 'none') {
-                                $service_fee = 0;
-                            } else {
-                                $service_fee = 0;
-                            }
-                            $set('service_fee', $service_fee);
-                            $duration = $get('loan_duration') ?? 0;
-                            $principle_amount = $get('principal_amount') ?? 0;
-                            $disbursement_amount = ($principle_amount -  $service_fee) < 0 ? 0.00 : $principle_amount -  $service_fee;
-                            $loan_percent = \App\Models\LoanType::findOrFail($state)->interest_rate ?? 0;
-                            $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
-                            $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
-                            $set('repayment_amount', number_format($total_repayment));
-                            $set('interest_amount', number_format($interest_amount));
-                            $set('interest_rate', $loan_percent);
-                            $set('disbursed_amount', $disbursement_amount);
-                        }
-                        return true;
-                    }),
-
-                Forms\Components\Select::make('borrower_id')
-                    ->prefixIcon('heroicon-o-user')
-                    ->relationship('borrower', 'full_name')
-                    ->preload()
-                    ->searchable()
-                    ->required(),
-                Forms\Components\Select::make('loan_status')
-                    ->label('Loan Status')
-                    ->prefixIcon('fas-dollar-sign')
-                    ->options([
-                        'requested' => 'Requested',
-                        'processing' => 'Processing',
-                        'approved' => 'Approved',
-                        'denied' => 'Denied',
-                        'defaulted' => 'Defaulted',
-
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('principal_amount')
-                    ->label('Principle Amount')
-                    ->required()
-                    ->prefixIcon('fas-dollar-sign')
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                        if ($get('loan_type_id')) {
-                            $service_fee = 0.00;
-                            $service_fee_data = \App\Models\LoanType::findOrFail($get('loan_type_id'));
-
-                            if ($service_fee_data->service_fee_type === 'service_fee_percentage') {
-                                $service_fee = ($state * $service_fee_data->service_fee_percentage) / 100;
-                            } elseif ($service_fee_data->service_fee_type === 'service_fee_custom_amount') {
-                                $service_fee = $service_fee_data->service_fee_custom_amount;
-                            } elseif ($service_fee_data->service_fee_type === 'none') {
-                                $service_fee = 0;
-                            } else {
-                                $service_fee = 0;
-                            }
-                            $set('service_fee', $service_fee);
-                            $duration = $get('loan_duration') ?? 0;
-                            $principle_amount = $state ?? 0;
-                            $disbursement_amount = ($principle_amount -  $service_fee) < 0 ? 0.00 : $principle_amount -  $service_fee;
-                            $loan_percent = \App\Models\LoanType::findOrFail($get('loan_type_id'))->interest_rate ?? 0;
-                            $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
-                            $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
-                            $set('repayment_amount', number_format($total_repayment));
-                            $set('interest_amount', number_format($interest_amount));
-                            $set('interest_rate', $loan_percent);
-                            $set('disbursed_amount', $disbursement_amount);
-                        }
-                        return true;
-                    })
-
-                    ->numeric(),
-                Forms\Components\TextInput::make('loan_duration')
-                    ->label('Loan Duration')
-                    ->prefixIcon('fas-clock')
-                    ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                        if ($state && $get('loan_type_id') && $get('principal_amount')) {
-                            $duration = $state ?? 0;
-                            $principle_amount = $get('principal_amount');
-                            $loan_percent = \App\Models\LoanType::findOrFail($get('loan_type_id'))->interest_rate ?? 0;
-                            $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
-                            $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
-                            $set('repayment_amount', number_format($total_repayment));
-                            $set('interest_amount', number_format($interest_amount));
-                            $set('interest_rate', $loan_percent);
-                        }
-                        return true;
-                    })
-
-                    ->numeric(),
-                Forms\Components\TextInput::make('duration_period')
-                    ->label('Duration Period')
-                    ->prefixIcon('fas-clock')
-                    ->required()
-                    ->readOnly(),
-                Forms\Components\DatePicker::make('loan_release_date')
-                    ->label('Loan Release Date')
-                    ->prefixIcon('heroicon-o-calendar')
-                    ->live(onBlur: true)
-                    ->required()
-                    ->native(false)
-                    ->maxDate(now()),
-                Forms\Components\TextInput::make('repayment_amount')
-                    ->label('Repayment Amount')
-                    ->prefixIcon('fas-coins')
-                    ->required()
-                    ->readOnly(),
-                Forms\Components\TextInput::make('interest_amount')
-                    ->label('Interest Amount')
-                    ->prefixIcon('fas-coins')
-                    ->readOnly()
-                    ->required(),
-
-                Forms\Components\TextInput::make('interest_rate')
-                    ->label('Interest Rate')
-                    ->required()
-                    ->prefixIcon('fas-percentage')
-                    ->readOnly()
-                    ->numeric(),
-
-                Forms\Components\DatePicker::make('loan_due_date')
-                    ->label('Loan Due Date')
-                    ->prefixIcon('heroicon-o-calendar')
-                    ->hidden()
-                    ->required()
-                    ->native(false),
-
-
-
-                Forms\Components\TextInput::make('service_fee')
-                    ->label('Processing Fee')
-                    ->prefixIcon('fas-percentage')
-                    ->readOnly()
-                    ->numeric(),
-
-                Forms\Components\TextInput::make('disbursed_amount')
-                    ->label('Amount to be Disbursed')
-                    ->required()
-                    ->prefixIcon('fas-percentage')
-                    ->readOnly()
-                    ->numeric(),
-
-
-
-
-                Hidden::make('loan_number'),
-                Forms\Components\Select::make('from_this_account')
-                    ->label('From this Account')
-                    ->prefixIcon('fas-wallet')
-                    ->options($options->pluck('label', 'value')->toArray())
-                    ->required()
-                    ->searchable(),
-
-                Forms\Components\TextInput::make('transaction_reference')
-                    ->label('Transaction Reference')
-                    ->prefixIcon('fas-money-bill-wave'),
-                Forms\Components\Toggle::make('activate_loan_agreement_form')
-                    ->label('Compile Loan Agreement Form')
-                    ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan loan agreement form template for this type of loan.')
-                    ->onColor('success')
-                    ->offColor('danger')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('loan_agreement_file_path')
-                    ->hidden(),
-                Forms\Components\TextInput::make('balance')
-                    ->hidden(),
-
+               
             ]);
     }
 
@@ -256,10 +73,7 @@ class LoanRestructureResource extends Resource
             ->modifyQueryUsing(function (Builder $query) {
                 $query->where('loan_status', 'defaulted');
             })
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(LoanExporter::class)
-            ])
+           
             ->columns([
 
                 Tables\Columns\TextColumn::make('borrower.full_name')
@@ -445,7 +259,7 @@ class LoanRestructureResource extends Resource
                         // Save original terms before modifying
                         $record->update([
                             'loan_duration' => $data['new_duration'],
-                            'interest_rate' => $data['new_interest_amount'],
+                            'interest_amount' => $data['new_interest_amount'],
                             'balance' => $data['new_balance'],
                             'loan_status' => 'approved',
                             'loan_due_date' => Carbon::parse($data['new_due_date']),
