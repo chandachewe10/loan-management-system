@@ -55,7 +55,7 @@ class LoanRollOverResource extends Resource
                             $set('new_due_date', $currentDueDate->copy()->addMonths(1)->format('Y-m-d'));
                             $set('balance', $loanStatus->balance);
                             $set('payments', $loanStatus->interest_amount);
-                            $set('current_due_date',  $currentDueDate);
+                            $set('current_due_date',  $currentDueDate->format('Y-m-d'));
                         }
                         return true;
                     }),
@@ -65,17 +65,17 @@ class LoanRollOverResource extends Resource
                 Forms\Components\TextInput::make('payments')
                     ->label('Repayment Amount')
                     ->helperText('Customer pays the accrued interest to extend the loan term by one month (loan rollover). The balance remains the same')
-                    ->prefixIcon('fas-dollar-sign')
+                    ->prefixIcon('heroicon-o-credit-card')
                     ->readOnly()
                     ->required(),
                 Forms\Components\TextInput::make('balance')
                     ->label('Current Balance')
-                    ->prefixIcon('fas-dollar-sign')
+                   ->prefixIcon('heroicon-o-banknotes')
                     ->readOnly(),
 
                 Forms\Components\Select::make('payments_method')
                     ->label('Payment Method')
-                    ->prefixIcon('fas-dollar-sign')
+                    ->prefixIcon('heroicon-o-currency-pound')
                     ->required()
                     ->options([
                         'bank_transfer' => 'Bank Transfer',
@@ -85,9 +85,7 @@ class LoanRollOverResource extends Resource
                         'cash' => 'Cash',
 
                     ]),
-                Forms\Components\TextInput::make('reference_number')
-                    ->label('Transaction Reference')
-                    ->prefixIcon('fas-dollar-sign'),
+               
                 Forms\Components\TextInput::make('current_due_date')
                     ->label('Current Due Date')
                     ->prefixIcon('fas-calendar-alt')
@@ -95,7 +93,7 @@ class LoanRollOverResource extends Resource
 
                 Forms\Components\TextInput::make('new_due_date')
                     ->label('New Due Date')
-                    ->prefixIcon('fas-calendar-alt')
+                    ->prefixIcon('heroicon-o-calendar-date-range')
                     ->readOnly()
 
 

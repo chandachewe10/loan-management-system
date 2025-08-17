@@ -35,12 +35,9 @@ class LoanRestructureResource extends Resource
     protected static ?string $modelLabel = 'Loan Restructure';
     protected static ?string $pluralModelLabel = 'Loan Restructure';
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationUrl = 'create';
 
-    public static function getNavigationUrl(): string
-    {
-        return static::getUrl('create'); 
-    }
+
+
     public static function form(Form $form): Form
 
     {
@@ -53,9 +50,7 @@ class LoanRestructureResource extends Resource
 
 
         return $form
-            ->schema([
-               
-            ]);
+            ->schema([]);
     }
 
 
@@ -73,7 +68,7 @@ class LoanRestructureResource extends Resource
             ->modifyQueryUsing(function (Builder $query) {
                 $query->where('loan_status', 'defaulted');
             })
-           
+
             ->columns([
 
                 Tables\Columns\TextColumn::make('borrower.full_name')
@@ -126,25 +121,11 @@ class LoanRestructureResource extends Resource
                     ->badge()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('id')
-
-                    ->label('Loan Statement')
-                    ->formatStateUsing(function ($state, $record) {
-                        $url = route('statement.download', $record->id);
-                        return "<a href='{$url}' target='_blank' class='text-primary underline'>Download</a>";
-                    })
-
-                    ->html()
-                    ->searchable(),
 
 
 
-                Tables\Columns\TextColumn::make('loan_agreement_file_path')
-                    ->label('Loan Agreement Form')
-                    ->formatStateUsing(
 
-                        fn(string $state) => $create_link::goTo(env('APP_URL') . '/' . $state, 'download', 'loan agreement form'),
-                    ),
+
 
             ])
             ->filters([
@@ -167,9 +148,10 @@ class LoanRestructureResource extends Resource
                     // ->icon('heroicon-o-adjustments')
                     ->color('warning')
                     ->mountUsing(function (Forms\ComponentContainer $form, Model $record) {
+                        $currentDueDate = Carbon::parse($record->loan_due_date);
                         $form->fill([
                             'current_balance' => $record->balance,
-                            'current_due_date' => $record->loan_due_date->format('Y-m-d'),
+                            'current_due_date' => $currentDueDate->format('Y-m-d'),
                             'new_interest_rate' => $record->interest_rate,
                         ]);
                     })
@@ -178,31 +160,33 @@ class LoanRestructureResource extends Resource
 
                         Forms\Components\TextInput::make('current_balance')
                             ->label('Current Balance')
-
+                            ->prefixIcon('heroicon-o-banknotes')
                             ->disabled()
                             ->numeric()
                             ->required(),
-                             Hidden::make('current_balance'),
+                        Hidden::make('current_balance'),
 
                         Forms\Components\TextInput::make('current_due_date')
                             ->label('Current Due Date')
                             ->disabled()
-
+                            ->prefixIcon('heroicon-o-calendar')
                             ->required(),
-                             Hidden::make('current_due_date'),
+                        Hidden::make('current_due_date'),
 
                         Forms\Components\TextInput::make('new_interest_rate')
                             ->label('Initial Interest Rate (%)')
+                            ->prefixIcon('heroicon-o-arrow-path')
                             ->numeric()
                             ->disabled()
                             ->required(),
-                             Hidden::make('new_interest_rate'),
+                        Hidden::make('new_interest_rate'),
 
                         Forms\Components\TextInput::make('new_duration')
                             ->label('Extended Duration (months)')
                             ->numeric()
+                            ->prefixIcon('heroicon-o-calendar-days')
                             ->live()
-                            ->afterStateUpdated(function ($state,Set $set, Get $get) {
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
 
                                 $currentBalance = (float) $get('current_balance') ?? 0;
                                 $newDuration = (float) $get('new_duration') ?? 0;
@@ -230,15 +214,17 @@ class LoanRestructureResource extends Resource
                             ->label('New Balance')
                             ->numeric()
                             ->disabled()
+                            ->prefixIcon('heroicon-o-credit-card')
                             ->required(),
-                             Hidden::make('new_balance'),
+                        Hidden::make('new_balance'),
 
-                             Forms\Components\TextInput::make('new_interest_amount')
+                        Forms\Components\TextInput::make('new_interest_amount')
                             ->label('New Interest Amount')
+                            ->prefixIcon('heroicon-o-credit-card')
                             ->numeric()
                             ->disabled()
                             ->required(),
-                             Hidden::make('new_interest_amount'),
+                        Hidden::make('new_interest_amount'),
 
 
 
@@ -246,16 +232,18 @@ class LoanRestructureResource extends Resource
 
                         Forms\Components\DatePicker::make('new_due_date')
                             ->label('New Due Date')
+                            ->prefixIcon('heroicon-o-calendar-days')
                             ->disabled()
                             ->required(),
-                            Hidden::make('new_due_date'),
+                        Hidden::make('new_due_date'),
 
                         Forms\Components\Textarea::make('restructure_reason')
                             ->label('Reason for Restructuring')
+                            
                             ->required(),
                     ])
                     ->action(function ($record, array $data) {
-                       // dd($data);
+                        // dd($data);
                         // Save original terms before modifying
                         $record->update([
                             'loan_duration' => $data['new_duration'],
@@ -267,7 +255,7 @@ class LoanRestructureResource extends Resource
 
 
 
-                       // You might want to add notification logic here
+                        // You might want to add notification logic here
                         Notification::make()
                             ->title('Loan Restructured Successfully and has been moved to Active Loans')
                             ->success()

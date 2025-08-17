@@ -26,6 +26,7 @@ class CreateLoanRollOver extends CreateRecord
 
 
 
+
         $loan = Loan::findOrFail($data['loan_id']);
         Log::info('Loan Details: ' . $loan);
 
@@ -36,8 +37,9 @@ class CreateLoanRollOver extends CreateRecord
         )->first();
         Log::info('Wallet Details: ' . $wallet);
 
-        $loan->loan_due_date = $data['new_due_date'];
-        $loan->save();
+        $loan->update([
+            'loan_due_date' => $data['new_due_date']
+        ]);
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
 
@@ -48,12 +50,20 @@ class CreateLoanRollOver extends CreateRecord
         $repaymentAmount = $data['payments'];
         $this->sendSmsNotification($borrower, $loan, $repaymentAmount);
 
-        
+
         if (!is_null($borrower->email)) {
             $this->sendEmailNotification($borrower, $loan, $repaymentAmount);
         }
 
-        return $borrower;
+
+        Notification::make()
+            ->success()
+            ->title('Roll Over Done')
+            ->body('The loan has been rolled over successfully.')
+            ->persistent()
+            ->send();
+        $this->halt();
+        return $loan;
     }
 
 
@@ -77,7 +87,7 @@ class CreateLoanRollOver extends CreateRecord
             if ($url && $bulk_sms_config->token && $bulk_sms_config->sender_id) {
                 $message = 'Hi ' . $borrower->first_name . ', We have received your Interest repayment of K' .
                     $repaymentAmount . '. Your loan due date has been rolled over to next month on ' .
-                    $data->new_due_date . '. Thank you for your payment.';
+                    $data->loan_due_date . '. Thank you for your payment.';
                 $jsonData = [
                     "sender_id" => $bulk_sms_config->sender_id,
                     "numbers" => $borrower->mobile,
@@ -101,7 +111,7 @@ class CreateLoanRollOver extends CreateRecord
     {
         $message = 'Hi ' . $borrower->first_name . ', We have received your Interest repayment of K' .
             $repaymentAmount . '. Your loan due date has been rolled over to next month on ' .
-            $data->new_due_date . '. Thank you for your payment.';
+            $data->loan_due_date . '. Thank you for your payment.';
         $borrower->notify(new LoanStatusNotification($message));
     }
 
