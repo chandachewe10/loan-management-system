@@ -56,35 +56,37 @@ class LoanTypeResource extends Resource
                     ])
                     ->required(),
 
-
-                Forms\Components\Radio::make('service_fee_type')
-                    ->label('Select Service Fee Type')
-                    ->helperText('Is your service fee a percentage or just a custom amount?')
+                Forms\Components\Select::make('service_fee_type')
+                    ->label('Service Fee Type')
+                    ->helperText('Is your service fee a percentage or a custom amount?')
+                    ->prefixIcon('fas-sync-alt')
                     ->options([
                         'service_fee_percentage' => "percentage",
                         'service_fee_custom_amount' => 'Custom Amount',
                         'none' => 'We dont Apply Service Fee',
                     ])
-                    ->required()
-                    ->live(),
+                    ->live()
+                    ->required(),
+
+
+
 
                 Forms\Components\TextInput::make('service_fee_percentage')
-                    ->label('Enter Service/Processing fee')
+                    ->label('Enter Service Fee Percentage')
                     ->numeric()
                     ->required()
                     ->visible(fn(Get $get) => $get('service_fee_type') === 'service_fee_percentage'),
 
                 Forms\Components\TextInput::make('service_fee_custom_amount')
-                    ->label('Enter Service/Processing fee amount')
+                    ->label('Enter Service Fee amount')
                     ->numeric()
                     ->required()
                     ->visible(fn(Get $get) => $get('service_fee_type') === 'service_fee_custom_amount'),
 
-
-
-                Forms\Components\Radio::make('penalty_fee_type')
-                    ->label('Select Penalty Fee Type')
-                    ->helperText('Is your penalty fee a percentage or just a custom amount?')
+                Forms\Components\Select::make('penalty_fee_type')
+                    ->label('Penalty Fee Type')
+                    ->helperText('Is your penalty fee a percentage or a custom amount?')
+                    ->prefixIcon('fas-sync-alt')
                     ->options([
                         'penalty_fee_percentage' => "percentage",
                         'penalty_fee_custom_amount' => 'Custom Amount',
@@ -93,14 +95,16 @@ class LoanTypeResource extends Resource
                     ->required()
                     ->live(),
 
+
+
                 Forms\Components\TextInput::make('penalty_fee_percentage')
-                    ->label('Enter Penalty fee')
+                    ->label('Enter Penalty Percentage')
                     ->numeric()
                     ->required()
                     ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_percentage'),
 
                 Forms\Components\TextInput::make('penalty_fee_custom_amount')
-                    ->label('Enter penalty fee amount')
+                    ->label('Enter penalty amount')
                     ->numeric()
                     ->required()
                     ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_custom_amount'),
