@@ -30,8 +30,10 @@ class LoanRestructureResource extends Resource
     protected static ?string $model = LoanRestructure::class;
 
     protected static ?string $navigationGroup = 'Loans';
-    protected static ?string $navigationIcon = 'fas-dollar-sign';
-    protected static ?string $modelLabel = 'Loan Restructuring';
+    protected static ?string $navigationIcon = 'fas-file';
+    protected static ?string $recordTitleAttribute = 'Loan Restructure';
+    protected static ?string $modelLabel = 'Loan Restructure';
+    protected static ?string $pluralModelLabel = 'Loan Restructure';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -445,7 +447,7 @@ class LoanRestructureResource extends Resource
                             'loan_duration' => $data['new_duration'],
                             'interest_rate' => $data['new_interest_amount'],
                             'balance' => $data['new_balance'],
-                            'loan_status' => 'restructured',
+                            'loan_status' => 'approved',
                             'loan_due_date' => Carbon::parse($data['new_due_date']),
                         ]);
 
@@ -453,8 +455,9 @@ class LoanRestructureResource extends Resource
 
                        // You might want to add notification logic here
                         Notification::make()
-                            ->title('Loan Restructured Successfully')
+                            ->title('Loan Restructured Successfully and has been moved to Active Loans')
                             ->success()
+                            ->persistent()
                             ->send();
                     })
                     ->visible(fn($record) => $record->loan_status === 'defaulted'),
