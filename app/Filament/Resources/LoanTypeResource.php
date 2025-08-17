@@ -130,8 +130,20 @@ class LoanTypeResource extends Resource
                 Tables\Columns\TextColumn::make('interest_cycle')
                     ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('service_fee')
-                    ->label('Processing Fee')
+                Tables\Columns\TextColumn::make('service_fee_percentage')
+                    ->label('Service Fee %')
+                    ->badge()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('service_fee_custom_amount')
+                    ->label('Service Fee amount')
+                    ->badge()
+                    ->searchable(),
+                     Tables\Columns\TextColumn::make('penalty_fee_percentage')
+                    ->label('Penalty Fee %')
+                    ->badge()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('penalty_fee_custom_amount')
+                    ->label('Penalty Fee amount')
                     ->badge()
                     ->searchable(),
             ])
