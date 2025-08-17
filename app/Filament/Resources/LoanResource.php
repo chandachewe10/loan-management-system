@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\Toggle;
 use App\helpers\CreateLinks;
@@ -38,9 +39,9 @@ class LoanResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $options = Wallet::where('organization_id',"=",auth()->user()->organization_id)->get()->map(function ($wallet) {
+        $options = Wallet::where('organization_id', "=", auth()->user()->organization_id)->get()->map(function ($wallet) {
             return [
-                'value' => $wallet->id, // Set the wallet ID as the 'value'
+                'value' => $wallet->id,
                 'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
             ];
         });
@@ -54,12 +55,35 @@ class LoanResource extends Resource
                     ->searchable()
                     ->required()
                     ->preload()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, Set $set) {
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         if ($state) {
                             $interest_cycle = \App\Models\LoanType::findOrFail($state)->first();
                             $set('duration_period', $interest_cycle->interest_cycle);
 
+                            $service_fee = 0.00;
+                            $service_fee_data = \App\Models\LoanType::findOrFail($state);
+
+                            if ($service_fee_data->service_fee_type === 'service_fee_percentage') {
+                                $service_fee = ($get('principal_amount') * $service_fee_data->service_fee_percentage) / 100;
+                            } elseif ($service_fee_data->service_fee_type === 'service_fee_custom_amount') {
+                                $service_fee = $service_fee_data->service_fee_custom_amount;
+                            } elseif ($service_fee_data->service_fee_type === 'none') {
+                                $service_fee = 0;
+                            } else {
+                                $service_fee = 0;
+                            }
+                            $set('service_fee', $service_fee);
+                            $duration = $get('loan_duration') ?? 0;
+                            $principle_amount = $get('principal_amount') ?? 0;
+                            $disbursement_amount = ($principle_amount -  $service_fee) < 0 ? 0.00 : $principle_amount -  $service_fee;
+                            $loan_percent = \App\Models\LoanType::findOrFail($state)->interest_rate ?? 0;
+                            $interest_amount = (($principle_amount) * ($loan_percent / 100) * $duration);
+                            $total_repayment = ($principle_amount) + (($principle_amount) * ($loan_percent / 100) * $duration);
+                            $set('repayment_amount', number_format($total_repayment));
+                            $set('interest_amount', number_format($interest_amount));
+                            $set('interest_rate', $loan_percent);
+                            $set('disbursed_amount', $disbursement_amount);
                         }
                         return true;
                     }),
@@ -89,7 +113,18 @@ class LoanResource extends Resource
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         if ($get('loan_type_id')) {
-                            $service_fee = \App\Models\LoanType::findOrFail($get('loan_type_id'))->service_fee ?? 0;
+                            $service_fee = 0.00;
+                            $service_fee_data = \App\Models\LoanType::findOrFail($get('loan_type_id'));
+
+                            if ($service_fee_data->service_fee_type === 'service_fee_percentage') {
+                                $service_fee = ($state * $service_fee_data->service_fee_percentage) / 100;
+                            } elseif ($service_fee_data->service_fee_type === 'service_fee_custom_amount') {
+                                $service_fee = $service_fee_data->service_fee_custom_amount;
+                            } elseif ($service_fee_data->service_fee_type === 'none') {
+                                $service_fee = 0;
+                            } else {
+                                $service_fee = 0;
+                            }
                             $set('service_fee', $service_fee);
                             $duration = $get('loan_duration') ?? 0;
                             $principle_amount = $state ?? 0;
@@ -101,7 +136,6 @@ class LoanResource extends Resource
                             $set('interest_amount', number_format($interest_amount));
                             $set('interest_rate', $loan_percent);
                             $set('disbursed_amount', $disbursement_amount);
-
                         }
                         return true;
                     })
@@ -172,7 +206,7 @@ class LoanResource extends Resource
                     ->readOnly()
                     ->numeric(),
 
-                    Forms\Components\TextInput::make('disbursed_amount')
+                Forms\Components\TextInput::make('disbursed_amount')
                     ->label('Amount to be Disbursed')
                     ->required()
                     ->prefixIcon('fas-percentage')
@@ -182,7 +216,7 @@ class LoanResource extends Resource
 
 
 
-                 Hidden::make('loan_number'),
+                Hidden::make('loan_number'),
                 Forms\Components\Select::make('from_this_account')
                     ->label('From this Account')
                     ->prefixIcon('fas-wallet')
@@ -211,10 +245,10 @@ class LoanResource extends Resource
     {
         $create_link = new CreateLinks();
         return $table
-         ->headerActions([
-            ExportAction::make()
-                ->exporter(LoanExporter::class)
-        ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(LoanExporter::class)
+            ])
             ->columns([
 
                 Tables\Columns\TextColumn::make('borrower.full_name')
@@ -240,19 +274,19 @@ class LoanResource extends Resource
                     ->badge()
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('service_fee')
+                Tables\Columns\TextColumn::make('service_fee')
                     ->label('Service Fee')
                     ->money('ZMW')
                     ->badge()
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('disbursed_amount')
+                Tables\Columns\TextColumn::make('disbursed_amount')
                     ->label('Disbursed Amount')
                     ->money('ZMW')
                     ->badge()
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('balance')
+                Tables\Columns\TextColumn::make('balance')
                     ->label('Balance')
                     ->money('ZMW')
                     ->badge()
@@ -262,36 +296,36 @@ class LoanResource extends Resource
                     ->label('Due Date')
                     ->searchable(),
 
-                    Tables\Columns\TextColumn::make('loan_number')
+                Tables\Columns\TextColumn::make('loan_number')
                     ->label('Loan Number')
                     ->badge()
                     ->searchable(),
 
-Tables\Columns\TextColumn::make('id')
+                Tables\Columns\TextColumn::make('id')
 
-    ->label('Loan Statement')
-    ->formatStateUsing(function ($state, $record) {
-        $url = route('statement.download', $record->id);
-        return "<a href='{$url}' target='_blank' class='text-primary underline'>Download</a>";
-    })
+                    ->label('Loan Statement')
+                    ->formatStateUsing(function ($state, $record) {
+                        $url = route('statement.download', $record->id);
+                        return "<a href='{$url}' target='_blank' class='text-primary underline'>Download</a>";
+                    })
 
-    ->html()
-    ->searchable(),
+                    ->html()
+                    ->searchable(),
 
 
 
                 Tables\Columns\TextColumn::make('loan_agreement_file_path')
-                ->label('Loan Agreement Form')
-                ->formatStateUsing(
+                    ->label('Loan Agreement Form')
+                    ->formatStateUsing(
 
-                    fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan agreement form'),
-                ),
+                        fn(string $state) => $create_link::goTo(env('APP_URL') . '/' . $state, 'download', 'loan agreement form'),
+                    ),
                 Tables\Columns\TextColumn::make('loan_settlement_file_path')
-                ->label('Loan Settlement Form')
-                ->formatStateUsing(
+                    ->label('Loan Settlement Form')
+                    ->formatStateUsing(
 
-                    fn (string $state) => $create_link::goTo(env('APP_URL').'/'.$state, 'download','loan settlement form'),
-                )
+                        fn(string $state) => $create_link::goTo(env('APP_URL') . '/' . $state, 'download', 'loan settlement form'),
+                    )
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('loan_status')
