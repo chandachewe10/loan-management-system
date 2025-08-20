@@ -30,12 +30,14 @@ class SwitchBranchResource extends Resource
         $branchName = Branches::find(auth()->user()->branch_id)->branch_name ?? 'Main Branch';
         return $form
             ->schema([
-
                 Forms\Components\Select::make('branch_id')
                     ->label('Switch to Branch')
-                    ->relationship('branch', 'branch_name')
-                    ->required(),
-
+                    ->options(function () {
+                        $branches = Branches::orderBy('branch_name')->where('organization_id', auth()->user()->organization_id)->pluck('branch_name', 'id');
+                        return [0 => 'Main Branch'] + $branches->toArray();
+                    })
+                    ->required()
+                    ->searchable(),
                 Forms\Components\TextInput::make('current_branch')
                     ->label('Current Branch')
                     ->default($branchName)
