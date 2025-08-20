@@ -11,8 +11,9 @@ class ActivityLogObserver
      */
     public function created(ActivityLog $activityLog): void
     {
-           
+
             $activityLog->organization_id = auth()->user()->organization_id ?? null;
+            $activityLog->branch_id = auth()->user()->branch_id ?? null;
             $activityLog->save();
     }
 
@@ -21,9 +22,9 @@ class ActivityLogObserver
      */
     public function updated(ActivityLog $activityLog): void
     {
-       
-           
-        
+
+
+
     }
 
     /**

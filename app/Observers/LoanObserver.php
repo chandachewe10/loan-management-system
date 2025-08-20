@@ -11,8 +11,9 @@ class LoanObserver
      */
     public function created(Loan $loan): void
     {
-        
+
             $loan->organization_id = auth()->user()->organization_id;
+            $loan->branch_id = auth()->user()->branch_id;
             $loan->save();
     }
 
@@ -21,9 +22,9 @@ class LoanObserver
      */
     public function updated(Loan $loan): void
     {
-        
-           
-        
+
+
+
     }
 
     /**

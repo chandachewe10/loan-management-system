@@ -12,6 +12,7 @@ class RoleObserver
     public function created(Role $role): void
     {
          $role->organization_id = auth()->user()->organization_id;
+         $role->branch_id = auth()->user()->branch_id;
          $role->save();
     }
 

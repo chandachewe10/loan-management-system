@@ -12,6 +12,7 @@ class TransferObserver
     public function created(Transfer $transfer): void
     {
          $transfer->organization_id = auth()->user()->organization_id;
+         $transfer->branch_id = auth()->user()->branch_id;
          $transfer->save();
     }
 

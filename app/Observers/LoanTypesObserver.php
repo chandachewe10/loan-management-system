@@ -11,10 +11,11 @@ class LoanTypesObserver
      */
     public function created(LoanType $loanTypes): void
     {
-      
+
             $loanTypes->organization_id = auth()->user()->organization_id;
+            $loanTypes->branch_id = auth()->user()->branch_id;
             $loanTypes->save();
-        
+
     }
 
     /**
@@ -22,9 +23,9 @@ class LoanTypesObserver
      */
     public function updated(LoanType $loanTypes): void
     {
-      
-           
-        
+
+
+
     }
 
     /**

@@ -12,6 +12,7 @@ class TransactionObserver
     public function created(Transaction $transaction): void
     {
          $transaction->organization_id = auth()->user()->organization_id;
+         $transaction->branch_id = auth()->user()->branch_id;
          $transaction->save();
     }
 

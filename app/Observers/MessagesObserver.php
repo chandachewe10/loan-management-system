@@ -11,10 +11,11 @@ class MessagesObserver
      */
     public function created(Messages $messages): void
     {
-       
+
             $messages->organization_id = auth()->user()->organization_id;
+            $messages->branch_id = auth()->user()->branch_id;
             $messages->save();
-        
+
     }
 
     /**
@@ -22,9 +23,9 @@ class MessagesObserver
      */
     public function updated(Messages $messages): void
     {
-       
-            
-        
+
+
+
     }
 
     /**

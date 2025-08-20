@@ -11,8 +11,9 @@ class ThirdyPartyObserver
      */
     public function created(ThirdParty $thirdParty): void
     {
-       
+
             $thirdParty->organization_id = auth()->user()->organization_id;
+            $thirdParty->branch_id = auth()->user()->branch_id;
             $thirdParty->save();
     }
 
@@ -21,9 +22,9 @@ class ThirdyPartyObserver
      */
     public function updated(ThirdParty $thirdParty): void
     {
-       
-            
-        
+
+
+
     }
 
     /**

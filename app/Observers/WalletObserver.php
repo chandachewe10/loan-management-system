@@ -12,6 +12,7 @@ class WalletObserver
     public function created(Wallet $bavixWalletModelsWallet): void
     {
          $bavixWalletModelsWallet->organization_id = auth()->user()->organization_id;
+         $bavixWalletModelsWallet->branch_id = auth()->user()->branch_id;
          $bavixWalletModelsWallet->save();
     }
 

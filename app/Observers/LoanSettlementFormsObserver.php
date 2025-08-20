@@ -11,8 +11,9 @@ class LoanSettlementFormsObserver
      */
     public function created(LoanSettlementForms $loanSettlementForms): void
     {
-       
+
             $loanSettlementForms->organization_id = auth()->user()->organization_id;
+            $loanSettlementForms->branch_id = auth()->user()->branch_id;
             $loanSettlementForms->save();
     }
 
@@ -21,9 +22,9 @@ class LoanSettlementFormsObserver
      */
     public function updated(LoanSettlementForms $loanSettlementForms): void
     {
-       
-           
-        
+
+
+
     }
 
     /**

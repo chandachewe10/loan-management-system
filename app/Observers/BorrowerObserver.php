@@ -14,6 +14,7 @@ class BorrowerObserver
     {
 
             $borrower->organization_id = auth()->user()->organization_id;
+            $borrower->branch_id = auth()->user()->branch_id;
             $borrower->save();
 
             // Create the Borrower as a User for Future Authentication
