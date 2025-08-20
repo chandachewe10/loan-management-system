@@ -26,102 +26,119 @@ use Filament\Forms\Components\Placeholder;
 class SubscriptionsResource extends Resource
 {
     protected static ?string $model = Subscriptions::class;
+    protected static ?string $recordTitleAttribute = 'Subscriptions';
+    protected static ?string $modelLabel = 'Subscriptions';
+    protected static ?string $pluralModelLabel = 'Subscriptions';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
- public static function form(Form $form): Form
-{
-    return $form->schema([
-        Grid::make([
-            'default' => 1,
-            'md' => 2,
-            'lg' => 3, // 3 cards per row on large screens
-        ])
-        ->schema([
-            Card::make([
-                Placeholder::make('$45/m')
-                    ->label(new HtmlString('<h2 class="text-xl font-bold">$45/m</h2>'))
+    public static function form(Form $form): Form
+    {
+        return $form->schema([
+            Grid::make([
+                'default' => 1,
+                'md' => 2,
+                'lg' => 3, // 3 cards per row on large screens
+            ])
+                ->schema([
+                    Card::make([
+                        Placeholder::make('$45/m')
+                            ->label(new HtmlString('<h2 class="text-xl font-bold">$45/m</h2>'))
 
-                    ->content(new HtmlString('
+                            ->content(new HtmlString('
                     <hr class="my-2 border-gray-300">
             <ul class="list-none pl-5 space-y-1">
                 <li>✔ 1 User</li>
+                <li>✔ 1 Branch </li>
                 <li>✔ Unlimited Borrowers</li>
                 <li>✔ 500 Messages</li>
                 <li>✔ 1000 Loans Max</li>
                 <li>✔ All other features included</li>
             </ul>
         ')),
-])->footerActions([
-    Action::make('subscribe20')
-        ->label('Subscribe')
-        ->button()
-        ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(990)]))
-])->columnSpan(1),
+                    ])->footerActions([
+                        Action::make('subscribe20')
+                            ->label('Subscribe')
+                            ->button()
+                            ->color('success')
+                            ->url(fn() => route('subscription.lenco', ['amount' => encrypt(990)]))
+                    ])->columnSpan(1),
 
-             Card::make([
-                Placeholder::make('$60/m')
-                    ->label(new HtmlString('<h2 class="text-xl font-bold">$60/m</h2>'))
+                    Card::make([
+                        Placeholder::make('$60/m')
+                            ->label(new HtmlString('<h2 class="text-xl font-bold">$60/m</h2>'))
 
-                    ->content(new HtmlString('
+                            ->content(new HtmlString('
                     <hr class="my-2 border-gray-300">
             <ul class="list-none pl-5 space-y-1">
                 <li>✔ 2 Users</li>
+                <li>✔ 2 Branches </li>
                 <li>✔ Unlimited Borrowers</li>
                 <li>✔ 1000 Messages</li>
                 <li>✔ 10,000 Loans Max</li>
                 <li>✔ All other features included</li>
             </ul>
         ')),
-])->footerActions([
-    Action::make('subscribe20')
-        ->label('Subscribe')
-        ->button()
-        ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(1320)]))
-])->columnSpan(1),
+                    ])->footerActions([
+                        Action::make('subscribe20')
+                            ->label('Subscribe')
+                            ->button()
+                            ->color('success')
+                            ->url(fn() => route('subscription.lenco', ['amount' => encrypt(1320)]))
+                    ])->columnSpan(1),
 
 
-            Card::make([
-                Placeholder::make('$120/m')
-                    ->label(new HtmlString('<h2 class="text-xl font-bold">$120/m</h2>'))
+                    Card::make([
+                        Placeholder::make('$120/m')
+                            ->label(new HtmlString('<h2 class="text-xl font-bold">$120/m</h2>'))
 
-                    ->content(new HtmlString('
+                            ->content(new HtmlString('
                     <hr class="my-2 border-gray-300">
             <ul class="list-none pl-5 space-y-1">
                 <li>✔ Unlimited Users</li>
+                <li>✔ Unlimited Branches</li>
                 <li>✔ Unlimited Borrowers</li>
                 <li>✔ Unlimited Messages</li>
                 <li>✔ Unlimited Loans</li>
                 <li>✔ All other features included</li>
             </ul>
         ')),
-])->footerActions([
-    Action::make('subscribe20')
-        ->label('Subscribe')
-        ->button()
-        ->color('success')
-        ->url(fn () => route('subscription.lenco', ['amount' => encrypt(2640)]))
-])->columnSpan(1),
+                    ])->footerActions([
+                        Action::make('subscribe20')
+                            ->label('Subscribe')
+                            ->button()
+                            ->color('success')
+                            ->url(fn() => route('subscription.lenco', ['amount' => encrypt(2640)]))
+                    ])->columnSpan(1),
 
-        ]),
-    ]);
-}
+                ]),
+        ]);
+    }
 
 
     public static function table(Table $table): Table
     {
         return $table
+
             ->columns([
-                 Tables\Columns\TextColumn::make('payment_made_at')
-                ->searchable(),
-                 Tables\Columns\TextColumn::make('transaction_reference')
-                ->searchable(),
-                 Tables\Columns\TextColumn::make('payment_amount')
-                ->searchable(),
-                 Tables\Columns\TextColumn::make('payment_expires_at')
-                ->searchable(),
+                Tables\Columns\TextColumn::make('payment_made_at')
+                    ->date('j F Y')
+                    ->badge('success')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('transaction_reference')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('payment_amount')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('payment_expires_at')
+                    ->date('j F Y')
+                    ->badge()
+                    ->color(fn ($record) => 
+        \Carbon\Carbon::parse($record->payment_expires_at)->isPast() ? 'danger' : 'success'
+    )
+                    ->searchable(),
             ])
             ->filters([
                 //
