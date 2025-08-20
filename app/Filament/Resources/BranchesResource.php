@@ -1,0 +1,120 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\BranchesResource\Pages;
+use App\Filament\Resources\BranchesResource\RelationManagers;
+use App\Models\Branches;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class BranchesResource extends Resource
+{
+    protected static ?string $model = Branches::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationGroup = 'Branches';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('branch_name')
+                    ->label('Branch Name')
+                    ->prefixIcon('heroicon-o-building-storefront')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('street')
+                    ->label('Street')
+                    ->prefixIcon('heroicon-o-arrow-path')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('address')
+                    ->label('Address')
+                    ->prefixIcon('heroicon-o-home')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('city')
+                    ->label('City')
+                    ->prefixIcon('heroicon-o-home-modern')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('province')
+                    ->label('Province')
+                    ->prefixIcon('heroicon-o-home-modern')
+                    ->required()
+                    ->maxLength(255),
+
+
+                Forms\Components\TextInput::make('mobile')
+                    ->label('Branch Phone number')
+                    ->prefixIcon('heroicon-o-phone')
+                    ->tel()
+                    ->required(),
+                Forms\Components\TextInput::make('email')
+                    ->label('Branch Email address')
+                    ->prefixIcon('heroicon-o-envelope')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+
+
+                Forms\Components\Select::make('branch_manager')
+                    ->prefixIcon('heroicon-o-user-circle')
+                    ->label('Branch Manager')
+                    ->relationship('branch_manager', 'name')
+                    ->searchable()
+                    ->required()
+
+
+
+
+
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                //
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListBranches::route('/'),
+            'create' => Pages\CreateBranches::route('/create'),
+            'view' => Pages\ViewBranches::route('/{record}'),
+            'edit' => Pages\EditBranches::route('/{record}/edit'),
+        ];
+    }
+}
