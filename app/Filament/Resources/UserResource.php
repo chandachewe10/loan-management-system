@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Illuminate\Support\Facades\Hash;
 use App\Filament\Resources\UserResource\Pages;
@@ -52,6 +53,12 @@ class UserResource extends Resource
                     ->multiple()
                     ->preload()
                     ->searchable(),
+                Forms\Components\Select::make('branch_id')
+                    ->label('Assign Branch')
+                    ->relationship('branch', 'branch_name')
+                    ->required()
+                    ->preload()
+                    ->searchable(),
 
 
             ]);
@@ -60,10 +67,10 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-          ->headerActions([
-            ExportAction::make()
-                ->exporter(UserExporter::class)
-        ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(UserExporter::class)
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Full Name')
