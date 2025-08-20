@@ -53,7 +53,8 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
         'name',
         'email',
         'password',
-        'organization_id'
+        'organization_id',
+        'branch_id'
     ];
 
     /**
