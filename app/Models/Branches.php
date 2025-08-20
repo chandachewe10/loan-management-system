@@ -36,7 +36,8 @@ class Branches extends Model
         'province',
         'branch_manager',
         'zipcode',
-        'added_by'
+        'added_by',
+        'organization_id'
 
     ];
 

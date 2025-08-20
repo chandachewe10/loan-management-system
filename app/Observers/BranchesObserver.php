@@ -11,7 +11,9 @@ class BranchesObserver
      */
     public function created(Branches $branches): void
     {
-        //
+
+        $branches->organization_id = auth()->user()->organization_id;
+        $branches->save();
     }
 
     /**
