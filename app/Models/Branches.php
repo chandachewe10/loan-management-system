@@ -43,7 +43,7 @@ class Branches extends Model
     public function user()
     {
 
-        return $this->hasMany(User::class, 'id','branch_id');
+        return $this->hasMany(User::class, 'id','branch_manager');
     }
 
 }

@@ -26,6 +26,7 @@ class BranchesResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('branch_name')
                     ->label('Branch Name')
+                    ->unique()
                     ->prefixIcon('heroicon-o-building-storefront')
                     ->required()
                     ->maxLength(255),
@@ -40,20 +41,16 @@ class BranchesResource extends Resource
                     ->prefixIcon('heroicon-o-home')
                     ->required()
                     ->maxLength(255),
-
-                Forms\Components\TextInput::make('city')
-                    ->label('City')
-                    ->prefixIcon('heroicon-o-home-modern')
-                    ->required()
-                    ->maxLength(255),
-
                 Forms\Components\TextInput::make('province')
                     ->label('Province')
                     ->prefixIcon('heroicon-o-home-modern')
                     ->required()
                     ->maxLength(255),
-
-
+                Forms\Components\TextInput::make('city')
+                    ->label('City')
+                    ->prefixIcon('heroicon-o-home-modern')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('mobile')
                     ->label('Branch Phone number')
                     ->prefixIcon('heroicon-o-phone')
@@ -65,12 +62,11 @@ class BranchesResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
-
-
                 Forms\Components\Select::make('branch_manager')
                     ->prefixIcon('heroicon-o-user-circle')
                     ->label('Branch Manager')
-                    ->relationship('branch_manager', 'name')
+                    ->preload()
+                    ->relationship('user', 'name')
                     ->searchable()
                     ->required()
 
@@ -85,7 +81,28 @@ class BranchesResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('branch_name')
+                    ->badge()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('street')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('province')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('city')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('mobile')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->badge()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Branch Manager')
+                    ->badge()
+                    ->searchable(),
+
             ])
             ->filters([
                 //

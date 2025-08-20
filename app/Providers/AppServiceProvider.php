@@ -59,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(LogoutResponseContract::class, CustomLogOutResponse::class);
         Model::unguard();
         Filament::registerNavigationGroups([
+            'Branches',
             'Customers',
             'Loan Agreement Forms',
             'Wallets',
