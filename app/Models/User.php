@@ -33,6 +33,11 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
 
 
 
+    public function branch()
+    {
+        return $this->belongsTo(Branches::class, 'branch_id','id');
+    }
+
      public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
