@@ -2,29 +2,28 @@
 
 namespace App\Policies;
 
-use App\Models\Branches;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Branches;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BranchesPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        // Allow viewing branches list if user has view permission or is admin
-        return $user->can('branches.view') || $user->hasRole('super_admin');
+        return $user->can('view_any_branches');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Branches $branch): bool
+    public function view(User $user, Branches $branches): bool
     {
-        // Allow viewing specific branch if user has view permission or is admin
-        // You can add more specific logic here (e.g., branch-specific access)
-        return $user->can('branches.view') || $user->hasRole('super_admin');
+        return $user->can('view_branches');
     }
 
     /**
@@ -32,70 +31,78 @@ class BranchesPolicy
      */
     public function create(User $user): bool
     {
-        // Allow creating branches only for admins or users with create permission
-        return $user->can('branches.create') || $user->hasRole('super_admin');
+        return $user->can('create_branches');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Branches $branch): bool
+    public function update(User $user, Branches $branches): bool
     {
-        // Allow updating branches only for admins or users with update permission
-        return $user->can('branches.update') || $user->hasRole('super_admin');
+        return $user->can('update_branches');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Branches $branch): bool
+    public function delete(User $user, Branches $branches): bool
     {
-        // Prevent deletion if branch has users assigned (optional safety check)
-        if ($branch->users()->exists()) {
-            return false;
-        }
-
-        // Allow deletion only for admins or users with delete permission
-        return $user->can('branches.delete') || $user->hasRole('super_admin');
+        return $user->can('delete_branches');
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can bulk delete.
      */
-    public function restore(User $user, Branches $branch): bool
+    public function deleteAny(User $user): bool
     {
-        // Allow restoring only for admins
-        return $user->hasRole('super_admin');
+        return $user->can('delete_any_branches');
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Branches $branch): bool
+    public function forceDelete(User $user, Branches $branches): bool
     {
-        // Allow force deletion only for super admins
-        return $user->hasRole('super_admin');
+        return $user->can('force_delete_branches');
     }
 
     /**
-     * Custom method: Determine whether the user can switch to a branch.
+     * Determine whether the user can permanently bulk delete.
      */
-    public function switchBranch(User $user, Branches $branch): bool
+    public function forceDeleteAny(User $user): bool
     {
-        // Allow switching if user has access to this branch
-        // Example: user's allowed_branches contains this branch ID
-        return $user->allowed_branches->contains($branch->id) ||
-               $user->hasRole('super_admin');
+        return $user->can('force_delete_any_branches');
     }
 
     /**
-     * Custom method: Determine whether the user can manage branch users.
+     * Determine whether the user can restore.
      */
-    public function manageUsers(User $user, Branches $branch): bool
+    public function restore(User $user, Branches $branches): bool
     {
-        // Allow managing users if user is admin or branch manager
-        return $user->hasRole('super_admin') ||
-               ($user->can('branches.manage_users') &&
-                $user->branch_id === $branch->id);
+        return $user->can('restore_branches');
+    }
+
+    /**
+     * Determine whether the user can bulk restore.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('restore_any_branches');
+    }
+
+    /**
+     * Determine whether the user can replicate.
+     */
+    public function replicate(User $user, Branches $branches): bool
+    {
+        return $user->can('replicate_branches');
+    }
+
+    /**
+     * Determine whether the user can reorder.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->can('reorder_branches');
     }
 }
