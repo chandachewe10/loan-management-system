@@ -20,7 +20,9 @@ class SwitchBranchResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
     protected static ?string $navigationGroup = 'Branches';
-    protected static ?string $navigationLabel = 'Switch Branches';
+    protected static ?string $recordTitleAttribute = 'Switch Branches';
+    protected static ?string $modelLabel = 'Switch Branch';
+    protected static ?string $pluralModelLabel = 'Switch Branches';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
