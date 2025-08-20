@@ -41,6 +41,7 @@ protected static function booted(): void
             if (auth()->check()) {
 
                 $query->where('organization_id', auth()->user()->organization_id)
+                 ->where('branch_id', auth()->user()->branch_id)
                 ->orWhere('organization_id',"=",NULL);
             }
         });

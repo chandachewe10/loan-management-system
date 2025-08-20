@@ -26,6 +26,7 @@ class Messages extends Model
         static::addGlobalScope('org', function (Builder $query) {
             if (auth()->hasUser()) {
                 $query->where('organization_id', auth()->user()->organization_id)
+                 ->where('branch_id', auth()->user()->branch_id)
                 ->orWhere('organization_id',"=",NULL);
 
             }
