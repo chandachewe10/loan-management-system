@@ -37,6 +37,7 @@ class UserResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('email')
                     ->label('Email address')
+                    ->required()
                     ->prefixIcon('heroicon-o-envelope')
                     ->email(),
                 Forms\Components\TextInput::make('password')
@@ -47,6 +48,7 @@ class UserResource extends Resource
                 // Using Select Component
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
+                    ->required()
                     ->multiple()
                     ->preload()
                     ->searchable(),
