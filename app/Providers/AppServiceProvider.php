@@ -38,6 +38,8 @@ use App\Observers\UserObserver;
 use App\Observers\WalletObserver;
 use App\Observers\RoleObserver;
 use App\Models\Wallet;
+use App\Models\Branches;
+use App\Observers\BranchesObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -85,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
         Transfer::observe(TransferObserver::class);
         Transaction::observe(TransactionObserver::class);
         Role::observe(RoleObserver::class);
+        Branches::observe(BranchesObserver::class);
     }
 
 
