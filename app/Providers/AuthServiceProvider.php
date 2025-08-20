@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
         Borrower::class => BorrowerPolicy::class,
         ExpenseCategory::class => ExpenseCategoryPolicy::class,
         Expense::class => ExpensePolicy::class,
-        // LoanSettlementForms::class => LoanSettlementFormsPolicy::class,
+        LoanSettlementForms::class => LoanSettlementFormsPolicy::class,
         Loan::class => LoanPolicy::class,
         LoanSettlementForms::class => LoanSettlementFormsPolicy::class,
         LoanType::class => LoanTypePolicy::class,
