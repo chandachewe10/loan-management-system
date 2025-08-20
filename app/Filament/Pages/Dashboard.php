@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use App\Models\Branches;
 
 class Dashboard extends Page
 {
@@ -90,6 +91,7 @@ class Dashboard extends Page
 
     public function getTitle(): string | Htmlable
     {
-        return static::$title ?? __('filament-panels::pages/dashboard.title');
+        $branchName = Branches::find(auth()->user()->branch_id)->branch_name ?? 'Main Branch';
+        return strtoupper($branchName);
     }
 }
