@@ -19,7 +19,7 @@ use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
 
 
-class User extends Authenticatable implements Wallet,MustVerifyEmail
+class User extends Authenticatable implements Wallet
 {
     use HasApiTokens;
     use HasFactory;
