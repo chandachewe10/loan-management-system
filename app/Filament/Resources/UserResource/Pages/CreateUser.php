@@ -5,6 +5,8 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Spatie\Permission\Models\Role;
 use App\Models\Payments;
+use App\Models\User;
+use App\Models\Branches;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -48,6 +50,12 @@ class CreateUser extends CreateRecord
                 ->send();
             $this->halt();
         } else {
+
+            $branchId = $data['branch_id'];
+            if ($branchId == 0) {
+                $branchId = NULL;
+            }
+
 
 
 

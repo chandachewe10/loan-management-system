@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Models\Branches;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -55,10 +56,15 @@ class UserResource extends Resource
                     ->searchable(),
                 Forms\Components\Select::make('branch_id')
                     ->label('Assign Branch')
-                    ->relationship('branch', 'branch_name')
+                    ->options(function () {
+                        return Branches::where('organization_id', auth()->user()->organization_id)
+                            ->pluck('branch_name', 'id')
+                            ->prepend('Main', 0);
+                    })
                     ->required()
                     ->preload()
                     ->searchable(),
+
 
 
             ]);
