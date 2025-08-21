@@ -58,6 +58,7 @@ class CreateTransfers extends CreateRecord
 
             $firstWallet->transfer($lastWallet, $data['amount_to_transfer'], [
            'organization_id' => auth()->user()->organization_id,
+           'branch_id' => auth()->user()->branch_id,
 ]);
 
         }
