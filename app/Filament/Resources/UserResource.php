@@ -81,6 +81,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('branch.branch_name')
+                    ->label('Branch Name')
+                    ->badge()
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->branch?->branch_name ?? 'Main'),
             ])
             ->filters([
                 //
