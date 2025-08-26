@@ -63,12 +63,13 @@ class BranchesResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('branch_manager')
+                    ->helperText('If you have not created a branch manager you can create a branch and the manager can be added later.')
                     ->prefixIcon('heroicon-o-user-circle')
                     ->label('Branch Manager')
                     ->preload()
                     ->relationship('user', 'name')
                     ->searchable()
-                    ->required()
+
 
 
 
