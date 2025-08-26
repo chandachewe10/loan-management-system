@@ -40,9 +40,9 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->label('Email address')
                     ->required()
-                    ->unique()
                     ->prefixIcon('heroicon-o-envelope')
-                    ->email(),
+                    ->email()
+                    ->unique(),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
