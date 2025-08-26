@@ -18,38 +18,10 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        $maximumUsersAllowed = \App\Models\User::where('organization_id', auth()->user()->organization_id)->count();
-        $payments = Payments::where('organization_id', auth()->user()->organization_id)->latest()->first();
 
-        if ($payments->payment_amount == 0) {
 
-            Notification::make()
-                ->warning()
-                ->title('Upgrade Payment Plan')
-                ->body('Please upgrade your payment plan. Your current payment plan of free trial is limited to one user.')
-                ->persistent()
-                ->send();
-            $this->halt();
-        }
 
-        if ($payments->payment_amount == 990) {
 
-            Notification::make()
-                ->warning()
-                ->title('Upgrade Payment Plan')
-                ->body('Please upgrade your payment plan. Your current payment plan is limited to one user.')
-                ->persistent()
-                ->send();
-            $this->halt();
-        } elseif ($payments->payment_amount == 1320 && $maximumUsersAllowed == 2) {
-            Notification::make()
-                ->warning()
-                ->title('Upgrade Payment Plan')
-                ->body('Please upgrade your payment plan. Your current payment plan is limited to two users.')
-                ->persistent()
-                ->send();
-            $this->halt();
-        } else {
 
             $branchId = $data['branch_id'];
             if ($branchId == 0) {
@@ -68,17 +40,9 @@ class CreateUser extends CreateRecord
 
             ]);
 
-            // if($user){
-            //     $roleNames = $data['roles'];
 
-
-            //     $roles = Role::whereIn('name', $roleNames)->get();
-
-
-            //     $user->assignRole($roles);
-            // }
             return $user;
-        }
+
     }
 
     protected function getRedirectUrl(): string
