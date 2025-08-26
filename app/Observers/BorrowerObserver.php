@@ -18,13 +18,13 @@ class BorrowerObserver
             $borrower->save();
 
             // Create the Borrower as a User for Future Authentication
-            User::create([
-                'name' =>$borrower->first_name. ' '.$borrower->last_name,
-                'email' => $borrower->email,
-                'organization_id' => auth()->user()->organization_id,
-                'password' => Hash::make('test1234'),
+            // User::create([
+            //     'name' =>$borrower->first_name. ' '.$borrower->last_name,
+            //     'email' => $borrower->email,
+            //     'organization_id' => auth()->user()->organization_id,
+            //     'password' => Hash::make('test1234'),
 
-            ]);
+            // ]);
     }
 
     /**
