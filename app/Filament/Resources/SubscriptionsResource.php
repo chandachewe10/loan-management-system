@@ -31,7 +31,7 @@ class SubscriptionsResource extends Resource
     protected static ?string $pluralModelLabel = 'Subscriptions';
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-
+    protected static bool $shouldRegisterNavigation = false;
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -135,7 +135,7 @@ class SubscriptionsResource extends Resource
                 Tables\Columns\TextColumn::make('payment_expires_at')
                     ->date('j F Y')
                     ->badge()
-                    ->color(fn ($record) => 
+                    ->color(fn ($record) =>
         \Carbon\Carbon::parse($record->payment_expires_at)->isPast() ? 'danger' : 'success'
     )
                     ->searchable(),
