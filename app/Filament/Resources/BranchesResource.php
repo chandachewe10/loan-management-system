@@ -69,11 +69,7 @@ class BranchesResource extends Resource
                     ->preload()
                     ->relationship('user', 'name')
                     ->searchable()
-
-
-
-
-
+                    ->required()
 
             ]);
     }
