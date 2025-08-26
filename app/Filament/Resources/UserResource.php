@@ -40,6 +40,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->label('Email address')
                     ->required()
+                    ->unique()
                     ->prefixIcon('heroicon-o-envelope')
                     ->email(),
                 Forms\Components\TextInput::make('password')
