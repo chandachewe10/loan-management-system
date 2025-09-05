@@ -42,7 +42,7 @@ class UserResource extends Resource
                     ->required()
                     ->prefixIcon('heroicon-o-envelope')
                     ->email()
-                    ->unique(),
+                    ->unique(User::class, 'email', ignoreRecord: true),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
