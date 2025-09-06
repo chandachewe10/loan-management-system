@@ -28,7 +28,7 @@ class CheckSubscriptionValidity
             ->latest()
             ->first();
 
-        if ($latestSubscription) {
+        if (!$latestSubscription) {
             return redirect()
                 ->route('filament.admin.resources.subscriptions.index')
                 ->withErrors(['Your subscription has expired.']);
