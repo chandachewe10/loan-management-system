@@ -23,12 +23,13 @@ class CheckSubscriptionValidity
         }
 
         // Check for expired subscription only for authenticated users
-        $latestSubscription = Payments::where('payment_expires_at', '<', Carbon::now())
+        $todaysDate = Carbon::now();
+        $validSubscription = Payments::where('payment_expires_at', '>', $todaysDate)
             ->where('organization_id', auth()->user()->organization_id)
             ->latest()
             ->first();
 
-        if (!$latestSubscription) {
+        if (!$validSubscription) {
             return redirect()
                 ->route('filament.admin.resources.subscriptions.index')
                 ->withErrors(['Your subscription has expired.']);
