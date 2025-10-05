@@ -91,7 +91,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                CheckSubscriptionValidity::class
+             //   CheckSubscriptionValidity::class
             ])
             ->authMiddleware([
                 Authenticate::class,

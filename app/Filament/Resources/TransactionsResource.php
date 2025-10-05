@@ -19,7 +19,7 @@ class TransactionsResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $navigationIcon = 'fas-money-bill';
-    protected static ?string $navigationGroup = 'Wallets';
+    protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationLabel = 'Transactions';
     protected static ?int $navigationSort = 3;
     // public static function getNavigationBadge(): ?string

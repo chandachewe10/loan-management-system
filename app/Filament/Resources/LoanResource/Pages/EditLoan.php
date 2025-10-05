@@ -18,6 +18,7 @@ use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use Carbon\Carbon;
 use App\Notifications\LoanStatusNotification;
+use App\Models\LedgerEntry;
 
 
 class EditLoan extends EditRecord
@@ -323,6 +324,11 @@ if(!is_null($borrower->email)){
 
 if($data['loan_status'] === 'approved') {
 $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
+LedgerEntry::create([
+            'wallet_id' => $wallet->id,
+           // 'transaction_id' => mt_rand(100000, 999999),
+            'debit' => $data['principal_amount'],
+     ]);
 }
 
         $record->update($data);

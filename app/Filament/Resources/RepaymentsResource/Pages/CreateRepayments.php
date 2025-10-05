@@ -20,6 +20,7 @@ use App\Models\Loan;
 use App\Notifications\LoanStatusNotification;
 use App\Models\ThirdParty;
 use Illuminate\Support\Facades\Http;
+use App\Models\LedgerEntry;
 
 
 
@@ -73,6 +74,11 @@ class CreateRepayments extends CreateRecord
 
 
         $wallet->deposit($data['payments'], ['meta' => 'Loan repayment amount']);
+        LedgerEntry::create([
+            'wallet_id' => $wallet->id,
+          //  'transaction_id' => mt_rand(100000, 999999),
+            'credit' => $data['payments'],
+     ]);
 
         if ($new_balance <= 0) {
             $data['loan_settlement_file_path'] = $this->settlement_form($loan);

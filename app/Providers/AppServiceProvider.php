@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
             'Branches',
             'Customers',
             'Loan Agreement Forms',
-            'Wallets',
+            'Accounting',
             'Loans',
             'Expenses',
             'Repayments',

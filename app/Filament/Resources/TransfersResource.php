@@ -22,7 +22,7 @@ class TransfersResource extends Resource
     protected static ?string $model = Wallet::class;
 
     protected static ?string $navigationIcon = 'fas-wallet';
-    protected static ?string $navigationGroup = 'Wallets';
+    protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationLabel = 'Transfers';
 
 

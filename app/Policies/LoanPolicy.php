@@ -15,7 +15,7 @@ class LoanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_loan');
+        return $user->can('view_any_loan::restructure');
     }
 
     /**
@@ -23,7 +23,7 @@ class LoanPolicy
      */
     public function view(User $user, Loan $loan): bool
     {
-        return $user->can('view_loan');
+        return $user->can('view_loan::restructure');
     }
 
     /**
@@ -31,7 +31,7 @@ class LoanPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_loan');
+        return $user->can('create_loan::restructure');
     }
 
     /**
@@ -39,7 +39,7 @@ class LoanPolicy
      */
     public function update(User $user, Loan $loan): bool
     {
-        return $user->can('update_loan');
+        return $user->can('update_loan::restructure');
     }
 
     /**
@@ -47,7 +47,7 @@ class LoanPolicy
      */
     public function delete(User $user, Loan $loan): bool
     {
-        return $user->can('delete_loan');
+        return $user->can('delete_loan::restructure');
     }
 
     /**
@@ -55,7 +55,7 @@ class LoanPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_loan');
+        return $user->can('delete_any_loan::restructure');
     }
 
     /**
@@ -63,7 +63,7 @@ class LoanPolicy
      */
     public function forceDelete(User $user, Loan $loan): bool
     {
-        return $user->can('force_delete_loan');
+        return $user->can('force_delete_loan::restructure');
     }
 
     /**
@@ -71,7 +71,7 @@ class LoanPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_loan');
+        return $user->can('force_delete_any_loan::restructure');
     }
 
     /**
@@ -79,7 +79,7 @@ class LoanPolicy
      */
     public function restore(User $user, Loan $loan): bool
     {
-        return $user->can('restore_loan');
+        return $user->can('restore_loan::restructure');
     }
 
     /**
@@ -87,7 +87,7 @@ class LoanPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_loan');
+        return $user->can('restore_any_loan::restructure');
     }
 
     /**
@@ -95,7 +95,7 @@ class LoanPolicy
      */
     public function replicate(User $user, Loan $loan): bool
     {
-        return $user->can('replicate_loan');
+        return $user->can('replicate_loan::restructure');
     }
 
     /**
@@ -103,6 +103,6 @@ class LoanPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_loan');
+        return $user->can('reorder_loan::restructure');
     }
 }

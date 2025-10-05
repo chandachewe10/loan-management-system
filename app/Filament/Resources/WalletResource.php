@@ -18,7 +18,8 @@ class WalletResource extends Resource
     protected static ?string $model = Wallet::class;
 
     protected static ?string $navigationIcon = 'fas-wallet';
-    protected static ?string $navigationGroup = 'Wallets';
+    protected static ?string $navigationGroup = 'Accounting';
+    
 
     public static function getNavigationBadge(): ?string
     {
