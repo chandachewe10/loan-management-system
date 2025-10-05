@@ -21,7 +21,7 @@ class TransactionsResource extends Resource
     protected static ?string $navigationIcon = 'fas-money-bill';
     protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationLabel = 'Transactions';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 7;
     // public static function getNavigationBadge(): ?string
     // {
     //     return static::getModel()::count();

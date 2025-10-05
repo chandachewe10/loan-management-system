@@ -109,6 +109,12 @@ class LoanTypeResource extends Resource
                     ->required()
                     ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_custom_amount'),
 
+                    Forms\Components\TextInput::make('early_repayment_percent')
+                    ->label('Early Statement Reduction (ERS) %')
+                    ->numeric()
+                    ->required()
+                    ->helperText('Enter the percentage to reduce from the interest if a loan is paid off early. For example, if you enter 10, then 10% of the interest will be waived on early repayment.')
+
 
             ]);
     }
@@ -144,6 +150,10 @@ class LoanTypeResource extends Resource
                     ->searchable(),
                     Tables\Columns\TextColumn::make('penalty_fee_custom_amount')
                     ->label('Penalty Fee amount')
+                    ->badge()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('early_repayment_percent')
+                    ->label('ERS %')
                     ->badge()
                     ->searchable(),
             ])

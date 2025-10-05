@@ -19,6 +19,7 @@ class WalletResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-wallet';
     protected static ?string $navigationGroup = 'Accounting';
+     protected static ?int $navigationSort = 1;
     
 
     public static function getNavigationBadge(): ?string
