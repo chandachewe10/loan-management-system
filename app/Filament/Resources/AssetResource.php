@@ -180,10 +180,13 @@ class AssetResource extends Resource
     public static function getPages(): array
     {
         return [
+            'statement' => Pages\StatementOfFinancialPosition::route('/statement-of-financial-position'),
+            'comprehensive_income' => Pages\StatementOfComprehensiveIncome::route('/statement-of-comprehensive-income'),
             'index' => Pages\ListAssets::route('/'),
             'create' => Pages\CreateAsset::route('/create'),
             'view' => Pages\ViewAsset::route('/{record}'),
             'edit' => Pages\EditAsset::route('/{record}/edit'),
+
         ];
     }
 }

@@ -81,6 +81,20 @@ class AdminPanelProvider extends PanelProvider
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
             ])
+            ->navigationItems([
+                NavigationItem::make('Statement of Financial Position')
+                    ->url('/admin/assets/statement-of-financial-position')
+                    ->icon('heroicon-m-banknotes')
+                    ->group('Accounting')
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.assets.statement'))
+                    ->sort(3),
+                NavigationItem::make('Statement of Comprehensive Income')
+                    ->url('/admin/assets/statement-of-comprehensive-income')
+                    ->icon('heroicon-m-chart-bar')
+                    ->group('Accounting')
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.assets.comprehensive_income'))
+                    ->sort(4),
+              ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
