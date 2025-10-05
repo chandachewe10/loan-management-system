@@ -49,8 +49,15 @@ class AssetResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(5),
-                Forms\Components\TextInput::make('depreciation_method')
+                Forms\Components\Select::make('depreciation_method')
+                    ->label('Depreciation Method')
+                    ->options([
+                        'straight_line' => 'Straight Line',
+                        'reducing_balance' => 'Reducing Balance',
+
+                    ])
                     ->required(),
+
                 Forms\Components\TextInput::make('depreciation_rate')
                     ->numeric()
                     ->default(null),
@@ -103,7 +110,7 @@ class AssetResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('purchase_cost')
-                ->badge()
+                    ->badge()
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('supplier')
@@ -132,7 +139,7 @@ class AssetResource extends Resource
                         'active' => 'success',
                         'damaged' => 'warning',
                         'disposed' => 'danger',
-                         default => 'info',
+                        default => 'info',
                     }),
                 Tables\Columns\TextColumn::make('disposal_date')
                     ->date()
