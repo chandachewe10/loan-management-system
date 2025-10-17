@@ -94,6 +94,11 @@ class AdminPanelProvider extends PanelProvider
                     ->group('Accounting')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.assets.comprehensive_income'))
                     ->sort(5),
+                    NavigationItem::make('Cash Flow')
+                    ->url('/admin/loans/cash-flow-statement')
+                    ->icon('heroicon-m-chart-bar')
+                    ->group('Accounting')
+                    ->sort(6),
               ])
             ->middleware([
                 EncryptCookies::class,

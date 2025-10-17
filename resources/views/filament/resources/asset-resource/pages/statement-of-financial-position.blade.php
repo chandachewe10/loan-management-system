@@ -14,7 +14,7 @@
             <tr>
                 <td class="border px-4 py-2">Cash</td>
                 <td class="border px-4 py-2 text-right">{{ number_format($cashAmount, 2) }}</td>
-                <td class="border px-4 py-2">Loans Payable</td>
+                <td class="border px-4 py-2">Expenses</td>
                 <td class="border px-4 py-2 text-right">{{ number_format($totalLiabilities, 2) }}</td>
             </tr>
             <tr>

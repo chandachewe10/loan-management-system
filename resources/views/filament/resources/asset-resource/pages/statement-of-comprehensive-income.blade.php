@@ -15,7 +15,7 @@
                 <td class="border px-4 py-2 text-right">{{ number_format($interestIncome, 2) }}</td>
             </tr>
             <tr>
-                <td class="border px-4 py-2">Service Fees</td>
+                <td class="border px-4 py-2">Admin Fees</td>
                 <td class="border px-4 py-2 text-right">{{ number_format($serviceFeeIncome, 2) }}</td>
             </tr>
             <tr class="font-bold bg-gray-50">

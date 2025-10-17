@@ -367,11 +367,12 @@ class LoanResource extends Resource
     {
         return [
 
-
+            'cash-flow-statement' => Pages\CashFlowStatement::route('/cash-flow-statement'),
             'index' => Pages\ListLoans::route('/'),
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
             'edit' => Pages\EditLoan::route('/{record}/edit'),
+
 
         ];
     }
