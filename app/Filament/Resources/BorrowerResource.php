@@ -48,6 +48,197 @@ class BorrowerResource extends Resource
 
         return $infolist
             ->schema([
+
+                Section::make('Loan History')
+                    ->description('Current and previous loans with AI insights')
+                    ->icon('heroicon-o-banknotes')
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('loans')
+                            ->label('')
+                            ->getStateUsing(function ($record) {
+                                return \App\Models\Loan::withoutGlobalScopes()
+                                    ->where('borrower_id', $record->id)
+                                    
+                                    ->orderBy('created_at', 'desc') 
+                                    ->get()
+                                    ->toArray();
+                            })
+                            ->schema([
+                                Grid::make(3)
+                                    ->schema([
+                                        // Loan Basic Info
+                                        Section::make('Loan Details')
+                                            ->schema([
+                                                TextEntry::make('loan_number')
+                                                    ->label('Loan #')
+                                                    ->badge()
+                                                    ->color('primary'),
+
+                                                TextEntry::make('loan_type.loan_name')
+                                                    ->label('Type')
+                                                    ->badge()
+                                                    ->color('gray'),
+
+                                                TextEntry::make('principal_amount')
+                                                    ->label('Principal')
+                                                    ->money('ZMW')
+                                                    ->weight(FontWeight::Bold),
+
+                                                TextEntry::make('repayment_amount')
+                                                    ->label('Total Repayment')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->money('ZMW')
+                                                    ->color('success'),
+
+                                                TextEntry::make('balance')
+                                                    ->label('Outstanding Balance')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->money('ZMW')
+                                                    ->color(fn($state) => $state > 0 ? 'danger' : 'success'),
+                                            ])
+                                            ->columns(2),
+
+                                        // Dates & Status
+                                        Section::make('Timeline')
+                                            ->schema([
+                                                TextEntry::make('loan_release_date')
+                                                    ->label('Release Date')
+                                                    ->date('M j, Y')
+                                                    ->icon('heroicon-o-calendar'),
+
+                                                TextEntry::make('loan_due_date')
+                                                    ->label('Due Date')
+                                                    ->date('M j, Y')
+                                                    ->icon('heroicon-o-calendar')
+                                                    ->color(
+                                                        fn($state, $record) =>
+                                                        now()->gt($state) && $record['balance'] > 0 ? 'danger' : 'gray'
+                                                    ),
+
+                                                TextEntry::make('loan_status')
+                                                    ->label('Status')
+                                                    ->badge()
+                                                    ->color(fn(string $state): string => match ($state) {
+                                                        'requested' => 'gray',
+                                                        'processing' => 'info',
+                                                        'approved' => 'success',
+                                                        'fully_paid' => 'success',
+                                                        'denied' => 'danger',
+                                                        'defaulted' => 'warning',
+                                                        'partially_paid' => 'warning',
+                                                        default => 'gray',
+                                                    }),
+
+                                                TextEntry::make('loan_duration')
+                                                    ->label('Duration')
+                                                    ->formatStateUsing(fn($state) => "{$state} months")
+                                                    ->icon('heroicon-o-clock'),
+                                            ])
+                                            ->columns(2),
+
+                                        // AI Insights & Financials
+                                        Section::make('AI Assessment & Financials')
+                                            ->schema([
+                                                // AI Credit Score
+                                                TextEntry::make('ai_credit_score')
+                                                    ->label('AI Credit Score')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->formatStateUsing(fn($state) => $state ? number_format($state) : 'N/A')
+                                                    ->color(fn($state) => match (true) {
+                                                        $state >= 700 => 'success',
+                                                        $state >= 600 => 'warning',
+                                                        $state >= 500 => 'orange',
+                                                        $state > 0 => 'danger',
+                                                        default => 'gray',
+                                                    })
+                                                    ->icon('heroicon-o-cpu-chip'),
+
+                                                // AI Recommendation
+                                                TextEntry::make('ai_recommendation')
+                                                    ->label('AI Recommendation')
+                                                    ->formatStateUsing(fn($state) => $state ?: 'Not Assessed')
+                                                    ->badge()
+                                                    ->color(fn($state) => match ($state) {
+                                                        'APPROVE' => 'success',
+                                                        'REVIEW' => 'warning',
+                                                        'REJECT' => 'danger',
+                                                        default => 'gray',
+                                                    }),
+
+                                                // Default Probability
+                                                TextEntry::make('default_probability')
+                                                    ->label('Default Risk')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->formatStateUsing(fn($state) => $state ? number_format($state * 100, 1) . '%' : 'N/A')
+                                                    ->color(fn($state) => match (true) {
+                                                        $state > 0.3 => 'danger',
+                                                        $state > 0.2 => 'warning',
+                                                        $state > 0.1 => 'orange',
+                                                        $state > 0 => 'success',
+                                                        default => 'gray',
+                                                    }),
+
+                                                // Service Fee
+                                                TextEntry::make('service_fee')
+                                                    ->label('Service Fee')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->money('ZMW')
+                                                    ->color('blue'),
+
+                                                // Disbursed Amount
+                                                TextEntry::make('disbursed_amount')
+                                                    ->label('Amount Disbursed')
+                                                    ->money('ZMW')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->color('green'),
+                                            ])
+                                            ->columns(2),
+                                    ]),
+
+                                // Risk Factors (if available)
+                                Section::make('AI Risk Factors')
+                                    ->visible(fn($record) => !empty($record['risk_factors']))
+                                    ->schema([
+                                        Infolists\Components\RepeatableEntry::make('risk_factors')
+                                            ->getStateUsing(fn($record) => $record['risk_factors'] ?? [])
+                                            ->schema([
+                                                TextEntry::make('factor')
+                                                    ->getStateUsing(fn($state) => $state)
+                                                    ->icon('heroicon-o-exclamation-triangle')
+                                                    ->color('danger')
+                                                    ->extraAttributes(['class' => 'bg-red-50 px-3 py-2 rounded']),
+                                            ])
+                                            ->columns(1)
+                                            ->label('No risk factors identified'),
+                                    ])
+                                    ->collapsible(),
+
+                                // AI Decision Reason
+                                TextEntry::make('ai_decision_reason')
+                                    ->label('AI Analysis')
+                                    ->visible(fn($record) => !empty($record['ai_decision_reason']))
+                                    ->columnSpanFull()
+                                    ->extraAttributes(['class' => 'bg-blue-50 px-4 py-3 rounded-lg border border-blue-200']),
+                            ])
+                            ->columns(1)
+                            ->visible(
+                                fn($record) => \App\Models\Loan::withoutGlobalScopes()
+                                    ->where('borrower_id', $record->id)
+                                    ->exists()
+                            ),
+
+                        // Show message when no loans exist
+                        TextEntry::make('no_loans_placeholder')
+                            ->label('')
+                            ->default('No loans found for this borrower')
+                            ->color('gray')
+                            ->visible(
+                                fn($record) => !\App\Models\Loan::withoutGlobalScopes()
+                                    ->where('borrower_id', $record->id)
+                                    ->exists()
+                            ),
+                    ])
+                    ->collapsible(),
                 Section::make('Personal Details')
                     ->description('Borrower Personal Details')
                     ->icon('heroicon-o-user-circle')

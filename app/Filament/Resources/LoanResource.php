@@ -113,7 +113,7 @@ class LoanResource extends Resource
                     ->prefixIcon('fas-dollar-sign')
                     ->options([
                         'requested' => 'Requested',
-                        'processing' => 'Processing',
+                        'processing' => 'Process with AI',
                         'approved' => 'Approved',
                         'denied' => 'Denied',
                         'defaulted' => 'Defaulted',

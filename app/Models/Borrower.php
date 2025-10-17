@@ -49,11 +49,13 @@ class Borrower extends Model implements HasMedia
 
 
 
-    public function loan()
-    {
+ 
 
-        return $this->hasMany(Loan::class, 'id','borrower_id');
-    }
+    public function loans() 
+{
+    return $this->hasMany(Loan::class, 'borrower_id', 'id');
+    
+}
 
     public function created_by()
     {
