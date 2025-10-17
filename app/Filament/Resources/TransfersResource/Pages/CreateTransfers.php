@@ -8,7 +8,7 @@ use Filament\Notifications\Notification;
 use Bavix\Wallet\Models\Wallet;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
-use App\Models\LedgerEntry;
+
 
 class CreateTransfers extends CreateRecord
 {
@@ -63,20 +63,7 @@ class CreateTransfers extends CreateRecord
 ]);
 
 
-    LedgerEntry::create([
-       // 'transaction_id' => mt_rand(),
-        'account_id' => $firstWallet->id, 
-        'debit' => 0,
-        'credit' => $data['amount_to_transfer'],
-    ]);
 
-    
-    LedgerEntry::create([
-        //'transaction_id' => mt_rand(),
-        'account_id' => $lastWallet->id, 
-        'debit' => $data['amount_to_transfer'],
-        'credit' => 0,
-    ]);
 
         }
 

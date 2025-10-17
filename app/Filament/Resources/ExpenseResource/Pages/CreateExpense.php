@@ -5,7 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Filament\Resources\ExpenseResource;
 use Bavix\Wallet\Models\Wallet;
-use App\Models\LedgerEntry;
 use App\Models\Expense;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -23,11 +22,7 @@ class CreateExpense extends CreateRecord
 
         try{
             $wallet->withdraw($data['expense_amount'], ['meta' => 'Expense amount for ' . $data['expense_name']]);
-            LedgerEntry::create([
-            'wallet_id' => $wallet->id,
-            //'transaction_id' => mt_rand(100000, 999999),
-            'debit' => $data['expense_amount'],
-    ]);
+
         }
         catch(\Exception $e){
             Notification::make()

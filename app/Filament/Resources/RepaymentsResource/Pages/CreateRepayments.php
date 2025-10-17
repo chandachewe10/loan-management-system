@@ -20,7 +20,7 @@ use App\Models\Loan;
 use App\Notifications\LoanStatusNotification;
 use App\Models\ThirdParty;
 use Illuminate\Support\Facades\Http;
-use App\Models\LedgerEntry;
+
 use Carbon\Carbon;
 
 class CreateRepayments extends CreateRecord
@@ -120,10 +120,7 @@ class CreateRepayments extends CreateRecord
         // Update wallet and create ledger entry
         $wallet->deposit($payment_amount, ['meta' => 'Loan repayment amount']);
         
-        LedgerEntry::create([
-            'wallet_id' => $wallet->id,
-            'credit' => $payment_amount,
-        ]);
+    
 
         // Update loan status
         if ($new_balance <= 0) {

@@ -4,11 +4,13 @@ namespace App\Providers;
 use App\Observers\ActivityLogObserver;
 use App\Observers\LoanAgreementFormsObserver;
 use App\Observers\TransferObserver;
+use App\Observers\AssetObserver;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Filament\CustomLogOutResponse;
 use App\Models\ActivityLogs;
+use App\Models\Asset;
 use App\Models\Borrower;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
@@ -40,6 +42,8 @@ use App\Observers\RoleObserver;
 use App\Models\Wallet;
 use App\Models\Branches;
 use App\Observers\BranchesObserver;
+use App\Models\AssetCategory;
+use App\Observers\AssetCategoryObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -88,6 +92,8 @@ class AppServiceProvider extends ServiceProvider
         Transaction::observe(TransactionObserver::class);
         Role::observe(RoleObserver::class);
         Branches::observe(BranchesObserver::class);
+        Asset::observe(AssetObserver::class);
+        AssetCategory::observe(AssetCategoryObserver::class);
     }
 
 

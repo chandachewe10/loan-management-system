@@ -15,7 +15,7 @@ use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use App\Notifications\LoanStatusNotification;
-use App\Models\LedgerEntry;
+
 
 
 class CreateLoan extends CreateRecord
@@ -198,11 +198,7 @@ if(!is_null($borrower->email)){
 // Remove the amount from the Specified Wallet
 try{
     $wallet->withdraw($data['principal_amount'], ['meta' => 'Loan amount disbursed from ' . $data['from_this_account']]);
-     LedgerEntry::create([
-            'wallet_id' => $wallet->id,
-           // 'transaction_id' => mt_rand(100000, 999999),
-            'debit' => $data['principal_amount'],
-     ]);
+     
 }
 catch(\Exception $e){
     Notification::make()

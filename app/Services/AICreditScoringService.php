@@ -21,11 +21,11 @@ class AICreditScoringService
     {
         try {
             $borrowerData = $this->prepareBorrowerData($loan);
-            
+
             $riskAssessment = $this->analyzeWithAI($borrowerData);
             $creditScore = $this->calculateCreditScore($riskAssessment);
             $defaultProbability = $this->calculateDefaultProbability($riskAssessment);
-            
+
             return [
                 'success' => true,
                 'credit_score' => $creditScore,
@@ -34,10 +34,9 @@ class AICreditScoringService
                 'recommendation' => $this->getRecommendation($creditScore, $defaultProbability),
                 'decision_reason' => $riskAssessment['analysis'],
             ];
-            
         } catch (\Exception $e) {
             Log::error('AI Credit Scoring Failed for Loan ' . $loan->id . ': ' . $e->getMessage());
-            
+
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -53,7 +52,7 @@ class AICreditScoringService
     private function prepareBorrowerData(Loan $loan): array
     {
         $borrower = $loan->borrower;
-        
+
         return [
             'loan_details' => [
                 'principal_amount' => $loan->principal_amount,
@@ -78,7 +77,7 @@ class AICreditScoringService
     private function analyzeWithAI(array $applicantData): array
     {
         $prompt = $this->buildRiskAssessmentPrompt($applicantData);
-        
+
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json',
@@ -90,7 +89,7 @@ class AICreditScoringService
                     'content' => "You are a financial risk assessment expert. Return ONLY valid JSON without any additional text."
                 ],
                 [
-                    'role' => 'user', 
+                    'role' => 'user',
                     'content' => $prompt
                 ]
             ],
@@ -103,14 +102,14 @@ class AICreditScoringService
         }
 
         $content = $response->json()['choices'][0]['message']['content'];
-        
+
         // Extract JSON from response
         $jsonData = $this->extractJson($content);
-        
+
         if (!$jsonData) {
             throw new \Exception('Failed to parse AI response: ' . $content);
         }
-        
+
         return $jsonData;
     }
 
@@ -119,16 +118,16 @@ class AICreditScoringService
         // Try to find JSON between first { and last }
         $start = strpos($content, '{');
         $end = strrpos($content, '}');
-        
+
         if ($start !== false && $end !== false && $end > $start) {
             $jsonString = substr($content, $start, $end - $start + 1);
             $data = json_decode($jsonString, true);
-            
+
             if (json_last_error() === JSON_ERROR_NONE) {
                 return $data;
             }
         }
-        
+
         return null;
     }
 
@@ -163,7 +162,7 @@ Loan-to-Income: " . number_format($data['financial_ratios']['loan_to_income'] * 
     private function calculateDefaultProbability(array $riskAssessment): float
     {
         $riskScore = $riskAssessment['risk_score'];
-        $probability = 1 / (1 + exp(-($riskScore - 50) / 10));
+        $probability = 1 / (1 + exp(- ($riskScore - 50) / 10));
         return round($probability, 4);
     }
 

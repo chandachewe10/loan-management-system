@@ -17,7 +17,6 @@ use Filament\Resources\Pages\CreateRecord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use App\Models\Loan;
-use App\Models\LedgerEntry;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -142,10 +141,7 @@ class RepaymentsImporter extends Importer
         // Update wallet and create ledger entry
         $wallet->deposit($payment_amount, ['meta' => 'Loan repayment amount - Import']);
 
-        LedgerEntry::create([
-            'wallet_id' => $wallet->id,
-            'credit' => $payment_amount,
-        ]);
+
 
         // Update loan status
         if ($new_balance <= 0) {

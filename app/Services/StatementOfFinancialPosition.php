@@ -12,19 +12,19 @@ class StatementOfFinancialPosition
     
     public function cashAmount(): float
     {
-        return (float) Wallet::sum('balance'); 
+        return (float) Wallet::where('branch_id', "=", auth()->user()->branch_id)->sum('balance'); 
     }
 
   
     public function loansAmount(): float
     {
-        return (float) Loan::where('loan_status', ['active', 'damaged'])->sum('repayment_amount');
+        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->where('loan_status', ['active', 'damaged'])->sum('repayment_amount');
     }
 
 
     public function equipmentAmount(): float
     {
-        return (float) Asset::whereIn('status', ['active', 'damaged'])->sum('net_book_value');
+        return (float) Asset::where('branch_id', "=", auth()->user()->branch_id)->whereIn('status', ['active', 'damaged'])->sum('net_book_value');
     }
 
    
@@ -36,7 +36,7 @@ class StatementOfFinancialPosition
     
     public function totalLiabilities(): float
     {
-        return (float) Expense::sum('expense_amount');
+        return (float) Expense::where('branch_id', "=", auth()->user()->branch_id)->sum('expense_amount');
     }
 
     

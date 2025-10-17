@@ -233,7 +233,7 @@ class BorrowerResource extends Resource
                             ->default('No loans found for this borrower')
                             ->color('gray')
                             ->visible(
-                                fn($record) => !\App\Models\Loan::withoutGlobalScopes()
+                                fn($record) => !\App\Models\Loan::where('branch_id', "=", auth()->user()->branch_id)
                                     ->where('borrower_id', $record->id)
                                     ->exists()
                             ),
