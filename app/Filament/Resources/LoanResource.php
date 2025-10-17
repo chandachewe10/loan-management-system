@@ -39,8 +39,7 @@ class LoanResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $options = Wallet::where('organization_id', "=", auth()->user()->organization_id)->
-        where('branch_id', "=", auth()->user()->branch_id)->get()->map(function ($wallet) {
+        $options = Wallet::where('organization_id', "=", auth()->user()->organization_id)->where('branch_id', "=", auth()->user()->branch_id)->get()->map(function ($wallet) {
             return [
                 'value' => $wallet->id,
                 'label' => $wallet->name . ' - Balance: ' . number_format($wallet->balance)
@@ -94,7 +93,21 @@ class LoanResource extends Resource
                     ->relationship('borrower', 'full_name')
                     ->preload()
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        // When borrower is selected, you can pre-fill their financial data
+                        if ($state) {
+                            $borrower = \App\Models\Borrower::find($state);
+                            if ($borrower) {
+                                $set('borrower_monthly_income', $borrower->monthly_income ?? 0);
+                                $set('borrower_employment_months', $borrower->employment_months ?? 0);
+                                $set('borrower_existing_debts', $borrower->existing_debts ?? 0);
+                                $set('borrower_credit_history_months', $borrower->credit_history_months ?? 0);
+                                $set('borrower_previous_defaults', $borrower->previous_defaults ?? 0);
+                            }
+                        }
+                    }),
                 Forms\Components\Select::make('loan_status')
                     ->label('Loan Status')
                     ->prefixIcon('fas-dollar-sign')
@@ -230,7 +243,7 @@ class LoanResource extends Resource
                     ->prefixIcon('fas-money-bill-wave'),
                 Forms\Components\Toggle::make('activate_loan_agreement_form')
                     ->label('Compile Loan Agreement Form')
-                    ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan loan agreement form template for this type of loan.')
+                    ->helperText('If you want to compile the loan agreement for this applicant make sure you have added the loan agreement form template for this type of loan.')
                     ->onColor('success')
                     ->offColor('danger')
                     ->columnSpanFull(),
@@ -238,6 +251,44 @@ class LoanResource extends Resource
                     ->hidden(),
                 Forms\Components\TextInput::make('balance')
                     ->hidden(),
+
+
+                Forms\Components\Section::make('Borrower Financial Information')
+                    ->description('This data will be used for AI credit scoring')
+                    ->schema([
+                        Forms\Components\TextInput::make('borrower_monthly_income')
+                            ->label('Monthly Income (ZMW)')
+                            ->prefixIcon('fas-money-bill-wave')
+                            ->numeric()
+                            ->required(),
+
+                        Forms\Components\TextInput::make('borrower_employment_months')
+                            ->label('Employment Duration (Months)')
+                            ->prefixIcon('fas-briefcase')
+                            ->numeric()
+                            ->required(),
+
+                        Forms\Components\TextInput::make('borrower_existing_debts')
+                            ->label('Existing Debts (ZMW)')
+                            ->prefixIcon('fas-scale-balanced')
+                            ->numeric()
+                            ->required(),
+
+                        Forms\Components\TextInput::make('borrower_credit_history_months')
+                            ->label('Credit History Length (Months)')
+                            ->prefixIcon('fas-history')
+                            ->numeric()
+                            ->required(),
+
+                        Forms\Components\TextInput::make('borrower_previous_defaults')
+                            ->label('Previous Loan Defaults')
+                            ->prefixIcon('fas-exclamation-triangle')
+                            ->numeric()
+                            ->default(0)
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
 
             ]);
     }
@@ -251,6 +302,29 @@ class LoanResource extends Resource
                     ->exporter(LoanExporter::class)
             ])
             ->columns([
+
+                Tables\Columns\TextColumn::make('ai_credit_score')
+                    ->label('AI Score')
+                    ->sortable()
+                    ->color(fn($record) => match (true) {
+                        $record->ai_credit_score >= 700 => 'success',
+                        $record->ai_credit_score >= 600 => 'warning',
+                        $record->ai_credit_score >= 500 => 'danger',
+                        default => 'gray',
+                    })
+                    ->icon(fn($record) => $record->ai_scored_at ? 'heroicon-o-cpu-chip' : null)
+                    ->tooltip(fn($record) => $record->ai_scored_at ? 'AI Assessed' : 'Not Assessed'),
+
+                Tables\Columns\TextColumn::make('ai_recommendation')
+                    ->label('AI Rec')
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'APPROVE' => 'success',
+                        'REVIEW' => 'warning',
+                        'REJECT' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('borrower.full_name')
                     ->searchable(),
@@ -340,6 +414,7 @@ class LoanResource extends Resource
                         'fully_paid' => 'Fully Paid',
 
                     ]),
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -366,7 +441,7 @@ class LoanResource extends Resource
     public static function getPages(): array
     {
         return [
-
+            'ai-assessment' => Pages\AIAssessment::route('/{record}/ai-assessment'),
             'cash-flow-statement' => Pages\CashFlowStatement::route('/cash-flow-statement'),
             'index' => Pages\ListLoans::route('/'),
             'create' => Pages\CreateLoan::route('/create'),

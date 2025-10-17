@@ -14,29 +14,31 @@ class Loan extends Model
     use HasFactory;
     use LogsActivity;
 
- public function getActivitylogOptions(): LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll();
+            ->logAll();
     }
     public function loan_type()
     {
 
-        return $this->belongsTo(LoanType::class, 'loan_type_id','id');
+        return $this->belongsTo(LoanType::class, 'loan_type_id', 'id');
     }
 
     public function borrower()
     {
 
-        return $this->belongsTo(Borrower::class, 'borrower_id','id');
+        return $this->belongsTo(Borrower::class, 'borrower_id', 'id');
     }
 
 
 
     protected $casts = [
         'activate_loan_agreement_form' => 'boolean',
+        'ai_scored_at' => 'datetime',
+        'risk_factors' => 'array',
     ];
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -47,6 +49,8 @@ class Loan extends Model
     ];
 
 
+
+
     protected static function booted(): void
     {
 
@@ -55,10 +59,9 @@ class Loan extends Model
             if (auth()->check()) {
 
                 $query->where('organization_id', auth()->user()->organization_id)
-                 ->where('branch_id', auth()->user()->branch_id)
-                ->orWhere('organization_id',"=",NULL);
+                    ->where('branch_id', auth()->user()->branch_id)
+                    ->orWhere('organization_id', "=", NULL);
             }
         });
     }
-
 }
