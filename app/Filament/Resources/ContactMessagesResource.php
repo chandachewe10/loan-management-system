@@ -16,6 +16,10 @@ use Filament\Forms\Components\Select;
 use App\Models\Borrower as Contact;
 class ContactMessagesResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = ContactMessages::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';

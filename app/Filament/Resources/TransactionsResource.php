@@ -22,10 +22,7 @@ class TransactionsResource extends Resource
     protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationLabel = 'Transactions';
     protected static ?int $navigationSort = 7;
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::count();
-    // }
+
 
     public static function form(Form $form): Form
     {
@@ -41,7 +38,7 @@ class TransactionsResource extends Resource
 
  ->modifyQueryUsing(function ($query) {
             $query->whereHas('wallet', function ($q) {
-                $q->where('organization_id', Auth::user()->organization_id);
+                $q->where('organization_id', auth()->user()->organization_id);
             });
         })
 

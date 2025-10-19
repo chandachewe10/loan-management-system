@@ -20,6 +20,10 @@ use Carbon\Carbon;
 
 class LoanRollOverResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $navigationUrl = 'create';
     protected static ?string $model = LoanRollOver::class;
     protected static ?string $navigationGroup = 'Loans';

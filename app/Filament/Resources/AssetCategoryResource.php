@@ -12,9 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\AssetCategoryExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class AssetCategoryResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = AssetCategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
@@ -27,6 +33,7 @@ class AssetCategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->unique()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('code')
@@ -43,6 +50,10 @@ class AssetCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AssetCategoryExporter::class),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->badge()

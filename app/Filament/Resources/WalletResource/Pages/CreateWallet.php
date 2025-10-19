@@ -21,7 +21,7 @@ class CreateWallet extends CreateRecord
             'organization_id' => auth()->user()->organization_id,
             'branch_id' => auth()->user()->branch_id,
             'slug' => $this->generateSlug($data['name']),
-            'meta' => ['currency' =>  $data['meta']],
+            'meta' => $data['meta'],
             'description' => strip_tags($data['description']),
         ])->deposit($data['amount']);
 

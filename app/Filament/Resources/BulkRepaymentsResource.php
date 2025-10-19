@@ -16,6 +16,10 @@ use Filament\Tables\Actions\ExportAction;
 
 class BulkRepaymentsResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = Repayments::class;
 
 
@@ -24,7 +28,7 @@ class BulkRepaymentsResource extends Resource
     protected static ?string $recordTitleAttribute = 'Bulk Repayments';
     protected static ?string $title = 'Bulk Repayments';
     protected static ?string $navigationGroup = 'Repayments';
-      protected static ?int $navigationSort = 2; 
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -39,33 +43,33 @@ class BulkRepaymentsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-           ->headerActions([
-            ExportAction::make()
-                ->exporter(RepaymentsExporter::class)
-        ])
-         ->recordUrl(null)
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(RepaymentsExporter::class)
+            ])
+            ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
-                ->label('Payments Date')
+                    ->label('Payments Date')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('reference_number')
+                Tables\Columns\TextColumn::make('reference_number')
                     ->label('Reference Number')
-                        ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_status')
-                ->label('Loan Status')
-                ->badge()
+                    ->label('Loan Status')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payments')
                     ->searchable(),
-                    // Tables\Columns\TextColumn::make('loan_number.repayment_amount')
-                    // ->label('Total Repayments')
-                    // ->searchable(),
+                // Tables\Columns\TextColumn::make('loan_number.repayment_amount')
+                // ->label('Total Repayments')
+                // ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->searchable(),
-                   
-                  
+
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payments_method')

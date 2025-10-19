@@ -27,7 +27,6 @@ class StatementOfFinancialPosition extends Page
         $statement = new Service();
 
         $this->cashAmount = $statement->cashAmount();
-        $this->loansAmount = $statement->loansAmount();
         $this->equipmentAmount = $statement->equipmentAmount();
 
         $this->totalAssets = $statement->totalAssets();

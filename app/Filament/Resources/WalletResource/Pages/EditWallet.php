@@ -17,14 +17,14 @@ class EditWallet extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+    
         $record->update([
             'name' => $data['name'],
             'amount' => 0,
-            'meta' => ['currency' =>  $data['meta']],
+            'meta' => $data['meta'],
             'description' => strip_tags($data['description']),
         ]);
-        $wallet = Wallet::where('name', "=", $data['name'])->first();
-
+        $wallet = Wallet::find($record->id);
         $wallet->deposit($data['amount'], ['meta' => $data['description']]);
         return $record;
     }

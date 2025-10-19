@@ -96,7 +96,7 @@ class LoanResource extends Resource
                     ->required()
                     ->live()
                     ->afterStateUpdated(function ($state, Set $set) {
-                        // When borrower is selected, you can pre-fill their financial data
+                        // When borrower pre-fill their financial data
                         if ($state) {
                             $borrower = \App\Models\Borrower::find($state);
                             if ($borrower) {
@@ -251,8 +251,6 @@ class LoanResource extends Resource
                     ->hidden(),
                 Forms\Components\TextInput::make('balance')
                     ->hidden(),
-
-
                 Forms\Components\Section::make('Borrower Financial Information')
                     ->description('This data will be used for AI credit scoring')
                     ->schema([

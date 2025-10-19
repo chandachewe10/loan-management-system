@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\WalletResource\Pages;
 use App\Filament\Resources\WalletResource\RelationManagers;
@@ -19,8 +20,8 @@ class WalletResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-wallet';
     protected static ?string $navigationGroup = 'Accounting';
-     protected static ?int $navigationSort = 1;
-    
+    protected static ?int $navigationSort = 1;
+
 
     public static function getNavigationBadge(): ?string
     {
@@ -36,21 +37,21 @@ class WalletResource extends Resource
                     ->label('Wallet Name - Account Name')
                     ->prefixIcon('fas-wallet')
                     ->required(),
-                Forms\Components\TextInput::make('meta')
+                Forms\Components\Select::make('meta.currency')
                     ->label('Currency')
-                    ->formatStateUsing(function ($state, $record) {
-
-                        return $record->meta['currency'] ?? '';
-                    })
+                    ->options([
+                        'ZMW' => 'ZMW - Zambian Kwacha',
+                    ])
+                    ->default('ZMW')
                     ->required()
                     ->prefixIcon('fas-money-bill'),
-                    Forms\Components\TextInput::make('balance')
+                Forms\Components\TextInput::make('balance')
                     ->label('Current Balance')
                     ->placeholder(0.00)
                     ->readonly()
                     ->numeric()
                     ->prefixIcon('fas-dollar-sign'),
-                    Forms\Components\TextInput::make('amount')
+                Forms\Components\TextInput::make('amount')
                     ->label('Add Funds')
                     ->required()
                     ->numeric()
@@ -68,15 +69,15 @@ class WalletResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-          ->headerActions([
-            ExportAction::make()
-                ->exporter(WalletExporter::class)
-        ])
-        ->recordUrl(null)
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(WalletExporter::class)
+            ])
+            ->recordUrl(null)
             ->columns([
 
                 Tables\Columns\TextColumn::make('name')
-                ->badge()
+                    ->badge()
 
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
@@ -85,11 +86,11 @@ class WalletResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('balance')
-                ->badge()
+                    ->badge()
                     ->searchable(),
-                      Tables\Columns\TextColumn::make('meta')
-                      ->label('Currency')
-                ->badge()
+                Tables\Columns\TextColumn::make('meta')
+                    ->label('Currency')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
@@ -105,7 +106,7 @@ class WalletResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                  //  Tables\Actions\DeleteBulkAction::make(),
+                    //  Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
                 ]),
             ])

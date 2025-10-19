@@ -27,6 +27,7 @@ use Carbon\Carbon;
 
 class LoanRestructureResource extends Resource
 {
+
     protected static ?string $model = LoanRestructure::class;
 
     protected static ?string $navigationGroup = 'Loans';

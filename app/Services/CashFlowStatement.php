@@ -16,12 +16,7 @@ class StatementOfFinancialPosition
     }
 
   
-    public function loansAmount(): float
-    {
-        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->where('loan_status', ['active', 'damaged'])->sum('repayment_amount');
-    }
-
-
+    
     public function equipmentAmount(): float
     {
         return (float) Asset::where('branch_id', "=", auth()->user()->branch_id)->whereIn('status', ['active', 'damaged'])->sum('net_book_value');
@@ -30,7 +25,7 @@ class StatementOfFinancialPosition
    
     public function totalAssets(): float
     {
-        return $this->cashAmount() + $this->loansAmount() + $this->equipmentAmount();
+        return $this->cashAmount() + $this->equipmentAmount();
     }
 
     
@@ -50,7 +45,6 @@ class StatementOfFinancialPosition
     {
         return [
             'cashAmount' => $this->cashAmount(),
-            'loansAmount' => $this->loansAmount(),
             'equipmentAmount' => $this->equipmentAmount(),
             'totalAssets' => $this->totalAssets(),
             'totalLiabilities' => $this->totalLiabilities(),

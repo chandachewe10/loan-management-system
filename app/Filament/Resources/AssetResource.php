@@ -12,9 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\AssetExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class AssetResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = Asset::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
@@ -98,11 +104,16 @@ class AssetResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AssetExporter::class),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('asset_name')
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asset_code')
+                    ->unique()
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asset_category.name')

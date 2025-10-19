@@ -12,9 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\BranchesExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class BranchesResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = Branches::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
@@ -76,6 +82,10 @@ class BranchesResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+                ->headerActions([
+            ExportAction::make()
+                ->exporter(BranchesExporter::class),
+        ])
             ->columns([
                 Tables\Columns\TextColumn::make('branch_name')
                     ->badge()

@@ -10,13 +10,13 @@ class StatementOfComprehensiveIncome
     // Interest income from loans
     public function interestIncome(): float
     {
-        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->sum('interest_amount');
+        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->whereIn('loan_status', ['approved','partially_paid','fully_paid','defaulted'])->sum('interest_amount');
     }
 
     // Service fee income from loans
     public function serviceFeeIncome(): float
     {
-        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->sum('service_fee');
+        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->whereIn('loan_status', ['approved','partially_paid','fully_paid','defaulted'])->sum('service_fee');
     }
 
     // Total income
@@ -34,7 +34,7 @@ class StatementOfComprehensiveIncome
     // Total bad loans / defaulters
     public function badLoans(): float
     {
-        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->where('loan_status', 'defaulted')->sum('repayment_amount');
+        return (float) Loan::where('branch_id', "=", auth()->user()->branch_id)->where('loan_status', 'defaulted')->sum('balance');
     }
 
     // Net profit

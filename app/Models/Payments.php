@@ -31,4 +31,13 @@ public function getActivitylogOptions(): LogOptions
             }
         });
     }
+
+        /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'payment_expires_at' => 'datetime',
+    ];
 }

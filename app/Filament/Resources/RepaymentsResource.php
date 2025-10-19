@@ -39,6 +39,7 @@ class RepaymentsResource extends Resource
                     ->preload()
                     ->live(onBlur: true)
                     ->required(function ($state, Set $set) {
+                       
                         if ($state) {
                             $balance = \App\Models\Loan::findOrFail($state)->balance;
                             $set('balance', $balance);

@@ -26,12 +26,12 @@ class TransfersResource extends Resource
     protected static ?string $navigationLabel = 'Transfers';
 
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
 
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return Transfer::count();
-    // }
+    public static function getNavigationBadge(): ?string
+    {
+        return Transfer::count();
+    }
 
 
     public static function form(Form $form): Form

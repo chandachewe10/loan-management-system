@@ -15,6 +15,10 @@ use Filament\Tables\Actions\ExportAction;
 
 class MessagesResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = Messages::class;
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
     protected static ?string $modelLabel = 'Send SMSes';
