@@ -155,7 +155,7 @@
                   Live Updates
                 </h3>
                 <p class="c-paragraph c-card__text">
-                  Give customers instant reports to the status of their loan details, repayment schedules, and application statuses through <a href="https://swiftsms.macroit.org">Bulk SMS</a> Portal
+                  Give customers instant reports to the status of their loan details, repayment schedules, and application statuses
                 </p>
               </div>
               <div class="c-card__img-holder">
