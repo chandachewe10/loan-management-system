@@ -127,12 +127,12 @@
 
       <section class="section">
         <div class="container">
-          <div class="section__title-wrapper">
-            <h2 class="heading heading--2">Fully Automated</h2>
-            <h4 class="heading heading--4">
-              Send personalized loan offers, agreements, and payment reminders via email or SMS. Predefined templates automate outreach, ensuring customers stay informed without adding to your workload.
-            </h4>
-          </div>
+<div class="section__title-wrapper">
+    <h2 class="heading heading--2">AI-Powered Credit & Risk Analysis</h2>
+    <h4 class="heading heading--4">
+        Go beyond automation with intelligent underwriting. Our system performs instant credit scoring and risk assessment for each applicant, then automatically generates and sends personalized loan offers, agreements, and payment reminders. Make smarter, data-driven lending decisions without adding to your workload.
+    </h4>
+</div>
 
           <div class="box box--flex">
             <article class="c-card">
