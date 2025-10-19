@@ -56,7 +56,7 @@
                 </li>
               </ul>
               <a href="{{ 'admin/login' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign In</a>
-              <a href="{{ 'admin/register' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a>
+              <!-- <a href="{{ 'admin/register' }}" class="c-button c-button--primary" style="color:white; text-decoration:none;">Sign Up</a> -->
             </div>
           </nav>
         </div>
