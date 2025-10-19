@@ -27,6 +27,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('name')
                     ->label('Business Name')
+                    ->helperText('We will send you a verification email. Make sure to put a valid working email address and verify from the same device which is signing up')
                     ->required()
                     ->maxLength(255);
     }
