@@ -42,10 +42,15 @@ class Branches extends Model
     ];
 
 
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'branch_manager', 'id');
+    }
+    
     public function user()
     {
-
-        return $this->hasMany(User::class, 'id','branch_manager');
+        // Keep for backward compatibility
+        return $this->belongsTo(User::class, 'branch_manager', 'id');
     }
 
      protected static function booted(): void

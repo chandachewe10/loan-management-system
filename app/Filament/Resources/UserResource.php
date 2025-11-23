@@ -62,7 +62,8 @@ class UserResource extends Resource
                             ->pluck('branch_name', 'id')
                             ->prepend('Main', 0);
                     })
-                    ->required()
+                    ->helperText('You can assign a branch later after creating branches')
+                    ->required(false)
                     ->preload()
                     ->searchable(),
 

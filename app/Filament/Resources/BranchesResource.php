@@ -32,7 +32,7 @@ class BranchesResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('branch_name')
                     ->label('Branch Name')
-                    ->unique()
+                    ->unique(Branches::class, 'branch_name', ignoreRecord: true)
                     ->prefixIcon('heroicon-o-building-storefront')
                     ->required()
                     ->maxLength(255),
@@ -72,9 +72,13 @@ class BranchesResource extends Resource
                     ->prefixIcon('heroicon-o-user-circle')
                     ->label('Branch Manager')
                     ->preload()
-                    ->relationship('user', 'name')
+                    ->options(function () {
+                        return \App\Models\User::where('organization_id', auth()->user()->organization_id)
+                            ->pluck('name', 'id');
+                    })
                     ->searchable()
-                    ->required()
+                    ->helperText('You can assign a branch manager later after creating users')
+                    ->required(false)
 
             ]);
     }
@@ -104,10 +108,12 @@ class BranchesResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\TextColumn::make('manager.name')
                     ->label('Branch Manager')
                     ->badge()
-                    ->searchable(),
+                    ->searchable()
+                    ->default('Not Assigned')
+                    ->placeholder('Not Assigned'),
 
             ])
             ->filters([
