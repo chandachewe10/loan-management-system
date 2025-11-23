@@ -84,6 +84,16 @@ return [
             'visibility' => 'public',
         ],
 
+
+        'company_logos' => [
+            'driver' => 'local',
+            'root' => public_path('COMPANY_LOGOS'),
+            'throw' => false,
+            'url' => env('APP_URL').'/COMPANY_LOGOS',
+            'visibility' => 'public',
+        ],
+
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

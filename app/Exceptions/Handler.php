@@ -23,9 +23,21 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     { 
-        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e) {
-        return redirect()->route('login');
-    });
+        // Handle CSRF token mismatch (419 errors) more gracefully
+        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            // If it's a logout request, just redirect to home/login without error
+            if ($request->is('admin/logout') || 
+                $request->is('admin/auth/logout') || 
+                $request->routeIs('logout') ||
+                $request->routeIs('filament.admin.auth.logout')) {
+                return redirect('/');
+            }
+            
+            // For other requests, redirect to login
+            return redirect()->route('login')
+                ->with('error', 'Your session has expired. Please log in again.');
+        });
+        
         $this->reportable(function (Throwable $e) {
             //
         });

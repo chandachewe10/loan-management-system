@@ -13,6 +13,12 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('companyProfile')
+                ->label('Company Profile Completion')
+                ->icon('heroicon-m-building-office')
+                ->color('primary')
+                ->url('/admin/profile-completion')
+                ->tooltip('Update your company profile information'),
             Actions\CreateAction::make(),
         ];
     }

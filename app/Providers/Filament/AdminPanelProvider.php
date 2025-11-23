@@ -101,6 +101,12 @@ class AdminPanelProvider extends PanelProvider
                     ->group('Accounting')
                     ->isActiveWhen(fn (): bool => request()->is('admin/loans/cash-flow-statement'))
                     ->sort(6),
+                NavigationItem::make('Company Profile Completion')
+                    ->url('/admin/profile-completion')
+                    ->icon('heroicon-m-building-office')
+                    ->group('User Management')
+                    ->isActiveWhen(fn (): bool => request()->is('admin/profile-completion'))
+                    ->sort(2),
               ])
             ->middleware([
                 EncryptCookies::class,

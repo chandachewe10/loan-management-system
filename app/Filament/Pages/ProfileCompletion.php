@@ -105,7 +105,7 @@ class ProfileCompletion extends Page implements HasForms, HasActions
                             ->image()
                             ->imageEditor()
                             ->maxSize(2048)
-                            ->disk('public')
+                            ->disk('company_logos')
                             ->visibility('public')
                             ->helperText('Upload your company logo (max 2MB)')
                             ->columnSpan(2),
