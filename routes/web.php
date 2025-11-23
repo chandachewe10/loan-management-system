@@ -1,6 +1,6 @@
 <?php
 use App\Http\Controllers\{BorrowersController,
-SubscriptionsController, CustomerStatementController};
+SubscriptionsController, CustomerStatementController, BorrowerApplicationController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,4 +40,13 @@ Route::middleware([
 });
 
 Route::get('/statement/{record}', [CustomerStatementController::class, 'download'])->name('statement.download');
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/borrower-application/{id}/preview', [BorrowerApplicationController::class, 'preview'])->name('borrower.application.preview');
+    Route::get('/borrower-application/{id}/download', [BorrowerApplicationController::class, 'download'])->name('borrower.application.download');
+});
 

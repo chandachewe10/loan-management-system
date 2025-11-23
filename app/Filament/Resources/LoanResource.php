@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Exports\LoanExporter;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class LoanResource extends Resource
 {
@@ -318,6 +319,77 @@ class LoanResource extends Resource
                             ->numeric()
                             ->default(0)
                             ->required(),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Loan Documents & Attachments')
+                    ->description('Upload all required documents for this loan application')
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('payslips')
+                            ->label('Payslips')
+                            ->disk('borrowers')
+                            ->collection('payslips')
+                            ->visibility('public')
+                            ->multiple()
+                            ->minFiles(0)
+                            ->maxFiles(10)
+                            ->maxSize(5120)
+                            ->openable()
+                            ->helperText('Upload borrower payslips (max 5MB per file)'),
+                        
+                        SpatieMediaLibraryFileUpload::make('bank_statements')
+                            ->label('Bank Statements')
+                            ->disk('borrowers')
+                            ->collection('bank_statements')
+                            ->visibility('public')
+                            ->multiple()
+                            ->minFiles(0)
+                            ->maxFiles(10)
+                            ->maxSize(5120)
+                            ->openable()
+                            ->helperText('Upload bank statements (max 5MB per file)'),
+                        
+                        SpatieMediaLibraryFileUpload::make('nrc')
+                            ->label('National ID (NRC)')
+                            ->disk('borrowers')
+                            ->collection('nrc')
+                            ->visibility('public')
+                            ->maxSize(5120)
+                            ->openable()
+                            ->helperText('Upload National Registration Card (max 5MB)'),
+                        
+                        SpatieMediaLibraryFileUpload::make('preapproval_letter')
+                            ->label('Pre-approval Letter')
+                            ->disk('borrowers')
+                            ->collection('preapproval_letter')
+                            ->visibility('public')
+                            ->minFiles(0)
+                            ->maxSize(5120)
+                            ->openable()
+                            ->helperText('Upload pre-approval letter if available (max 5MB)'),
+                        
+                        SpatieMediaLibraryFileUpload::make('proof_of_residence')
+                            ->label('Proof of Residence')
+                            ->disk('borrowers')
+                            ->collection('proof_of_residence')
+                            ->visibility('public')
+                            ->minFiles(0)
+                            ->maxSize(5120)
+                            ->openable()
+                            ->helperText('Upload proof of residence (max 5MB)'),
+                        
+                        SpatieMediaLibraryFileUpload::make('collaterals')
+                            ->label('Collaterals')
+                            ->disk('borrowers')
+                            ->collection('collaterals')
+                            ->visibility('public')
+                            ->multiple()
+                            ->minFiles(0)
+                            ->maxFiles(10)
+                            ->maxSize(5120)
+                            ->openable()
+                            ->helperText('Upload collateral documents (max 5MB per file)'),
                     ])
                     ->columns(2)
                     ->collapsible(),

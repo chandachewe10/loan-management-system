@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class Loan extends Model
+class Loan extends Model implements HasMedia
 {
     use HasFactory;
     use LogsActivity;
+    use InteractsWithMedia;
 
     public function getActivitylogOptions(): LogOptions
     {

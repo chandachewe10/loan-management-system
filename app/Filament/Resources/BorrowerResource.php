@@ -320,153 +320,23 @@ class BorrowerResource extends Resource
 
 
 
-                Section::make('Attached Files')
+                Section::make('Profile Picture')
                     ->schema([
-                        Actions::make(
-                            array_merge(
-                                ...$borrower->getMedia('payslips')->map(function ($media) {
-                                    return [
-                                        Action::make('download_' . $media->id)
-                                            ->label('Download Payslip')
-                                            ->icon('heroicon-o-arrow-down-tray')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('primary'),
-
-                                        Action::make('view_' . $media->id)
-                                            ->label('View Payslip')
-                                            ->icon('heroicon-o-eye')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('secondary'),
-                                    ];
-                                })->toArray()
-                            )
-                        ),
-
-                        Actions::make(
-                            array_merge(
-                                ...$borrower->getMedia('bank_statements')->map(function ($media) {
-                                    return [
-                                        Action::make('download_' . $media->id)
-                                            ->label('Download Bank Statement')
-                                            ->icon('heroicon-o-arrow-down-tray')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('primary'),
-
-                                        Action::make('view_' . $media->id)
-                                            ->label('View Bank Statement')
-                                            ->icon('heroicon-o-eye')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('secondary'),
-                                    ];
-                                })->toArray()
-                            )
-                        ),
-
-                        Actions::make(
-                            array_merge(
-                                ...$borrower->getMedia('nrc')->map(function ($media) {
-                                    return [
-                                        Action::make('download_' . $media->id)
-                                            ->label('Download Nrc')
-                                            ->icon('heroicon-o-arrow-down-tray')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('primary'),
-
-                                        Action::make('view_' . $media->id)
-                                            ->label('View Nrc')
-                                            ->icon('heroicon-o-eye')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('secondary'),
-                                    ];
-                                })->toArray()
-                            )
-                        ),
-
-                        Actions::make(
-                            array_merge(
-                                ...$borrower->getMedia('proof_of_residence')->map(function ($media) {
-                                    return [
-                                        Action::make('download_' . $media->id)
-                                            ->label('Download Proof of Residence')
-                                            ->icon('heroicon-o-arrow-down-tray')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('primary'),
-
-                                        Action::make('view_' . $media->id)
-                                            ->label('View Proof of Residence')
-                                            ->icon('heroicon-o-eye')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('secondary'),
-                                    ];
-                                })->toArray()
-                            )
-                        ),
-
-                        Actions::make(
-                            array_merge(
-                                ...$borrower->getMedia('preapproval_letter')->map(function ($media) {
-                                    return [
-                                        Action::make('download_' . $media->id)
-                                            ->label('Download Preapproval Letter')
-                                            ->icon('heroicon-o-arrow-down-tray')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('primary'),
-
-                                        Action::make('view_' . $media->id)
-                                            ->label('View Preapproval Letter')
-                                            ->icon('heroicon-o-eye')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('secondary'),
-                                    ];
-                                })->toArray()
-                            )
-                        ),
-
-                        Actions::make(
-                            array_merge(
-                                ...$borrower->getMedia('collaterals')->map(function ($media) {
-                                    return [
-                                        Action::make('download_' . $media->id)
-                                            ->label('Download Collateral')
-                                            ->icon('heroicon-o-arrow-down-tray')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('primary'),
-
-                                        Action::make('view_' . $media->id)
-                                            ->label('View Collateral')
-                                            ->icon('heroicon-o-eye')
-                                            ->url($media->getUrl())
-                                            ->openUrlInNewTab()
-                                            ->outlined()
-                                            ->color('secondary'),
-                                    ];
-                                })->toArray()
-                            )
-                        ),
-
-                    ]),
+                        Grid::make(1)
+                            ->schema([
+                                TextEntry::make('profile_picture')
+                                    ->label('')
+                                    ->formatStateUsing(function ($record) {
+                                        $media = $record->getFirstMedia('profile_picture');
+                                        if ($media) {
+                                            return '<img src="' . $media->getUrl() . '" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover" />';
+                                        }
+                                        return '<div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">No Picture</div>';
+                                    })
+                                    ->html(),
+                            ]),
+                    ])
+                    ->collapsible(),
             ]);
     }
 
@@ -685,59 +555,16 @@ class BorrowerResource extends Resource
                     ->label('Mobile Money Number')
                     ->prefixIcon('fas-user')
                     ->tel(),
-                SpatieMediaLibraryFileUpload::make('payslips')
+                SpatieMediaLibraryFileUpload::make('profile_picture')
+                    ->label('Borrower Profile Picture')
                     ->disk('borrowers')
-                    ->collection('payslips')
+                    ->collection('profile_picture')
                     ->visibility('public')
-                    ->multiple()
-                    ->minFiles(0)
-                    ->maxFiles(10)
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable(),
-                SpatieMediaLibraryFileUpload::make('bank_statements')
-                    ->disk('borrowers')
-                    ->collection('bank_statements')
-                    ->visibility('public')
-                    ->multiple()
-                    ->minFiles(0)
-                    ->maxFiles(10)
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable(),
-                SpatieMediaLibraryFileUpload::make('nrc')
-                    ->disk('borrowers')
-                    ->collection('nrc')
-                    ->visibility('public')
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable(),
-                SpatieMediaLibraryFileUpload::make('preapproval_letter')
-                    ->disk('borrowers')
-                    ->collection('preapproval_letter')
-                    ->visibility('public')
-                    ->minFiles(0)
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable(),
-                SpatieMediaLibraryFileUpload::make('proof_of_residence')
-                    ->disk('borrowers')
-                    ->collection('proof_of_residence')
-                    ->visibility('public')
-                    ->minFiles(0)
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable(),
-                SpatieMediaLibraryFileUpload::make('collaterals')
-                    ->disk('borrowers')
-                    ->multiple()
-                    ->minFiles(0)
-                    ->maxFiles(10)
-                    ->collection('collaterals')
-                    ->visibility('public')
-                    ->maxSize(5120)
-                    ->columnSpan(2)
-                    ->openable(),
+                    ->image()
+                    ->imageEditor()
+                    ->maxSize(2048)
+                    ->helperText('Upload borrower profile picture (max 2MB)')
+                    ->columnSpan(2),
 
 
 
@@ -783,6 +610,17 @@ class BorrowerResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('previewApplication')
+                    ->label('Preview Application')
+                    ->icon('heroicon-o-document-text')
+                    ->color('primary')
+                    ->url(fn ($record) => route('borrower.application.preview', ['id' => $record->id]))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('downloadApplication')
+                    ->label('Download Application')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->url(fn ($record) => route('borrower.application.download', ['id' => $record->id])),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
 

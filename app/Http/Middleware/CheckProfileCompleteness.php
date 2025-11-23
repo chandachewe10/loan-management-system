@@ -28,12 +28,15 @@ class CheckProfileCompleteness
             return $next($request);
         }
 
-        // Check if profile is incomplete and modal hasn't been shown
+        // Check if profile is incomplete - redirect only if modal hasn't been shown (user hasn't clicked "Complete Later")
         if ($user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
-            // Only redirect if not already on the profile completion page
-            if (!$request->routeIs('filament.admin.pages.profile-completion')) {
+            // Check if we're already on the profile completion page
+            $path = $request->path();
+            $isProfileCompletionPage = str_contains($path, 'admin/profile-completion');
+            
+            if (!$isProfileCompletionPage) {
                 return redirect()
-                    ->route('filament.admin.pages.profile-completion')
+                    ->to('/admin/profile-completion')
                     ->with('info', 'Please complete your company profile to continue.');
             }
         }
@@ -63,7 +66,8 @@ class CheckProfileCompleteness
         if (
             str_contains($path, 'admin/auth') ||
             str_contains($path, 'admin/api') ||
-            str_contains($path, 'livewire/')
+            str_contains($path, 'livewire/') ||
+            str_contains($path, 'admin/profile-completion')
         ) {
             return true;
         }

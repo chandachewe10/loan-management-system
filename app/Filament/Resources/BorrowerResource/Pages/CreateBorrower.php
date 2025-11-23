@@ -23,8 +23,8 @@ class CreateBorrower extends CreateRecord
 
       protected function getRedirectUrl(): string
     {
-       
-        return $this->getResource()::getUrl('index');
+        // Redirect to preview the application after creation
+        return route('borrower.application.preview', ['id' => $this->record->id]);
     }
 
     protected function getCreatedNotification(): ?Notification
@@ -32,7 +32,12 @@ class CreateBorrower extends CreateRecord
         return Notification::make()
             ->success()
             ->title('Customer created')
-            ->body('The Customer has been created successfully.');
+            ->body('The Customer has been created successfully. Previewing application form...')
+            ->actions([
+                \Filament\Notifications\Actions\Action::make('view')
+                    ->label('View Borrower')
+                    ->url($this->getResource()::getUrl('view', ['record' => $this->record]))
+            ]);
     }
 
 

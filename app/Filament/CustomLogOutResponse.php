@@ -9,8 +9,7 @@ class CustomLogOutResponse implements Responsable
 {
     public function toResponse($request): RedirectResponse
     {
-        
-            return redirect('/');
-        
+        // The ResetProfileCompletionModal listener handles resetting the flag
+        return redirect('/');
     }
 }
