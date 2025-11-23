@@ -13,6 +13,7 @@ class StatementOfFinancialPosition extends Page
     protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Statement of Financial Position';
+    protected static bool $shouldRegisterNavigation = false;
 
     // Define public properties for the totals
     public $cashAmount = 0;

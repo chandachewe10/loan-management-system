@@ -24,6 +24,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Rmsramos\Activitylog\ActivitylogPlugin;
 use App\Http\Middleware\CheckSubscriptionValidity;
+use App\Http\Middleware\CheckProfileCompleteness;
 use App\Filament\Pages\Auth\Register;
 
 class AdminPanelProvider extends PanelProvider
@@ -86,18 +87,19 @@ class AdminPanelProvider extends PanelProvider
                     ->url('/admin/assets/statement-of-financial-position')
                     ->icon('heroicon-m-banknotes')
                     ->group('Accounting')
-                  //  ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.assets.statement'))
+                    ->isActiveWhen(fn (): bool => request()->is('admin/assets/statement-of-financial-position'))
                     ->sort(4),
                 NavigationItem::make('Statement of Comprehensive Income')
                     ->url('/admin/assets/statement-of-comprehensive-income')
                     ->icon('heroicon-m-chart-bar')
                     ->group('Accounting')
-                    //->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.assets.comprehensive_income'))
+                    ->isActiveWhen(fn (): bool => request()->is('admin/assets/statement-of-comprehensive-income'))
                     ->sort(5),
                     NavigationItem::make('Cash Flow')
                     ->url('/admin/loans/cash-flow-statement')
                     ->icon('heroicon-m-calculator')
                     ->group('Accounting')
+                    ->isActiveWhen(fn (): bool => request()->is('admin/loans/cash-flow-statement'))
                     ->sort(6),
               ])
             ->middleware([
@@ -110,6 +112,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                CheckProfileCompleteness::class,
                 CheckSubscriptionValidity::class
             ])
             ->authMiddleware([

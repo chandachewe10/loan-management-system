@@ -22,6 +22,7 @@ class CashFlowStatement extends Page implements HasTable
     protected static string $view = 'filament.resources.loan-resource.pages.cash-flow-statement';
     protected static ?string $navigationLabel = 'Cash Flow Statement';
     protected static ?string $title = 'Cash Flow Statement';
+    protected static bool $shouldRegisterNavigation = false;
 
     public $wallets;
     public $totalBalance;

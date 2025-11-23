@@ -13,6 +13,7 @@ class StatementOfComprehensiveIncome extends Page
     protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Statement of Comprehensive Income';
+    protected static bool $shouldRegisterNavigation = false;
 
     public $interestIncome = 0;
     public $serviceFeeIncome = 0;

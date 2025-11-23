@@ -35,6 +35,40 @@ class LoanResource extends Resource
         return static::getModel()::count();
     }
 
+    public static function getNavigationItems(): array
+    {
+        $items = parent::getNavigationItems();
+        
+        // Exclude cash flow statement from making Loans navigation active
+        $excludedPaths = [
+            'admin/loans/cash-flow-statement',
+        ];
+        
+        $currentPath = request()->path();
+        
+        if (in_array($currentPath, $excludedPaths)) {
+            // Create new navigation items with custom active check that always returns false
+            return array_map(function ($item) {
+                // Clone the item and override isActiveWhen to return false
+                $newItem = \Filament\Navigation\NavigationItem::make($item->getLabel())
+                    ->url($item->getUrl())
+                    ->icon($item->getIcon())
+                    ->group($item->getGroup())
+                    ->sort($item->getSort())
+                    ->isActiveWhen(fn (): bool => false);
+                
+                // Add badge if it exists
+                if ($badge = $item->getBadge()) {
+                    $newItem->badge($badge);
+                }
+                
+                return $newItem;
+            }, $items);
+        }
+        
+        return $items;
+    }
+
 
 
     public static function form(Form $form): Form

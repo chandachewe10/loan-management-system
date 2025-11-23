@@ -17,9 +17,11 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class User extends Authenticatable implements Wallet,MustVerifyEmail
+class User extends Authenticatable implements Wallet,MustVerifyEmail,HasMedia
 {
     use HasApiTokens;
     use HasFactory;
@@ -30,6 +32,7 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
     use HasRoles;
     use HasPanelShield;
     use LogsActivity;
+    use InteractsWithMedia;
 
 
 
@@ -54,7 +57,13 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
         'email',
         'password',
         'organization_id',
-        'branch_id'
+        'branch_id',
+        'company_representative',
+        'company_representative_phone',
+        'company_representative_email',
+        'company_phone',
+        'company_address',
+        'profile_completion_modal_shown'
     ];
 
     /**
@@ -100,5 +109,33 @@ protected static function booted(): void
         });
     }
 
+    /**
+     * Calculate profile completeness percentage
+     */
+    public function getProfileCompletenessAttribute(): int
+    {
+        $fields = [
+            'name' => !empty($this->name),
+            'company_representative' => !empty($this->company_representative),
+            'company_representative_phone' => !empty($this->company_representative_phone),
+            'company_representative_email' => !empty($this->company_representative_email),
+            'company_phone' => !empty($this->company_phone),
+            'company_address' => !empty($this->company_address),
+            'company_logo' => $this->hasMedia('company_logo'),
+        ];
+
+        $completed = count(array_filter($fields));
+        $total = count($fields);
+
+        return (int) round(($completed / $total) * 100);
+    }
+
+    /**
+     * Check if profile is incomplete
+     */
+    public function isProfileIncomplete(): bool
+    {
+        return $this->profile_completeness < 100;
+    }
 
 }

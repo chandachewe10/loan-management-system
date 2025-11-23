@@ -27,6 +27,41 @@ class AssetResource extends Resource
     protected static ?string $navigationGroup = 'Accounting';
     protected static ?int $navigationSort = 2;
 
+    public static function getNavigationItems(): array
+    {
+        $items = parent::getNavigationItems();
+        
+        // Exclude statement pages from making Assets navigation active
+        $excludedPaths = [
+            'admin/assets/statement-of-financial-position',
+            'admin/assets/statement-of-comprehensive-income',
+        ];
+        
+        $currentPath = request()->path();
+        
+        if (in_array($currentPath, $excludedPaths)) {
+            // Create new navigation items with custom active check that always returns false
+            return array_map(function ($item) {
+                // Clone the item and override isActiveWhen to return false
+                $newItem = \Filament\Navigation\NavigationItem::make($item->getLabel())
+                    ->url($item->getUrl())
+                    ->icon($item->getIcon())
+                    ->group($item->getGroup())
+                    ->sort($item->getSort())
+                    ->isActiveWhen(fn (): bool => false);
+                
+                // Add badge if it exists
+                if ($badge = $item->getBadge()) {
+                    $newItem->badge($badge);
+                }
+                
+                return $newItem;
+            }, $items);
+        }
+        
+        return $items;
+    }
+
 
     public static function form(Form $form): Form
     {
