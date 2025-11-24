@@ -323,6 +323,144 @@ class LoanResource extends Resource
                     ->columns(2)
                     ->collapsible(),
 
+                Forms\Components\Section::make('For Civil Service Clients')
+                    ->description('Loan qualification calculator based on payslip analysis. Net Pay = [(0.60 × Basic Pay) + Total Recurring Allowances] - [PAYE + Pension + Health Insurance + Other Recurring Deductions]')
+                    ->schema([
+                        Forms\Components\TextInput::make('basic_pay')
+                            ->label('Basic Pay (ZMW)')
+                            ->prefixIcon('fas-dollar-sign')
+                            ->numeric()
+                            ->default(0)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            }),
+
+                        Forms\Components\TextInput::make('total_recurring_allowances')
+                            ->label('Total Recurring Allowances (ZMW)')
+                            ->prefixIcon('fas-plus-circle')
+                            ->numeric()
+                            ->default(0)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            })
+                            ->helperText('Enter the total recurring allowances amount'),
+                            
+
+                        Forms\Components\Repeater::make('other_allowances')
+                            ->label('Other Allowances')
+                            ->schema([
+                                Forms\Components\TextInput::make('description')
+                                    ->label('Description')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('amount')
+                                    ->label('Amount (ZMW)')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(0)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        self::recalculateCivilServiceNetPay($set, $get);
+                                    }),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Add Other Allowance')
+                            ->addAction(fn ($action) => $action->color('success'))
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['description'] ?? null)
+                            ->columnSpanFull()
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            }),
+
+                        Forms\Components\TextInput::make('paye')
+                            ->label('PAYE (ZMW)')
+                            ->prefixIcon('fas-minus-circle')
+                            ->numeric()
+                            ->default(0)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            }),
+
+                        Forms\Components\TextInput::make('pension_napsa')
+                            ->label('Pension/NAPSA (ZMW)')
+                            ->prefixIcon('fas-minus-circle')
+                            ->numeric()
+                            ->default(0)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            }),
+
+                        Forms\Components\TextInput::make('health_insurance')
+                            ->label('Health Insurance (ZMW)')
+                            ->prefixIcon('fas-heartbeat')
+                            ->numeric()
+                            ->default(0)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            }),
+
+                        Forms\Components\Repeater::make('other_recurring_deductions')
+                            ->label('Other Recurring Deductions (Including 3rd Party Deductions)')
+                            ->schema([
+                                Forms\Components\TextInput::make('description')
+                                    ->label('Description')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('amount')
+                                    ->label('Amount (ZMW)')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(0)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        self::recalculateCivilServiceNetPay($set, $get);
+                                    }),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Add Recurring Deduction')
+                            ->addAction(fn ($action) => $action->color('primary'))
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['description'] ?? null)
+                            ->columnSpanFull()
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateCivilServiceNetPay($set, $get);
+                            }),
+
+                        Forms\Components\TextInput::make('calculated_net_pay')
+                            ->label('Calculated Net Pay (ZMW)')
+                            ->prefixIcon('fas-calculator')
+                            ->numeric()
+                            ->readOnly()
+                            ->dehydrated()
+                            ->helperText('Auto-calculated: [(0.60 × Basic Pay) + Allowances] - [All Deductions]'),
+
+                        Forms\Components\Select::make('qualification_status')
+                            ->label('Qualification Status')
+                            ->options([
+                                'qualified' => 'Qualified',
+                                'not_qualified' => 'Not Qualified',
+                                'review_required' => 'Review Required',
+                            ])
+                            ->default('review_required')
+                            ->required()
+                            ->dehydrated()
+                            ->helperText('Manually set the qualification status based on the calculated net pay and payslip review'),
+
+                        Forms\Components\Textarea::make('qualification_notes')
+                            ->label('Qualification Notes')
+                            ->rows(3)
+                            ->maxLength(1000)
+                            ->helperText('Add any additional notes about the qualification decision'),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
                 Forms\Components\Section::make('Loan Documents & Attachments')
                     ->description('Upload all required documents for this loan application')
                     ->schema([
@@ -554,5 +692,90 @@ class LoanResource extends Resource
 
 
         ];
+    }
+
+    /**
+     * Calculate net pay based on the formula:
+     * Net Pay = [(0.60 × Basic Pay) + Total Recurring Allowances] - [PAYE + Pension + Health Insurance + Other Statutory Deductions + Other Recurring Deductions]
+     */
+    protected static function calculateNetPay(Get $get, ?float $overrideAllowances = null): float
+    {
+        $basicPay = (float) ($get('basic_pay') ?? 0);
+        $allowances = $overrideAllowances ?? (float) ($get('total_recurring_allowances') ?? 0);
+
+        // Add other allowances to the total
+        $otherAllowances = self::calculateTotalFromRepeater($get('other_allowances') ?? []);
+        $totalAllowances = $allowances + $otherAllowances;
+
+        $paye = (float) ($get('paye') ?? 0);
+        $pension = (float) ($get('pension_napsa') ?? 0);
+        $healthInsurance = (float) ($get('health_insurance') ?? 0);
+
+        // Calculate 60% of basic pay
+        $sixtyPercentBasicPay = $basicPay * 0.60;
+
+        // Sum of income components (including other allowances)
+        $totalIncome = $sixtyPercentBasicPay + $totalAllowances;
+
+        // Sum of statutory deductions
+        $statutoryDeductions = $paye + $pension + $healthInsurance;
+
+        // Sum of other recurring deductions
+        $otherRecurring = self::calculateTotalFromRepeater($get('other_recurring_deductions'));
+
+        // Total deductions
+        $totalDeductions = $statutoryDeductions + $otherRecurring;
+
+        // Calculate net pay (can be negative if deductions exceed income)
+        $netPay = $totalIncome - $totalDeductions;
+
+        return round($netPay, 2);
+    }
+
+    /**
+     * Update qualification status based on comparison of calculated vs actual net pay
+     */
+    protected static function updateQualificationStatus($actualNetPay, $calculatedNetPay, Set $set): void
+    {
+        if (empty($actualNetPay) || empty($calculatedNetPay)) {
+            $set('qualification_status', 'review_required');
+            return;
+        }
+
+        $actual = (float) $actualNetPay;
+        $calculated = (float) $calculatedNetPay;
+
+        // Calculate percentage variance
+        $variance = abs($actual - $calculated);
+        $percentageVariance = $calculated > 0 ? ($variance / $calculated) * 100 : 0;
+
+        if ($percentageVariance < 5) {
+            // Less than 5% variance - qualified
+            $set('qualification_status', 'qualified');
+        } elseif ($percentageVariance >= 5 && $percentageVariance < 15) {
+            // Greater than or equal to 5% and less than 15% variance - review required
+            $set('qualification_status', 'review_required');
+        } else {
+            // Greater than or equal to 15% variance - not qualified
+            $set('qualification_status', 'not_qualified');
+        }
+    }
+
+    /**
+     * Recalculate civil service net pay, sync totals, and update qualification status.
+     */
+    protected static function recalculateCivilServiceNetPay(Set $set, Get $get, ?float $overrideAllowances = null): void
+    {
+        // Recalculate includes other allowances automatically in calculateNetPay
+        $netPay = self::calculateNetPay($get, $overrideAllowances);
+        $set('calculated_net_pay', $netPay);
+    }
+
+    /**
+     * Helper to sum amounts from repeater state arrays.
+     */
+    protected static function calculateTotalFromRepeater(?array $items): float
+    {
+        return collect($items ?? [])->sum(fn ($item) => (float) ($item['amount'] ?? 0));
     }
 }

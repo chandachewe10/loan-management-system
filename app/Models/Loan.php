@@ -40,6 +40,17 @@ class Loan extends Model implements HasMedia
         'activate_loan_agreement_form' => 'boolean',
         'ai_scored_at' => 'datetime',
         'risk_factors' => 'array',
+        'recurring_allowances' => 'array',
+        'other_allowances' => 'array',
+        'other_statutory_deductions' => 'array',
+        'other_recurring_deductions' => 'array',
+        'basic_pay' => 'decimal:2',
+        'total_recurring_allowances' => 'decimal:2',
+        'paye' => 'decimal:2',
+        'pension_napsa' => 'decimal:2',
+        'health_insurance' => 'decimal:2',
+        'calculated_net_pay' => 'decimal:2',
+        'actual_net_pay_payslip' => 'decimal:2',
     ];
     /**
      * The attributes that are mass assignable.
@@ -49,6 +60,19 @@ class Loan extends Model implements HasMedia
     protected $fillable = [
         'balance',
         'loan_status',
+        'basic_pay',
+        'recurring_allowances',
+        'total_recurring_allowances',
+        'other_allowances',
+        'paye',
+        'pension_napsa',
+        'health_insurance',
+        'other_statutory_deductions',
+        'other_recurring_deductions',
+        'calculated_net_pay',
+        'actual_net_pay_payslip',
+        'qualification_status',
+        'qualification_notes',
     ];
 
 
