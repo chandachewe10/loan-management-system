@@ -1,6 +1,6 @@
 <?php
 use App\Http\Controllers\{BorrowersController,
-SubscriptionsController, CustomerStatementController, BorrowerApplicationController};
+SubscriptionsController, CustomerStatementController, BorrowerApplicationController, LoanApplicationController, DirectDebitMandateController, PayslipController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +41,10 @@ Route::middleware([
 
 Route::get('/statement/{record}', [CustomerStatementController::class, 'download'])->name('statement.download');
 
+Route::get('/payslip/{payslip}/download', [\App\Http\Controllers\PayslipController::class, 'download'])
+    ->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])
+    ->name('payslip.download');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -48,5 +52,9 @@ Route::middleware([
 ])->group(function () {
     Route::get('/borrower-application/{id}/preview', [BorrowerApplicationController::class, 'preview'])->name('borrower.application.preview');
     Route::get('/borrower-application/{id}/download', [BorrowerApplicationController::class, 'download'])->name('borrower.application.download');
+    Route::get('/loan-application/{id}/preview', [LoanApplicationController::class, 'preview'])->name('loan.application.preview');
+    Route::get('/loan-application/{id}/download', [LoanApplicationController::class, 'download'])->name('loan.application.download');
+    Route::get('/direct-debit-mandate/{id}/preview', [DirectDebitMandateController::class, 'preview'])->name('direct.debit.mandate.preview');
+    Route::get('/direct-debit-mandate/{id}/download', [DirectDebitMandateController::class, 'download'])->name('direct.debit.mandate.download');
 });
 

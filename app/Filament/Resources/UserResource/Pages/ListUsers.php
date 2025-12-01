@@ -14,7 +14,7 @@ class ListUsers extends ListRecords
     {
         return [
             Actions\Action::make('companyProfile')
-                ->label('Company Profile Completion')
+                ->label('Company Profile')
                 ->icon('heroicon-m-building-office')
                 ->color('primary')
                 ->url('/admin/profile-completion')

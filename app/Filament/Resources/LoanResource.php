@@ -659,6 +659,30 @@ class LoanResource extends Resource
 
             ])
             ->actions([
+                Tables\Actions\Action::make('previewApplication')
+                    ->label('Preview Application')
+                    ->icon('heroicon-o-document-text')
+                    ->color('primary')
+                    ->url(fn ($record) => route('loan.application.preview', ['id' => $record->id]))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('downloadApplication')
+                    ->label('Download Application')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->url(fn ($record) => route('loan.application.download', ['id' => $record->id])),
+                Tables\Actions\Action::make('previewMandate')
+                    ->label('Preview Direct Debit Mandate')
+                    ->icon('heroicon-o-banknotes')
+                    ->color('info')
+                    ->url(fn ($record) => route('direct.debit.mandate.preview', ['id' => $record->id]))
+                    ->openUrlInNewTab()
+                    ->visible(fn ($record) => $record->loan_status === 'approved'),
+                Tables\Actions\Action::make('downloadMandate')
+                    ->label('Download Direct Debit Mandate')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('warning')
+                    ->url(fn ($record) => route('direct.debit.mandate.download', ['id' => $record->id]))
+                    ->visible(fn ($record) => $record->loan_status === 'approved'),
                 Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
             ])
@@ -685,6 +709,7 @@ class LoanResource extends Resource
         return [
             'ai-assessment' => Pages\AIAssessment::route('/{record}/ai-assessment'),
             'cash-flow-statement' => Pages\CashFlowStatement::route('/cash-flow-statement'),
+            'emi-schedule' => Pages\EMISchedule::route('/{record}/emi-schedule'),
             'index' => Pages\ListLoans::route('/'),
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),

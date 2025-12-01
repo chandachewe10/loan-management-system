@@ -15,6 +15,30 @@ class ViewLoan extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('previewApplication')
+                ->label('Preview Application')
+                ->icon('heroicon-o-document-text')
+                ->color('primary')
+                ->url(fn () => route('loan.application.preview', ['id' => $this->record->id]))
+                ->openUrlInNewTab(),
+            Actions\Action::make('downloadApplication')
+                ->label('Download Application')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
+                ->url(fn () => route('loan.application.download', ['id' => $this->record->id])),
+            Actions\Action::make('previewMandate')
+                ->label('Preview Direct Debit Mandate')
+                ->icon('heroicon-o-banknotes')
+                ->color('info')
+                ->url(fn () => route('direct.debit.mandate.preview', ['id' => $this->record->id]))
+                ->openUrlInNewTab()
+                ->visible(fn() => $this->record->loan_status === 'approved'),
+            Actions\Action::make('downloadMandate')
+                ->label('Download Direct Debit Mandate')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('warning')
+                ->url(fn () => route('direct.debit.mandate.download', ['id' => $this->record->id]))
+                ->visible(fn() => $this->record->loan_status === 'approved'),
             Actions\Action::make('aiCreditScore')
                 ->label('Run AI Credit Assessment')
                 ->icon('heroicon-o-cpu-chip')
@@ -28,6 +52,13 @@ class ViewLoan extends ViewRecord
                 ->color('primary')
                 ->url(fn() => LoanResource::getUrl('ai-assessment', ['record' => $this->record]))
                 ->visible(fn() => $this->record->ai_scored_at),
+
+            Actions\Action::make('viewEMISchedule')
+                ->label('View EMI Schedule')
+                ->icon('heroicon-o-calendar-days')
+                ->color('success')
+                ->url(fn() => LoanResource::getUrl('emi-schedule', ['record' => $this->record]))
+                ->visible(fn() => $this->record->loan_status === 'approved' || $this->record->loan_status === 'partially_paid'),
 
             Actions\EditAction::make(),
         ];

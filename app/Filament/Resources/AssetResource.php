@@ -72,6 +72,7 @@ class AssetResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('asset_code')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\Select::make('asset_category_id')
                     ->label('Asset Category')
@@ -148,7 +149,6 @@ class AssetResource extends Resource
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asset_code')
-                    ->unique()
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asset_category.name')

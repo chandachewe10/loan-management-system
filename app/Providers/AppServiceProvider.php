@@ -44,6 +44,16 @@ use App\Models\Branches;
 use App\Observers\BranchesObserver;
 use App\Models\AssetCategory;
 use App\Observers\AssetCategoryObserver;
+use App\Models\Employee;
+use App\Models\TaxBand;
+use App\Models\PayrollRun;
+use App\Models\Payslip;
+use App\Models\SalaryScale;
+use App\Observers\EmployeeObserver;
+use App\Observers\TaxBandObserver;
+use App\Observers\PayrollRunObserver;
+use App\Observers\PayslipObserver;
+use App\Observers\SalaryScaleObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -72,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
             'Loans',
             'Expenses',
             'Repayments',
+            'Payroll',
             'Addons',
         ]);
 
@@ -94,6 +105,11 @@ class AppServiceProvider extends ServiceProvider
         Branches::observe(BranchesObserver::class);
         Asset::observe(AssetObserver::class);
         AssetCategory::observe(AssetCategoryObserver::class);
+        Employee::observe(EmployeeObserver::class);
+        TaxBand::observe(TaxBandObserver::class);
+        PayrollRun::observe(PayrollRunObserver::class);
+        Payslip::observe(PayslipObserver::class);
+        SalaryScale::observe(SalaryScaleObserver::class);
     }
 
 

@@ -19,10 +19,15 @@ class Repayments extends Model
         ->logAll();
     }
 
+    public function loan()
+    {
+        return $this->belongsTo(Loan::class, 'loan_id', 'id');
+    }
+
     public function loan_number()
-{
-    return $this->belongsTo(Loan::class, 'loan_id', 'id');
-}
+    {
+        return $this->belongsTo(Loan::class, 'loan_id', 'id');
+    }
 
 // public function getCreatedAtAttribute($value) {
 //     return date('d,F Y H:m:i', strtotime($value));

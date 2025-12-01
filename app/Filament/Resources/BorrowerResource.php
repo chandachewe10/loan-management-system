@@ -129,10 +129,43 @@ class BorrowerResource extends Resource
                                                         default => 'gray',
                                                     }),
 
-                                                TextEntry::make('loan_duration')
-                                                    ->label('Duration')
-                                                    ->formatStateUsing(fn($state) => "{$state} months")
-                                                    ->icon('heroicon-o-clock'),
+                                TextEntry::make('loan_duration')
+                                    ->label('Duration')
+                                    ->formatStateUsing(fn($state) => "{$state} months")
+                                    ->icon('heroicon-o-clock'),
+
+                                                // EMI Information
+                                                TextEntry::make('emi_amount')
+                                                    ->label('Monthly EMI')
+                                                    ->getStateUsing(function($record) {
+                                                        $loan = \App\Models\Loan::find($record['id']);
+                                                        return $loan ? $loan->calculateEMI() : 0;
+                                                    })
+                                                    ->money('ZMW')
+                                                    ->weight(FontWeight::Bold)
+                                                    ->color('success')
+                                                    ->icon('heroicon-o-currency-dollar')
+                                                    ->visible(fn($record) => isset($record['id']) && \App\Models\Loan::find($record['id'])),
+
+                                                TextEntry::make('remaining_installments')
+                                                    ->label('Remaining Installments')
+                                                    ->getStateUsing(function($record) {
+                                                        $loan = \App\Models\Loan::find($record['id']);
+                                                        return $loan ? $loan->getRemainingInstallments() : 0;
+                                                    })
+                                                    ->badge()
+                                                    ->color('warning')
+                                                    ->visible(fn($record) => isset($record['id']) && \App\Models\Loan::find($record['id'])),
+
+                                                TextEntry::make('paid_installments')
+                                                    ->label('Paid Installments')
+                                                    ->getStateUsing(function($record) {
+                                                        $loan = \App\Models\Loan::find($record['id']);
+                                                        return $loan ? $loan->getPaidInstallments() : 0;
+                                                    })
+                                                    ->badge()
+                                                    ->color('success')
+                                                    ->visible(fn($record) => isset($record['id']) && \App\Models\Loan::find($record['id'])),
                                             ])
                                             ->columns(2),
 
@@ -219,6 +252,23 @@ class BorrowerResource extends Resource
                                     ->visible(fn($record) => !empty($record['ai_decision_reason']))
                                     ->columnSpanFull()
                                     ->extraAttributes(['class' => 'bg-blue-50 px-4 py-3 rounded-lg border border-blue-200']),
+
+                                // EMI Schedule Action
+                                Actions::make([
+                                    Action::make('viewEMISchedule')
+                                        ->label('View EMI Schedule')
+                                        ->icon('heroicon-o-calendar-days')
+                                        ->color('success')
+                                        ->url(function($record) {
+                                            $loan = \App\Models\Loan::find($record['id']);
+                                            return $loan ? \App\Filament\Resources\LoanResource::getUrl('emi-schedule', ['record' => $loan->id]) : '#';
+                                        })
+                                        ->visible(function($record) {
+                                            $loan = \App\Models\Loan::find($record['id']);
+                                            return $loan && in_array($loan->loan_status, ['approved', 'partially_paid']);
+                                        }),
+                                ])
+                                ->columnSpanFull(),
                             ])
                             ->columns(1)
                             ->visible(
@@ -320,23 +370,83 @@ class BorrowerResource extends Resource
 
 
 
-                Section::make('Profile Picture')
-                    ->schema([
-                        Grid::make(1)
-                            ->schema([
-                                TextEntry::make('profile_picture')
-                                    ->label('')
-                                    ->formatStateUsing(function ($record) {
-                                        $media = $record->getFirstMedia('profile_picture');
-                                        if ($media) {
-                                            return '<img src="' . $media->getUrl() . '" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover" />';
-                                        }
-                                        return '<div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">No Picture</div>';
-                                    })
-                                    ->html(),
-                            ]),
-                    ])
-                    ->collapsible(),
+                // Profile Picture section - commented out for now
+                // Section::make('Profile Picture')
+                //     ->schema([
+                //         Grid::make(1)
+                //             ->schema([
+                //                 TextEntry::make('profile_picture')
+                //                     ->label('')
+                //                     ->formatStateUsing(function ($record) {
+                //                         $media = $record->getFirstMedia('profile_picture');
+                //                         
+                //                         if (!$media) {
+                //                             return '<div class="flex justify-center py-4"><div style="width: 128px; height: 128px; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 14px;">No Picture</div></div>';
+                //                         }
+                //                         
+                //                         // Based on file structure: public/BORROWERS/{model_id}/{filename}
+                //                         // The structure is BORROWERS/{borrower_id}/{filename}
+                //                         $url = null;
+                //                         
+                //                         // Method 1: Try getUrl() first
+                //                         try {
+                //                             $url = $media->getUrl();
+                //                         } catch (\Exception $e) {
+                //                             // Continue to fallback
+                //                         }
+                //                         
+                //                         // Method 2: Construct URL directly based on actual file structure
+                //                         // Structure: BORROWERS/{borrower_id}/{filename}
+                //                         if (empty($url)) {
+                //                             $borrowerId = $record->id;
+                //                             $fileName = $media->file_name;
+                //                             $url = asset('BORROWERS/' . $borrowerId . '/' . $fileName);
+                //                             
+                //                             // Verify file exists
+                //                             $filePath = public_path('BORROWERS/' . $borrowerId . '/' . $fileName);
+                //                             if (!file_exists($filePath)) {
+                //                                 // Try alternative: use media's model_id if different
+                //                                 if ($media->model_id && $media->model_id != $borrowerId) {
+                //                                     $url = asset('BORROWERS/' . $media->model_id . '/' . $fileName);
+                //                                     $filePath = public_path('BORROWERS/' . $media->model_id . '/' . $fileName);
+                //                                 }
+                //                             }
+                //                         }
+                //                         
+                //                         // Method 3: Use getPath() and extract from it
+                //                         if (empty($url) || !file_exists(public_path(parse_url($url, PHP_URL_PATH)))) {
+                //                             $filePath = $media->getPath();
+                //                             if (file_exists($filePath)) {
+                //                                 // Extract relative path from public directory
+                //                                 $publicPath = public_path('BORROWERS');
+                //                                 if (str_contains($filePath, 'BORROWERS')) {
+                //                                     $relativePath = str_replace($publicPath, '', $filePath);
+                //                                     $relativePath = str_replace('\\', '/', $relativePath);
+                //                                     $relativePath = ltrim($relativePath, '/');
+                //                                     $url = asset('BORROWERS/' . $relativePath);
+                //                                 }
+                //                             }
+                //                         }
+                //                         
+                //                         if (!empty($url)) {
+                //                             // Clean up URL
+                //                             $url = str_replace(['//', 'http:/', 'https:/'], ['/', 'http://', 'https://'], $url);
+                //                             
+                //                             return '<div class="flex justify-center py-4">
+                //                                 <img src="' . e($url) . '" 
+                //                                      alt="Profile Picture" 
+                //                                      style="width: 128px; height: 128px; border-radius: 50%; object-fit: cover; border: 4px solid #e5e7eb; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);" 
+                //                                      onerror="console.error(\'Image failed to load. URL: \' + this.src); this.parentElement.innerHTML=\'<div style=\\\'width: 128px; height: 128px; border-radius: 50%; background-color: #fee2e2; display: flex; align-items: center; justify-content: center; color: #dc2626; font-size: 12px;\\\'>Image Error</div>\';" />
+                //                             </div>';
+                //                         }
+                //                         
+                //                         // Fallback: show placeholder
+                //                         return '<div class="flex justify-center py-4"><div style="width: 128px; height: 128px; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 14px;">No Picture</div></div>';
+                //                     })
+                //                     ->html(),
+                //             ]),
+                //     ])
+                //     ->collapsible(),
             ]);
     }
 
@@ -657,3 +767,4 @@ class BorrowerResource extends Resource
         ];
     }
 }
+
