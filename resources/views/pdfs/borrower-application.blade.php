@@ -219,7 +219,6 @@
         </div>
         <div class="company-info">
             <div class="company-name">{{ $companyName }}</div>
-            <div class="company-legal">(Authorised to transact under the Money Lenders Act, and registered as a Money Lender and Regulated by the Bank of Zambia under the Money Lenders Act)</div>
             <div class="contact-info">
                 <div><strong>Address:</strong> {{ $user->company_address ?? ($branch->address ?? 'Lusaka, Zambia') }}</div>
                 <div><strong>Tel:</strong> {{ $user->company_phone ?? ($branch->mobile ?? '+260') }}</div>
@@ -227,10 +226,6 @@
                 <div><strong>Website:</strong> {{ parse_url(config('app.url'), PHP_URL_HOST) }}</div>
             </div>
         </div>
-    </div>
-
-    <div class="registration-bar">
-        Incorporated in the Republic of Zambia (Registration No 120210023713) Serial No. 1192319
     </div>
 
     <div class="form-title">Pre-Approval Form</div>
