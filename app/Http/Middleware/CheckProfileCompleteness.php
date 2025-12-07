@@ -32,9 +32,16 @@ class CheckProfileCompleteness
         if ($user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
             // Check if we're already on the profile completion page
             $path = $request->path();
-            $isProfileCompletionPage = str_contains($path, 'admin/profile-completion');
+            $isProfileCompletionPage = str_contains($path, 'admin/profile-completion') || 
+                                       str_contains($path, 'profile-completion');
             
-            if (!$isProfileCompletionPage) {
+            // Prevent redirect loops - if we're already on the profile completion page, allow access
+            if ($isProfileCompletionPage) {
+                return $next($request);
+            }
+            
+            // Only redirect if not already on profile completion page and not an AJAX request
+            if (!$request->ajax() && !$request->wantsJson()) {
                 return redirect()
                     ->to('/admin/profile-completion')
                     ->with('info', 'Please complete your company profile to continue.');
@@ -49,6 +56,11 @@ class CheckProfileCompleteness
      */
     protected function shouldAllowAccess(Request $request): bool
     {
+        // Allow AJAX and JSON requests to prevent redirect loops
+        if ($request->ajax() || $request->wantsJson()) {
+            return true;
+        }
+
         $allowedRoutes = [
             'filament.admin.pages.profile-completion',
             'logout',
@@ -67,7 +79,8 @@ class CheckProfileCompleteness
             str_contains($path, 'admin/auth') ||
             str_contains($path, 'admin/api') ||
             str_contains($path, 'livewire/') ||
-            str_contains($path, 'admin/profile-completion')
+            str_contains($path, 'admin/profile-completion') ||
+            str_contains($path, 'profile-completion')
         ) {
             return true;
         }
