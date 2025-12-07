@@ -38,14 +38,18 @@ class Register extends BaseRegister
      */
     public function getRedirectUrl(): string
     {
-        // After registration, check if profile is incomplete
+        // After registration, Filament will handle email verification redirect automatically
+        // If email is verified, then check profile completion
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
+            
+            // If email is verified and profile is incomplete, redirect to profile completion
+            if ($user->hasVerifiedEmail() && $user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
                 return '/admin/profile-completion';
             }
         }
         
+        // Let Filament handle the default redirect (which will be email verification if needed)
         return parent::getRedirectUrl();
     }
 }

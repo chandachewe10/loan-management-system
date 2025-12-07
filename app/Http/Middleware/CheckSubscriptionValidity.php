@@ -31,11 +31,20 @@ class CheckSubscriptionValidity
             ->orderBy('payment_expires_at', 'desc') 
             ->first();
 
-
+        // If no active subscription, redirect to subscriptions page
+        // But allow access if user is on subscription/payment pages or profile completion
         if (!$activeSubscription) {
-            return redirect()
-                ->route('filament.admin.resources.subscriptions.index')
-                ->with('error', 'Your subscription has expired. Please renew to continue accessing the system.');
+            $path = $request->path();
+            $isSubscriptionPage = str_contains($path, 'admin/subscriptions') || 
+                                  str_contains($path, 'admin/payments') ||
+                                  str_contains($path, 'subscriptions') ||
+                                  str_contains($path, 'payments');
+            
+            if (!$isSubscriptionPage) {
+                return redirect()
+                    ->route('filament.admin.resources.subscriptions.index')
+                    ->with('error', 'Your subscription has expired. Please renew to continue accessing the system.');
+            }
         }
 
         return $next($request);
@@ -46,9 +55,15 @@ class CheckSubscriptionValidity
      */
     protected function shouldAllowAccess(Request $request): bool
     {
+        // Allow AJAX and JSON requests to prevent redirect loops
+        if ($request->ajax() || $request->wantsJson()) {
+            return true;
+        }
+
         $allowedRoutes = [
             'filament.admin.resources.subscriptions.*',
             'filament.admin.resources.payments.*',
+            'filament.admin.pages.profile-completion',
             'logout',
             'filament.admin.auth.logout',
         ];
@@ -64,7 +79,11 @@ class CheckSubscriptionValidity
         if (
             str_contains($path, 'admin/auth') ||
             str_contains($path, 'admin/api') ||
-            str_contains($path, 'livewire/')
+            str_contains($path, 'livewire/') ||
+            str_contains($path, 'admin/profile-completion') ||
+            str_contains($path, 'profile-completion') ||
+            str_contains($path, 'email/verify') ||
+            str_contains($path, 'email-verification')
         ) {
             return true;
         }

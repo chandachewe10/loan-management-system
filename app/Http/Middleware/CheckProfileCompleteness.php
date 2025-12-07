@@ -28,6 +28,12 @@ class CheckProfileCompleteness
             return $next($request);
         }
 
+        // Don't check profile completeness if email is not verified yet
+        // Let email verification handle the redirect first
+        if (!$user->hasVerifiedEmail()) {
+            return $next($request);
+        }
+
         // Check if profile is incomplete - redirect only if modal hasn't been shown (user hasn't clicked "Complete Later")
         if ($user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
             // Check if we're already on the profile completion page
@@ -80,7 +86,9 @@ class CheckProfileCompleteness
             str_contains($path, 'admin/api') ||
             str_contains($path, 'livewire/') ||
             str_contains($path, 'admin/profile-completion') ||
-            str_contains($path, 'profile-completion')
+            str_contains($path, 'profile-completion') ||
+            str_contains($path, 'email/verify') ||
+            str_contains($path, 'email-verification')
         ) {
             return true;
         }
