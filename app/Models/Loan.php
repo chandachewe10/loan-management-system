@@ -209,6 +209,12 @@ class Loan extends Model implements HasMedia
         'health_insurance' => 'decimal:2',
         'calculated_net_pay' => 'decimal:2',
         'actual_net_pay_payslip' => 'decimal:2',
+        'monthly_pay' => 'decimal:2',
+        'maximum_allowable_emi' => 'decimal:2',
+        'existing_loans_emi' => 'decimal:2',
+        'eligible_emi' => 'decimal:2',
+        'loan_amount_eligibility' => 'decimal:2',
+        'eligibility_interest_rate' => 'decimal:2',
     ];
     /**
      * The attributes that are mass assignable.
@@ -231,6 +237,13 @@ class Loan extends Model implements HasMedia
         'actual_net_pay_payslip',
         'qualification_status',
         'qualification_notes',
+        'monthly_pay',
+        'maximum_allowable_emi',
+        'existing_loans_emi',
+        'eligible_emi',
+        'loan_amount_eligibility',
+        'eligibility_interest_rate',
+        'loan_period',
         'organization_id',
         'branch_id',
     ];

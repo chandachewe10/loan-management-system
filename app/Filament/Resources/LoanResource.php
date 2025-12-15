@@ -119,6 +119,15 @@ class LoanResource extends Resource
                             $set('interest_amount', number_format($interest_amount));
                             $set('interest_rate', $loan_percent);
                             $set('disbursed_amount', $disbursement_amount);
+                            
+                            // Auto-set eligibility interest rate from loan type
+                            $set('eligibility_interest_rate', $loan_percent);
+                            // Recalculate eligibility if monthly pay is already set
+                            if ($get('monthly_pay')) {
+                                self::recalculateNewPMECEligibility($set, $get);
+                            }
+                            // Update qualification status
+                            self::determineQualificationStatus($set, $get);
                         }
                         return true;
                     }),
@@ -130,7 +139,7 @@ class LoanResource extends Resource
                     ->searchable()
                     ->required()
                     ->live()
-                    ->afterStateUpdated(function ($state, Set $set) {
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         // When borrower pre-fill their financial data
                         if ($state) {
                             $borrower = \App\Models\Borrower::find($state);
@@ -142,6 +151,8 @@ class LoanResource extends Resource
                                 $set('borrower_previous_defaults', $borrower->previous_defaults ?? 0);
                             }
                         }
+                        // Update qualification status
+                        self::determineQualificationStatus($set, $get);
                     }),
                 Forms\Components\Select::make('loan_status')
                     ->label('Loan Status')
@@ -186,6 +197,8 @@ class LoanResource extends Resource
                             $set('interest_rate', $loan_percent);
                             $set('disbursed_amount', $disbursement_amount);
                         }
+                        // Auto-determine qualification status
+                        self::determineQualificationStatus($set, $get);
                         return true;
                     })
 
@@ -323,143 +336,139 @@ class LoanResource extends Resource
                     ->columns(2)
                     ->collapsible(),
 
-                Forms\Components\Section::make('For Civil Service Clients')
-                    ->description('Loan qualification calculator based on payslip analysis. Net Pay = [(0.60 × Basic Pay) + Total Recurring Allowances] - [PAYE + Pension + Health Insurance + Other Recurring Deductions]')
+                Forms\Components\Section::make('PMEC Eligibility Calculator')
+                    ->description('ELIGILITY CALCULATOR Based on 60% of Monthly Pay for Civil service clients in Zambia')
                     ->schema([
-                        Forms\Components\TextInput::make('basic_pay')
-                            ->label('Basic Pay (ZMW)')
+                        Forms\Components\Placeholder::make('helper_text')
+                            ->label('')
+                            ->content('💡 Tip: Click outside the input field after entering values to see updated calculations.')
+                            ->columnSpanFull(),
+
+                        Forms\Components\TextInput::make('monthly_pay')
+                            ->label('Monthly Pay (ZMW)')
                             ->prefixIcon('fas-dollar-sign')
                             ->numeric()
                             ->default(0)
                             ->live(onBlur: true)
                             ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
-                            }),
-
-                        Forms\Components\TextInput::make('total_recurring_allowances')
-                            ->label('Total Recurring Allowances (ZMW)')
-                            ->prefixIcon('fas-plus-circle')
-                            ->numeric()
-                            ->default(0)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
+                                self::recalculateNewPMECEligibility($set, $get);
+                                self::determineQualificationStatus($set, $get);
                             })
-                            ->helperText('Enter the total recurring allowances amount'),
-                            
+                            ->helperText('Basic Pay / Monthly Salary. Click outside to update calculations.'),
 
-                        Forms\Components\Repeater::make('other_allowances')
-                            ->label('Other Allowances')
-                            ->schema([
-                                Forms\Components\TextInput::make('description')
-                                    ->label('Description')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('amount')
-                                    ->label('Amount (ZMW)')
-                                    ->numeric()
-                                    ->required()
-                                    ->default(0)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                        self::recalculateCivilServiceNetPay($set, $get);
-                                    }),
-                            ])
-                            ->defaultItems(0)
-                            ->addActionLabel('Add Other Allowance')
-                            ->addAction(fn ($action) => $action->color('success'))
-                            ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['description'] ?? null)
-                            ->columnSpanFull()
-                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
-                            }),
-
-                        Forms\Components\TextInput::make('paye')
-                            ->label('PAYE (ZMW)')
-                            ->prefixIcon('fas-minus-circle')
-                            ->numeric()
-                            ->default(0)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
-                            }),
-
-                        Forms\Components\TextInput::make('pension_napsa')
-                            ->label('Pension/NAPSA (ZMW)')
-                            ->prefixIcon('fas-minus-circle')
-                            ->numeric()
-                            ->default(0)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
-                            }),
-
-                        Forms\Components\TextInput::make('health_insurance')
-                            ->label('Health Insurance (ZMW)')
-                            ->prefixIcon('fas-heartbeat')
-                            ->numeric()
-                            ->default(0)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
-                            }),
-
-                        Forms\Components\Repeater::make('other_recurring_deductions')
-                            ->label('Other Recurring Deductions (Including 3rd Party Deductions)')
-                            ->schema([
-                                Forms\Components\TextInput::make('description')
-                                    ->label('Description')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('amount')
-                                    ->label('Amount (ZMW)')
-                                    ->numeric()
-                                    ->required()
-                                    ->default(0)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                        self::recalculateCivilServiceNetPay($set, $get);
-                                    }),
-                            ])
-                            ->defaultItems(0)
-                            ->addActionLabel('Add Recurring Deduction')
-                            ->addAction(fn ($action) => $action->color('primary'))
-                            ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['description'] ?? null)
-                            ->columnSpanFull()
-                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                self::recalculateCivilServiceNetPay($set, $get);
-                            }),
-
-                        Forms\Components\TextInput::make('calculated_net_pay')
-                            ->label('Calculated Net Pay (ZMW)')
+                        Forms\Components\TextInput::make('maximum_allowable_emi')
+                            ->label('Maximum Allowable EMI (ZMW)')
                             ->prefixIcon('fas-calculator')
                             ->numeric()
                             ->readOnly()
                             ->dehydrated()
-                            ->helperText('Auto-calculated: [(0.60 × Basic Pay) + Allowances] - [All Deductions]'),
+                            ->helperText('Auto-calculated: 60% of Monthly Pay'),
 
-                        Forms\Components\Select::make('qualification_status')
-                            ->label('Qualification Status')
-                            ->options([
-                                'qualified' => 'Qualified',
-                                'not_qualified' => 'Not Qualified',
-                                'review_required' => 'Review Required',
-                            ])
-                            ->default('review_required')
-                            ->required()
+                        Forms\Components\TextInput::make('existing_loans_emi')
+                            ->label('Existing Loans EMI (ZMW)')
+                            ->prefixIcon('fas-minus-circle')
+                            ->numeric()
+                            ->default(0)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateNewPMECEligibility($set, $get);
+                                self::determineQualificationStatus($set, $get);
+                            })
+                            ->helperText('Total of existing loan deductions. Click outside to update calculations.'),
+
+                        Forms\Components\TextInput::make('eligible_emi')
+                            ->label('Eligible EMI (ZMW)')
+                            ->prefixIcon('fas-check-circle')
+                            ->numeric()
+                            ->readOnly()
                             ->dehydrated()
-                            ->helperText('Manually set the qualification status based on the calculated net pay and payslip review'),
+                            ->helperText('Auto-calculated: Maximum Allowable EMI - Existing Loans EMI'),
 
-                        Forms\Components\Textarea::make('qualification_notes')
-                            ->label('Qualification Notes')
-                            ->rows(3)
-                            ->maxLength(1000)
-                            ->helperText('Add any additional notes about the qualification decision'),
+                        Forms\Components\Select::make('eligibility_interest_rate')
+                            ->label('Interest Rate (% per month)')
+                            ->prefixIcon('fas-percent')
+                            ->options(function () {
+                                $loanTypes = \App\Models\LoanType::all();
+                                $options = [];
+                                foreach ($loanTypes as $loanType) {
+                                    $interestRate = (float) ($loanType->interest_rate ?? 0);
+                                    $options[$interestRate] = $loanType->loan_name . ' - ' . number_format($interestRate, 2) . '%';
+                                }
+                                // If no loan types, provide default options
+                                if (empty($options)) {
+                                    $options = [
+                                        2 => '2% per month',
+                                        3 => '3% per month',
+                                        4 => '4% per month',
+                                        5 => '5% per month',
+                                    ];
+                                }
+                                return $options;
+                            })
+                            ->default(4)
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateNewPMECEligibility($set, $get);
+                                self::determineQualificationStatus($set, $get);
+                            })
+                            ->required()
+                            ->searchable()
+                            ->helperText('Select interest rate from loan types. Click outside to update calculations.'),
+
+                        Forms\Components\Select::make('loan_period')
+                            ->label('Loan Period (Months)')
+                            ->options([
+                                1 => '1 Month',
+                                2 => '2 Months',
+                                3 => '3 Months',
+                                4 => '4 Months',
+                                5 => '5 Months',
+                                6 => '6 Months',
+                                12 => '12 Months',
+                                24 => '24 Months',
+                                36 => '36 Months',
+                                48 => '48 Months',
+                                60 => '60 Months',
+                            ])
+                            ->default(24)
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::recalculateNewPMECEligibility($set, $get);
+                                self::determineQualificationStatus($set, $get);
+                            })
+                            ->required()
+                            ->helperText('Select loan period for eligibility calculation'),
+
+                        Forms\Components\TextInput::make('loan_amount_eligibility')
+                            ->label('Loan Amount Eligibility (ZMW)')
+                            ->prefixIcon('fas-dollar-sign')
+                            ->numeric()
+                            ->readOnly()
+                            ->dehydrated()
+                            ->helperText('Auto-calculated based on Eligible EMI, loan period, and selected interest rate'),
                     ])
                     ->columns(2)
                     ->collapsible(),
+
+                Forms\Components\Select::make('qualification_status')
+                    ->label('Qualification Status')
+                    ->options([
+                        'qualified' => 'Qualified',
+                        'not_qualified' => 'Not Qualified',
+                        'review_required' => 'Review Required',
+                    ])
+                    ->default('review_required')
+                    ->required()
+                    ->disabled()
+                    ->dehydrated()
+                    ->helperText('Auto-calculated based on eligibility data. Status updates automatically when loan details change.'),
+
+                Forms\Components\Textarea::make('qualification_notes')
+                    ->label('Qualification Notes')
+                    ->rows(3)
+                    ->maxLength(1000)
+                    ->helperText('Add any additional notes about the qualification decision')
+                    ->columnSpanFull(),
 
                 Forms\Components\Section::make('Loan Documents & Attachments')
                     ->description('Upload all required documents for this loan application')
@@ -794,6 +803,108 @@ class LoanResource extends Resource
         // Recalculate includes other allowances automatically in calculateNetPay
         $netPay = self::calculateNetPay($get, $overrideAllowances);
         $set('calculated_net_pay', $netPay);
+    }
+
+    /**
+     * Recalculate New PMEC Eligibility based on formula from "ELIGILITY CALCULATOR plus (2).csv":
+     * Maximum Allowable EMI = 60% of Monthly Pay
+     * Eligible EMI = Maximum Allowable EMI - Existing Loans EMI
+     * Loan Amount Eligibility = Based on Eligible EMI and loan period
+     */
+    protected static function recalculateNewPMECEligibility(Set $set, Get $get): void
+    {
+        $monthlyPay = (float) ($get('monthly_pay') ?? 0);
+        $existingLoansEMI = (float) ($get('existing_loans_emi') ?? 0);
+        
+        // Calculate 60% of monthly pay
+        $maximumAllowableEMI = $monthlyPay * 0.60;
+        $set('maximum_allowable_emi', round($maximumAllowableEMI, 2));
+        
+        // Eligible EMI = Maximum Allowable EMI - Existing Loans EMI
+        $eligibleEMI = $maximumAllowableEMI - $existingLoansEMI;
+        $set('eligible_emi', round($eligibleEMI, 2));
+        
+        // Calculate Loan Amount Eligibility based on Eligible EMI and loan period
+        $period = (int) ($get('loan_period') ?? 24);
+        $monthlyInterestRate = (float) ($get('eligibility_interest_rate') ?? 4.0);
+        
+        if ($eligibleEMI > 0 && $period > 0 && $monthlyInterestRate > 0) {
+            // Use the selected interest rate from loan types
+            $totalInterestRate = $monthlyInterestRate * $period;
+            
+            // Formula: Loan Amount = (Eligible EMI * Period) / (1 + (Total Interest Rate / 100))
+            // This calculates the maximum loan amount that can be serviced by the Eligible EMI
+            $denominator = 1 + ($totalInterestRate / 100);
+            $loanAmountEligibility = ($eligibleEMI * $period) / $denominator;
+            $set('loan_amount_eligibility', round($loanAmountEligibility, 2));
+        } else {
+            $set('loan_amount_eligibility', 0);
+        }
+        
+        // Auto-determine qualification status after eligibility calculation
+        self::determineQualificationStatus($set, $get);
+    }
+
+    /**
+     * Automatically determine qualification status based on eligibility data
+     * Rules:
+     * - Qualified: Principal amount <= Loan amount eligibility AND Eligible EMI > 0 AND all required data present
+     * - Not Qualified: Principal amount > Loan amount eligibility OR Eligible EMI <= 0
+     * - Review Required: Missing required data or edge cases
+     */
+    protected static function determineQualificationStatus(Set $set, Get $get): void
+    {
+        $principalAmount = (float) ($get('principal_amount') ?? 0);
+        $loanAmountEligibility = (float) ($get('loan_amount_eligibility') ?? 0);
+        $eligibleEMI = (float) ($get('eligible_emi') ?? 0);
+        $monthlyPay = (float) ($get('monthly_pay') ?? 0);
+        $loanTypeId = $get('loan_type_id');
+        $borrowerId = $get('borrower_id');
+        
+        // Check if required data is missing
+        $hasRequiredData = $loanTypeId && $borrowerId && $monthlyPay > 0 && $principalAmount > 0;
+        
+        // If required data is missing, set to review required
+        if (!$hasRequiredData) {
+            $set('qualification_status', 'review_required');
+            return;
+        }
+        
+        // If eligible EMI is negative or zero, not qualified
+        if ($eligibleEMI <= 0) {
+            $set('qualification_status', 'not_qualified');
+            return;
+        }
+        
+        // If loan amount eligibility is zero or not calculated, review required
+        if ($loanAmountEligibility <= 0) {
+            $set('qualification_status', 'review_required');
+            return;
+        }
+        
+        // Calculate percentage of eligibility used
+        $eligibilityPercentage = ($principalAmount / $loanAmountEligibility) * 100;
+        
+        // Determine qualification based on principal amount vs eligibility
+        if ($principalAmount <= $loanAmountEligibility) {
+            // Within eligibility - qualified
+            // Allow up to 100% of eligibility
+            if ($eligibilityPercentage <= 100) {
+                $set('qualification_status', 'qualified');
+            } else {
+                // Slightly over (up to 105%) - review required
+                $set('qualification_status', 'review_required');
+            }
+        } else {
+            // Exceeds eligibility - not qualified
+            // If over 105% of eligibility, definitely not qualified
+            if ($eligibilityPercentage > 105) {
+                $set('qualification_status', 'not_qualified');
+            } else {
+                // Between 100-105% - review required
+                $set('qualification_status', 'review_required');
+            }
+        }
     }
 
     /**
