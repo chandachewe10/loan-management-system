@@ -57,15 +57,8 @@ Please follow carefully the installation and use of this web framework of the Lo
 5. php artisan migrate 
 
 ```
- 
-create a super-admin user on the terminal by running the following script and follow the prompts
 
-```bash
-php artisan shield:super-admin
-```
-
-Finally run migrations for roles and permissions by running the following scripts on your cmd and accept the prompts.
-If asked for the pannel ID, enter `admin`
+Install shield for roles and permissions
 
 ```bash
 php artisan shield:install
@@ -75,6 +68,12 @@ Publish policies
 
 ```bash
 php artisan shield:generate --all
+```
+
+create a super-admin user on the terminal by running the following script and follow the prompts
+
+```bash
+php artisan shield:super-admin
 ```
 
 Start your Application 
