@@ -5,43 +5,28 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 
 return new class extends \Illuminate\Database\Migrations\Migration {
-   public function up()
-{
-    $tables = DB::select('SHOW TABLES');
-    $dbName = 'Tables_in_' . DB::getDatabaseName();
+    public function up()
+    {
+        $tables = $this->getTables();
 
-    foreach ($tables as $table) {
-        $tableName = $table->$dbName;
+        foreach ($tables as $tableName) {
+            if (in_array($tableName, ['migrations'])) {
+                continue;
+            }
 
-        // Skip unwanted tables
-        if (in_array($tableName, ['migrations'])) {
-            continue;
-        }
-
-        // Skip if the column already exists
-        if (!Schema::hasColumn($tableName, 'branch_id')) {
-            Schema::table($tableName, function (Blueprint $table) use ($tableName) {
-                // Check if the table has an 'id' column
-                if (Schema::hasColumn($tableName, 'id')) {
+            if (!Schema::hasColumn($tableName, 'branch_id')) {
+                Schema::table($tableName, function (Blueprint $table) {
                     $table->unsignedBigInteger('branch_id')->nullable();
-                } else {
-                    // If no 'id', just add it without positioning
-                    $table->unsignedBigInteger('branch_id')->nullable();
-                }
-            });
+                });
+            }
         }
     }
-}
-
 
     public function down()
     {
-        $tables = DB::select('SHOW TABLES');
-        $dbName = 'Tables_in_' . DB::getDatabaseName();
+        $tables = $this->getTables();
 
-        foreach ($tables as $table) {
-            $tableName = $table->$dbName;
-
+        foreach ($tables as $tableName) {
             if (in_array($tableName, ['migrations'])) {
                 continue;
             }
@@ -52,5 +37,29 @@ return new class extends \Illuminate\Database\Migrations\Migration {
                 });
             }
         }
+    }
+
+    private function getTables(): array
+    {
+        $driver = DB::getDriverName();
+
+        if ($driver === 'sqlite') {
+            return array_column(
+                DB::select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"),
+                'name'
+            );
+        }
+
+        if ($driver === 'pgsql') {
+            return array_column(
+                DB::select("SELECT tablename AS name FROM pg_tables WHERE schemaname = 'public'"),
+                'name'
+            );
+        }
+
+        // MySQL / MariaDB
+        $dbName = DB::getDatabaseName();
+        $key = 'Tables_in_' . $dbName;
+        return array_column(DB::select('SHOW TABLES'), $key);
     }
 };

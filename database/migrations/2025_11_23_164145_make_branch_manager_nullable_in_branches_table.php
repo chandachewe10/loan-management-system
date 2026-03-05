@@ -3,40 +3,51 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
-        Schema::table('branches', function (Blueprint $table) {
-            // Drop the foreign key constraint first
-            $table->dropForeign(['branch_manager']);
-            
-            // Make branch_manager nullable
-            $table->unsignedBigInteger('branch_manager')->nullable()->change();
-            
-            // Re-add the foreign key constraint with nullable support
-            $table->foreign('branch_manager')->references('id')->on('users')->onDelete('set null');
-        });
+        $driver = DB::getDriverName();
+
+        if ($driver === 'sqlite') {
+            // SQLite: recreate the table logic isn't needed here since
+            // SQLite ignores foreign key details on column definitions.
+            // Just rebuild with a raw approach — skip drop/change/re-add.
+            DB::statement('PRAGMA foreign_keys=OFF');
+
+            Schema::table('branches', function (Blueprint $table) {
+                $table->unsignedBigInteger('branch_manager')->nullable()->change();
+            });
+
+            DB::statement('PRAGMA foreign_keys=ON');
+        } else {
+            Schema::table('branches', function (Blueprint $table) {
+                $table->dropForeign(['branch_manager']);
+                $table->unsignedBigInteger('branch_manager')->nullable()->change();
+                $table->foreign('branch_manager')->references('id')->on('users')->onDelete('set null');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('branches', function (Blueprint $table) {
-            // Drop the foreign key constraint
-            $table->dropForeign(['branch_manager']);
-            
-            // Make branch_manager not nullable again
-            $table->unsignedBigInteger('branch_manager')->nullable(false)->change();
-            
-            // Re-add the foreign key constraint
-            $table->foreign('branch_manager')->references('id')->on('users')->onDelete('cascade');
-        });
+        $driver = DB::getDriverName();
+
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys=OFF');
+
+            Schema::table('branches', function (Blueprint $table) {
+                $table->unsignedBigInteger('branch_manager')->nullable(false)->change();
+            });
+
+            DB::statement('PRAGMA foreign_keys=ON');
+        } else {
+            Schema::table('branches', function (Blueprint $table) {
+                $table->dropForeign(['branch_manager']);
+                $table->unsignedBigInteger('branch_manager')->nullable(false)->change();
+                $table->foreign('branch_manager')->references('id')->on('users')->onDelete('cascade');
+            });
+        }
     }
 };
