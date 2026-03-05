@@ -54,6 +54,10 @@ use App\Observers\TaxBandObserver;
 use App\Observers\PayrollRunObserver;
 use App\Observers\PayslipObserver;
 use App\Observers\SalaryScaleObserver;
+use App\Models\Account;
+use App\Models\JournalEntry;
+use App\Observers\AccountObserver;
+use App\Observers\JournalEntryObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -110,6 +114,8 @@ class AppServiceProvider extends ServiceProvider
         PayrollRun::observe(PayrollRunObserver::class);
         Payslip::observe(PayslipObserver::class);
         SalaryScale::observe(SalaryScaleObserver::class);
+        Account::observe(AccountObserver::class);
+        JournalEntry::observe(JournalEntryObserver::class);
     }
 
 

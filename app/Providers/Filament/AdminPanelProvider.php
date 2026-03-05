@@ -32,44 +32,44 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-        ->id('admin')
-        ->path('admin')
-        ->plugins([
-            FilamentShieldPlugin::make()
-                ->gridColumns([
-                    'default' => 1,
-                    'sm' => 2,
-                    'lg' => 2
-                ])
-                ->sectionColumnSpan(1)
-                ->checkboxListColumns([
-                    'default' => 1,
-                    'sm' => 2,
-                    'lg' => 4,
-                ])
-                ->resourceCheckboxListColumns([
-                    'default' => 1,
-                    'sm' => 2,
-                ]),
+            ->id('admin')
+            ->path('admin')
+            ->plugins([
+                FilamentShieldPlugin::make()
+                    ->gridColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                        'lg' => 2
+                    ])
+                    ->sectionColumnSpan(1)
+                    ->checkboxListColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                        'lg' => 4,
+                    ])
+                    ->resourceCheckboxListColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                    ]),
                 ActivitylogPlugin::make()
-                ->authorize(
-                    fn () => auth()->user()->hasRole('super_admin')
-                ),
-        ])
-        // ->brandLogo(asset('Logos/logo2.png'))
-        // ->brandLogoHeight('4rem')
-        // ->favicon(asset('Logos/logo2.png'))
-        ->sidebarCollapsibleOnDesktop()
+                    ->authorize(
+                        fn() => auth()->user()->hasRole('super_admin')
+                    ),
+            ])
+            // ->brandLogo(asset('Logos/logo2.png'))
+            // ->brandLogoHeight('4rem')
+            // ->favicon(asset('Logos/logo2.png'))
+            ->sidebarCollapsibleOnDesktop()
 
-        ->login()
-        ->registration(Register::class)
-        ->passwordReset()
-        ->emailVerification()
-        ->profile()
-        ->default()
-        ->login()
-        ->colors([
-                'primary' => Color::Green,
+            ->login()
+            ->registration(Register::class)
+            ->passwordReset()
+            ->emailVerification()
+            ->profile()
+            ->default()
+            ->login()
+            ->colors([
+                'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -87,27 +87,27 @@ class AdminPanelProvider extends PanelProvider
                     ->url('/admin/assets/statement-of-financial-position')
                     ->icon('heroicon-m-banknotes')
                     ->group('Accounting')
-                    ->isActiveWhen(fn (): bool => request()->is('admin/assets/statement-of-financial-position'))
+                    ->isActiveWhen(fn(): bool => request()->is('admin/assets/statement-of-financial-position'))
                     ->sort(4),
                 NavigationItem::make('Statement of Comprehensive Income')
                     ->url('/admin/assets/statement-of-comprehensive-income')
                     ->icon('heroicon-m-chart-bar')
                     ->group('Accounting')
-                    ->isActiveWhen(fn (): bool => request()->is('admin/assets/statement-of-comprehensive-income'))
+                    ->isActiveWhen(fn(): bool => request()->is('admin/assets/statement-of-comprehensive-income'))
                     ->sort(5),
-                    NavigationItem::make('Cash Flow')
+                NavigationItem::make('Cash Flow')
                     ->url('/admin/loans/cash-flow-statement')
                     ->icon('heroicon-m-calculator')
                     ->group('Accounting')
-                    ->isActiveWhen(fn (): bool => request()->is('admin/loans/cash-flow-statement'))
+                    ->isActiveWhen(fn(): bool => request()->is('admin/loans/cash-flow-statement'))
                     ->sort(6),
                 NavigationItem::make('Company Profile Completion')
                     ->url('/admin/profile-completion')
                     ->icon('heroicon-m-building-office')
                     ->group('User Management')
-                    ->isActiveWhen(fn (): bool => request()->is('admin/profile-completion'))
+                    ->isActiveWhen(fn(): bool => request()->is('admin/profile-completion'))
                     ->sort(2),
-              ])
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Payslip;
+use App\Services\DoubleEntryService;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class PayslipObserver
@@ -23,5 +24,12 @@ class PayslipObserver
             ]);
         }
     }
-}
 
+    /**
+     * After a payslip is created, post the payroll journal entry.
+     */
+    public function created(Payslip $payslip): void
+    {
+        DoubleEntryService::recordPayroll($payslip);
+    }
+}
