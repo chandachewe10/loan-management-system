@@ -14,7 +14,7 @@
     </div>
 
     {{-- Summary Cards --}}
-    @if($lines->isNotEmpty())
+    @if(count($ledgerLines) > 0)
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-6">
             {{-- Total Debits --}}
             <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 shadow-sm">
@@ -43,8 +43,8 @@
         {{-- Ledger Table --}}
         <x-filament::section>
             <x-slot name="heading">
-                @if($selectedAccount)
-                    Ledger for [{{ $selectedAccount->code }}] {{ $selectedAccount->name }}
+                @if($selectedAccountCode)
+                    Ledger for [{{ $selectedAccountCode }}] {{ $selectedAccountName }}
                 @else
                     All Accounts Ledger
                 @endif
@@ -64,47 +64,47 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($lines as $line)
+                        @foreach($ledgerLines as $line)
                             <tr
                                 class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                 <td class="py-3 px-4 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                                    {{ $line->journalEntry?->entry_date?->format('d M Y') ?? '—' }}
+                                    {{ $line['entry_date'] }}
                                 </td>
                                 <td class="py-3 px-4">
                                     <span
                                         class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400">
-                                        {{ $line->journalEntry?->entry_number ?? '—' }}
+                                        {{ $line['entry_number'] }}
                                     </span>
                                 </td>
                                 <td class="py-3 px-4">
                                     <span class="inline-flex items-center gap-1">
                                         <span
-                                            class="text-xs font-mono font-semibold text-gray-500">{{ $line->account?->code }}</span>
-                                        <span class="text-gray-700 dark:text-gray-300">{{ $line->account?->name ?? '—' }}</span>
+                                            class="text-xs font-mono font-semibold text-gray-500">{{ $line['account_code'] }}</span>
+                                        <span class="text-gray-700 dark:text-gray-300">{{ $line['account_name'] }}</span>
                                     </span>
                                 </td>
                                 <td class="py-3 px-4 text-gray-600 dark:text-gray-400 max-w-xs truncate">
-                                    {{ $line->description ?? $line->journalEntry?->description }}
+                                    {{ $line['description'] }}
                                 </td>
                                 <td class="py-3 px-4 text-right font-mono font-medium text-blue-600 dark:text-blue-400">
-                                    @if($line->type === 'debit')
-                                        {{ number_format($line->amount, 2) }}
+                                    @if($line['type'] === 'debit')
+                                        {{ number_format($line['amount'], 2) }}
                                     @else
                                         <span class="text-gray-300 dark:text-gray-600">—</span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-4 text-right font-mono font-medium text-green-600 dark:text-green-400">
-                                    @if($line->type === 'credit')
-                                        {{ number_format($line->amount, 2) }}
+                                    @if($line['type'] === 'credit')
+                                        {{ number_format($line['amount'], 2) }}
                                     @else
                                         <span class="text-gray-300 dark:text-gray-600">—</span>
                                     @endif
                                 </td>
                                 <td
-                                    class="py-3 px-4 text-right font-mono font-semibold {{ $line->running_balance >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-red-600 dark:text-red-400' }}">
-                                    {{ number_format(abs($line->running_balance), 2) }}
+                                    class="py-3 px-4 text-right font-mono font-semibold {{ $line['running_balance'] >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-red-600 dark:text-red-400' }}">
+                                    {{ number_format(abs($line['running_balance']), 2) }}
                                     <span
-                                        class="text-xs font-normal text-gray-400">{{ $line->running_balance >= 0 ? 'DR' : 'CR' }}</span>
+                                        class="text-xs font-normal text-gray-400">{{ $line['running_balance'] >= 0 ? 'DR' : 'CR' }}</span>
                                 </td>
                             </tr>
                         @endforeach
@@ -129,7 +129,7 @@
             </div>
         </x-filament::section>
 
-    @elseif(session()->has('generated'))
+    @elseif($hasGenerated)
         <x-filament::section>
             <div class="flex flex-col items-center py-12 text-gray-400">
                 <x-heroicon-o-document-magnifying-glass class="w-16 h-16 mb-4 opacity-40" />

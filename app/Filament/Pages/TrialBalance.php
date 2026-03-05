@@ -10,7 +10,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
-use Illuminate\Support\Collection;
 
 class TrialBalance extends Page implements HasForms
 {
@@ -24,20 +23,19 @@ class TrialBalance extends Page implements HasForms
 
     protected static string $view = 'filament.pages.trial-balance';
 
+    // Form-bound property
     public ?string $as_of_date = null;
 
-    public Collection $accounts;
+    // Display data — plain arrays for Livewire serialization
+    public array $accountRows = [];
     public float $totalDebits = 0;
     public float $totalCredits = 0;
     public bool $isBalanced = true;
+    public bool $hasGenerated = false;
 
     public function mount(): void
     {
         $this->as_of_date = now()->toDateString();
-        $this->accounts = collect();
-        $this->form->fill([
-            'as_of_date' => $this->as_of_date,
-        ]);
     }
 
     public function form(Form $form): Form
@@ -59,6 +57,8 @@ class TrialBalance extends Page implements HasForms
 
     public function generate(): void
     {
+        $this->hasGenerated = true;
+
         $allAccounts = Account::withoutGlobalScopes()
             ->where('is_active', true)
             ->orderBy('code')
@@ -67,7 +67,7 @@ class TrialBalance extends Page implements HasForms
         $orgId = auth()->check() ? auth()->user()->organization_id : null;
         $branchId = auth()->check() ? auth()->user()->branch_id : null;
 
-        $results = collect();
+        $results = [];
         $this->totalDebits = 0;
         $this->totalCredits = 0;
 
@@ -93,10 +93,6 @@ class TrialBalance extends Page implements HasForms
                 ? ($debits - $credits)
                 : ($credits - $debits);
 
-            $debitBalance = $balance > 0 && $account->normal_balance === 'debit' ? $balance : ($balance < 0 && $account->normal_balance === 'credit' ? abs($balance) : ($account->normal_balance === 'debit' ? $balance : 0));
-            $creditBalance = $balance > 0 && $account->normal_balance === 'credit' ? $balance : ($balance < 0 && $account->normal_balance === 'debit' ? abs($balance) : ($account->normal_balance === 'credit' ? $balance : 0));
-
-            // Simplify: if balance is positive, it goes in the normal_balance column; if negative, it goes in the opposite column
             if ($balance >= 0) {
                 $debitBalance = $account->normal_balance === 'debit' ? $balance : 0;
                 $creditBalance = $account->normal_balance === 'credit' ? $balance : 0;
@@ -108,16 +104,16 @@ class TrialBalance extends Page implements HasForms
             $this->totalDebits += $debitBalance;
             $this->totalCredits += $creditBalance;
 
-            $results->push([
+            $results[] = [
                 'code' => $account->code,
                 'name' => $account->name,
                 'type' => $account->type,
-                'debit_balance' => $debitBalance,
-                'credit_balance' => $creditBalance,
-            ]);
+                'debit_balance' => round($debitBalance, 2),
+                'credit_balance' => round($creditBalance, 2),
+            ];
         }
 
-        $this->accounts = $results;
+        $this->accountRows = $results;
         $this->isBalanced = abs($this->totalDebits - $this->totalCredits) < 0.01;
     }
 }

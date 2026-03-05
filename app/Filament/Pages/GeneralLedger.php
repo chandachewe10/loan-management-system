@@ -11,7 +11,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
-use Illuminate\Support\Collection;
 
 class GeneralLedger extends Page implements HasForms
 {
@@ -25,26 +24,25 @@ class GeneralLedger extends Page implements HasForms
 
     protected static string $view = 'filament.pages.general-ledger';
 
+    // Form-bound properties
     public ?string $account_id = null;
     public ?string $date_from = null;
     public ?string $date_to = null;
 
-    public Collection $lines;
+    // Display data — stored as plain arrays so Livewire can serialize them
+    public array $ledgerLines = [];
     public float $openingBalance = 0;
     public float $runningBalance = 0;
     public float $totalDebits = 0;
     public float $totalCredits = 0;
-    public ?Account $selectedAccount = null;
+    public ?string $selectedAccountName = null;
+    public ?string $selectedAccountCode = null;
+    public bool $hasGenerated = false;
 
     public function mount(): void
     {
         $this->date_from = now()->startOfMonth()->toDateString();
         $this->date_to = now()->toDateString();
-        $this->lines = collect();
-        $this->form->fill([
-            'date_from' => $this->date_from,
-            'date_to' => $this->date_to,
-        ]);
     }
 
     public function form(Form $form): Form
@@ -83,6 +81,8 @@ class GeneralLedger extends Page implements HasForms
 
     public function generate(): void
     {
+        $this->hasGenerated = true;
+
         $query = JournalEntryLine::withoutGlobalScopes()
             ->with(['account', 'journalEntry'])
             ->whereHas('journalEntry', function ($q) {
@@ -99,35 +99,47 @@ class GeneralLedger extends Page implements HasForms
             ->when($this->account_id, fn($q) => $q->where('account_id', $this->account_id))
             ->orderBy('created_at');
 
-        $this->lines = $query->get();
+        $lines = $query->get();
 
-        $this->totalDebits = (float) $this->lines->where('type', 'debit')->sum('amount');
-        $this->totalCredits = (float) $this->lines->where('type', 'credit')->sum('amount');
+        $this->totalDebits = (float) $lines->where('type', 'debit')->sum('amount');
+        $this->totalCredits = (float) $lines->where('type', 'credit')->sum('amount');
 
         if ($this->account_id) {
-            $this->selectedAccount = Account::withoutGlobalScopes()->find($this->account_id);
+            $account = Account::withoutGlobalScopes()->find($this->account_id);
+            $this->selectedAccountName = $account?->name;
+            $this->selectedAccountCode = $account?->code;
         } else {
-            $this->selectedAccount = null;
+            $this->selectedAccountName = null;
+            $this->selectedAccountCode = null;
         }
 
-        // Compute running balance
+        // Convert to plain arrays and compute running balance
         $balance = 0;
-        $this->lines = $this->lines->map(function ($line) use (&$balance) {
+        $this->ledgerLines = $lines->map(function ($line) use (&$balance) {
             $account = $line->account;
             if ($account) {
                 $isDebitNormal = $account->normal_balance === 'debit';
                 if ($line->type === 'debit') {
-                    $balance += $isDebitNormal ? $line->amount : -$line->amount;
+                    $balance += $isDebitNormal ? (float) $line->amount : -(float) $line->amount;
                 } else {
-                    $balance += $isDebitNormal ? -$line->amount : $line->amount;
+                    $balance += $isDebitNormal ? -(float) $line->amount : (float) $line->amount;
                 }
             } else {
-                $balance += $line->type === 'debit' ? $line->amount : -$line->amount;
+                $balance += $line->type === 'debit' ? (float) $line->amount : -(float) $line->amount;
             }
-            $line->running_balance = $balance;
-            return $line;
-        });
 
-        $this->runningBalance = $balance;
+            return [
+                'entry_date' => $line->journalEntry?->entry_date?->format('d M Y') ?? '—',
+                'entry_number' => $line->journalEntry?->entry_number ?? '—',
+                'account_code' => $account?->code ?? '—',
+                'account_name' => $account?->name ?? '—',
+                'description' => $line->description ?? $line->journalEntry?->description ?? '',
+                'type' => $line->type,
+                'amount' => (float) $line->amount,
+                'running_balance' => round($balance, 2),
+            ];
+        })->toArray();
+
+        $this->runningBalance = round($balance, 2);
     }
 }

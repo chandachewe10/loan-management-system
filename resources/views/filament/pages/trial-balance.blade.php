@@ -13,7 +13,7 @@
         </x-filament::section>
     </div>
 
-    @if($accounts->isNotEmpty())
+    @if(count($accountRows) > 0)
     {{-- Balance Status --}}
     <div class="mb-6">
         @if($isBalanced)
@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                     @php $currentType = null; @endphp
-                    @foreach($accounts as $account)
+                    @foreach($accountRows as $account)
                         @if($currentType !== $account['type'])
                             @php $currentType = $account['type']; @endphp
                             <tr class="bg-gray-50 dark:bg-gray-800/50">
@@ -116,6 +116,14 @@
         </div>
     </x-filament::section>
 
+    @elseif($hasGenerated)
+        <x-filament::section>
+            <div class="flex flex-col items-center py-12 text-gray-400">
+                <x-heroicon-o-document-magnifying-glass class="w-16 h-16 mb-4 opacity-40" />
+                <p class="text-lg font-medium">No transactions found for the selected date.</p>
+                <p class="text-sm mt-1">Try adjusting the date or create some journal entries first.</p>
+            </div>
+        </x-filament::section>
     @else
         <x-filament::section>
             <div class="flex flex-col items-center py-12 text-gray-400">
