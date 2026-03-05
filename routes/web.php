@@ -1,6 +1,13 @@
 <?php
-use App\Http\Controllers\{BorrowersController,
-SubscriptionsController, CustomerStatementController, BorrowerApplicationController, LoanApplicationController, DirectDebitMandateController, PayslipController};
+use App\Http\Controllers\{
+    BorrowersController,
+    SubscriptionsController,
+    CustomerStatementController,
+    BorrowerApplicationController,
+    LoanApplicationController,
+    DirectDebitMandateController,
+    PayslipController
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,8 +31,8 @@ Route::get('/subscription/{amount}', function ($amount) {
     return view('gateways.lenco.lencoPayments', ['amount' => decrypt($amount)]);
 })->name('subscription.lenco');
 
-Route::post('completeSubscription/{amount}',[SubscriptionsController::class,'completeSubscription'])
-->name('completeSubscription');
+Route::post('completeSubscription/{amount}', [SubscriptionsController::class, 'completeSubscription'])
+    ->name('completeSubscription');
 
 
 
@@ -36,7 +45,7 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::resource('borrower',BorrowersController::class);
+    Route::resource('borrower', BorrowersController::class);
 });
 
 Route::get('/statement/{record}', [CustomerStatementController::class, 'download'])->name('statement.download');
