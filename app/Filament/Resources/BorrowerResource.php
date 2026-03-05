@@ -58,8 +58,8 @@ class BorrowerResource extends Resource
                             ->getStateUsing(function ($record) {
                                 return \App\Models\Loan::withoutGlobalScopes()
                                     ->where('borrower_id', $record->id)
-                                    
-                                    ->orderBy('created_at', 'desc') 
+
+                                    ->orderBy('created_at', 'desc')
                                     ->get()
                                     ->toArray();
                             })
@@ -129,15 +129,15 @@ class BorrowerResource extends Resource
                                                         default => 'gray',
                                                     }),
 
-                                TextEntry::make('loan_duration')
-                                    ->label('Duration')
-                                    ->formatStateUsing(fn($state) => "{$state} months")
-                                    ->icon('heroicon-o-clock'),
+                                                TextEntry::make('loan_duration')
+                                                    ->label('Duration')
+                                                    ->formatStateUsing(fn($state) => "{$state} months")
+                                                    ->icon('heroicon-o-clock'),
 
                                                 // EMI Information
                                                 TextEntry::make('emi_amount')
                                                     ->label('Monthly EMI')
-                                                    ->getStateUsing(function($record) {
+                                                    ->getStateUsing(function ($record) {
                                                         $loan = \App\Models\Loan::find($record['id']);
                                                         return $loan ? $loan->calculateEMI() : 0;
                                                     })
@@ -149,7 +149,7 @@ class BorrowerResource extends Resource
 
                                                 TextEntry::make('remaining_installments')
                                                     ->label('Remaining Installments')
-                                                    ->getStateUsing(function($record) {
+                                                    ->getStateUsing(function ($record) {
                                                         $loan = \App\Models\Loan::find($record['id']);
                                                         return $loan ? $loan->getRemainingInstallments() : 0;
                                                     })
@@ -159,7 +159,7 @@ class BorrowerResource extends Resource
 
                                                 TextEntry::make('paid_installments')
                                                     ->label('Paid Installments')
-                                                    ->getStateUsing(function($record) {
+                                                    ->getStateUsing(function ($record) {
                                                         $loan = \App\Models\Loan::find($record['id']);
                                                         return $loan ? $loan->getPaidInstallments() : 0;
                                                     })
@@ -259,16 +259,16 @@ class BorrowerResource extends Resource
                                         ->label('View EMI Schedule')
                                         ->icon('heroicon-o-calendar-days')
                                         ->color('success')
-                                        ->url(function($record) {
+                                        ->url(function ($record) {
                                             $loan = \App\Models\Loan::find($record['id']);
                                             return $loan ? \App\Filament\Resources\LoanResource::getUrl('emi-schedule', ['record' => $loan->id]) : '#';
                                         })
-                                        ->visible(function($record) {
+                                        ->visible(function ($record) {
                                             $loan = \App\Models\Loan::find($record['id']);
                                             return $loan && in_array($loan->loan_status, ['approved', 'partially_paid']);
                                         }),
                                 ])
-                                ->columnSpanFull(),
+                                    ->columnSpanFull(),
                             ])
                             ->columns(1)
                             ->visible(
@@ -510,7 +510,8 @@ class BorrowerResource extends Resource
     // Helper method to format file size
     protected static function formatFileSize(int $size): string
     {
-        if ($size == 0) return '0 Bytes';
+        if ($size == 0)
+            return '0 Bytes';
 
         $units = ['Bytes', 'KB', 'MB', 'GB'];
         $i = floor(log($size, 1024));
@@ -585,7 +586,7 @@ class BorrowerResource extends Resource
                     ->label('Email address')
                     ->prefixIcon('heroicon-o-envelope')
                     ->email()
-                    ->required()
+                    ->rules(['nullable', 'email:rfc,dns'])
                     ->maxLength(255),
                 Forms\Components\Textarea::make('address')
                     ->label('Address')
@@ -724,13 +725,13 @@ class BorrowerResource extends Resource
                     ->label('Preview Application')
                     ->icon('heroicon-o-document-text')
                     ->color('primary')
-                    ->url(fn ($record) => route('borrower.application.preview', ['id' => $record->id]))
+                    ->url(fn($record) => route('borrower.application.preview', ['id' => $record->id]))
                     ->openUrlInNewTab(),
                 Tables\Actions\Action::make('downloadApplication')
                     ->label('Download Application')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->url(fn ($record) => route('borrower.application.download', ['id' => $record->id])),
+                    ->url(fn($record) => route('borrower.application.download', ['id' => $record->id])),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
 
