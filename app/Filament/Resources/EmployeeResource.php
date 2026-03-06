@@ -33,7 +33,7 @@ class EmployeeResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->prefixIcon('heroicon-o-identification')
-                            ->default(fn () => IdGenerator::generate([
+                            ->default(fn() => IdGenerator::generate([
                                 'table' => 'employees',
                                 'field' => 'employee_number',
                                 'length' => 8,
@@ -94,7 +94,7 @@ class EmployeeResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('salary_scale_id')
                             ->label('Salary Scale')
-                            ->relationship('salaryScale', 'scale_name', fn ($query) => $query->where('is_active', true))
+                            ->relationship('salaryScale', 'scale_name', fn($query) => $query->where('is_active', true))
                             ->searchable()
                             ->preload()
                             ->prefixIcon('heroicon-o-scale')
@@ -157,7 +157,7 @@ class EmployeeResource extends Resource
 
                         Forms\Components\Placeholder::make('gross_salary_preview')
                             ->label('Gross Salary Preview')
-                            ->content(fn (Forms\Get $get) => number_format(
+                            ->content(fn(Forms\Get $get) => number_format(
                                 ($get('basic_salary') ?? 0) +
                                 ($get('housing_allowance') ?? 0) +
                                 ($get('transport_allowance') ?? 0) +
@@ -231,7 +231,7 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('gross_salary')
                     ->label('Gross Salary')
                     ->money('ZMW')
-                    ->getStateUsing(fn (Employee $record) => $record->gross_salary)
+                    ->getStateUsing(fn(Employee $record) => $record->gross_salary)
                     ->sortable()
                     ->color('success'),
 
@@ -244,7 +244,11 @@ class EmployeeResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active Status'),
                 Tables\Filters\SelectFilter::make('department')
-                    ->options(fn () => Employee::query()->distinct()->pluck('department', 'department')->toArray()),
+                    ->options(fn() => Employee::query()
+                        ->distinct()
+                        ->whereNotNull('department')
+                        ->pluck('department', 'department')
+                        ->toArray()),
                 Tables\Filters\SelectFilter::make('salary_scale_id')
                     ->label('Salary Scale')
                     ->relationship('salaryScale', 'scale_name'),

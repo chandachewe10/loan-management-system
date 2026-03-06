@@ -4,7 +4,7 @@ namespace App\Filament\Resources\AssetResource\Pages;
 
 use App\Filament\Resources\AssetResource;
 use Filament\Resources\Pages\Page;
-use App\Services\StatementOfFinancialPosition as Service; 
+use App\Services\StatementOfFinancialPosition as Service;
 
 class StatementOfFinancialPosition extends Page
 {
@@ -14,6 +14,12 @@ class StatementOfFinancialPosition extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Statement of Financial Position';
     protected static bool $shouldRegisterNavigation = false;
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->user()?->hasRole('super_admin')
+            || auth()->user()?->can('page_StatementOfFinancialPosition');
+    }
 
     // Define public properties for the totals
     public $cashAmount = 0;

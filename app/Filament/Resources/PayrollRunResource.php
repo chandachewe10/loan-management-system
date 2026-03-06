@@ -58,9 +58,7 @@ class PayrollRunResource extends Resource
                         Forms\Components\Select::make('status')
                             ->options([
                                 'draft' => 'Draft',
-                                'processing' => 'Processing',
-                                'completed' => 'Completed',
-                                'cancelled' => 'Cancelled',
+
                             ])
                             ->default('draft')
                             ->required(),
@@ -76,9 +74,9 @@ class PayrollRunResource extends Resource
                     ->schema([
                         Forms\Components\CheckboxList::make('employee_ids')
                             ->label('Employees')
-                            ->options(fn () => Employee::where('is_active', true)
+                            ->options(fn() => Employee::where('is_active', true)
                                 ->get()
-                                ->mapWithKeys(fn ($employee) => [
+                                ->mapWithKeys(fn($employee) => [
                                     $employee->id => $employee->employee_number . ' - ' . $employee->full_name
                                 ])
                                 ->toArray())
@@ -130,7 +128,7 @@ class PayrollRunResource extends Resource
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'draft' => 'gray',
                         'processing' => 'warning',
                         'completed' => 'success',
@@ -165,10 +163,10 @@ class PayrollRunResource extends Resource
                         }
 
                         $record->update(['status' => 'processing']);
-                        
+
                         // Get employees from existing payslips BEFORE deleting them
                         $employeeIds = $record->payslips()->pluck('employee_id')->toArray();
-                        
+
                         if (empty($employeeIds)) {
                             Notification::make()
                                 ->title('Error')
@@ -178,13 +176,13 @@ class PayrollRunResource extends Resource
                             $record->update(['status' => 'draft']);
                             return;
                         }
-                        
+
                         // Delete existing placeholder payslips
                         $record->payslips()->delete();
-                        
+
                         // Get employees and create payslips with calculated amounts
                         $employees = Employee::whereIn('id', $employeeIds)->get();
-                        
+
                         foreach ($employees as $employee) {
                             self::createPayslip($record, $employee);
                         }
@@ -197,7 +195,7 @@ class PayrollRunResource extends Resource
                             ->success()
                             ->send();
                     })
-                    ->visible(fn (PayrollRun $record) => $record->status === 'draft'),
+                    ->visible(fn(PayrollRun $record) => $record->status === 'draft'),
 
                 Tables\Actions\Action::make('send_payslips')
                     ->label('Send Payslips')
@@ -215,7 +213,7 @@ class PayrollRunResource extends Resource
                         }
 
                         $payslips = $record->payslips()->where('payslip_sent', false)->get();
-                        
+
                         if ($payslips->isEmpty()) {
                             Notification::make()
                                 ->title('Info')
@@ -241,7 +239,7 @@ class PayrollRunResource extends Resource
                             ->success()
                             ->send();
                     })
-                    ->visible(fn (PayrollRun $record) => $record->status === 'completed'),
+                    ->visible(fn(PayrollRun $record) => $record->status === 'completed'),
 
                 Tables\Actions\Action::make('downloadAllPayslips')
                     ->label('Download All Payslips')
@@ -256,11 +254,11 @@ class PayrollRunResource extends Resource
                             ->info()
                             ->send();
                     })
-                    ->visible(fn (PayrollRun $record) => $record->status === 'completed'),
+                    ->visible(fn(PayrollRun $record) => $record->status === 'completed'),
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->visible(fn (PayrollRun $record) => $record->status === 'draft'),
+                    ->visible(fn(PayrollRun $record) => $record->status === 'draft'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

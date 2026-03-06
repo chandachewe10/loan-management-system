@@ -9,6 +9,7 @@ use App\Models\JournalEntryLine;
 use App\Models\Loan;
 use App\Models\Repayments;
 use App\Models\Payslip;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +38,34 @@ class DoubleEntryService
     public static function findAccount(string $code): ?Account
     {
         return Account::withoutGlobalScopes()->where('code', $code)->first();
+    }
+
+    /**
+     * Resolve the correct Cash/Bank account code from a wallet name.
+     * If the wallet has a linked Chart of Accounts account, use it.
+     * Otherwise, fall back to the generic "1010 Cash and Bank".
+     */
+    public static function resolveWalletAccountCode(?string $walletName): string
+    {
+        if (!$walletName) {
+            return '1010';
+        }
+
+        $wallet = Wallet::withoutGlobalScopes()
+            ->where('name', $walletName)
+            ->when(auth()->check(), function ($q) {
+                $q->where('organization_id', auth()->user()->organization_id);
+            })
+            ->first();
+
+        if ($wallet && $wallet->account_id) {
+            $account = Account::withoutGlobalScopes()->find($wallet->account_id);
+            if ($account) {
+                return $account->code;
+            }
+        }
+
+        return '1010';
     }
 
     /**
@@ -91,8 +120,7 @@ class DoubleEntryService
     // LOAN DISBURSEMENT
     // When a loan is approved/disbursed:
     //   DR  Loans Receivable       (1200)  — asset increases
-    //   CR  Cash / Bank            (1010)  — asset decreases (we paid out)
-    //   CR  Interest Income (if accrued) is handled on repayment
+    //   CR  Wallet Account         (1010-Wxx or 1010)  — cash decreases
     // -------------------------------------------------------------------------
     public static function recordLoanDisbursement(Loan $loan): ?JournalEntry
     {
@@ -100,6 +128,9 @@ class DoubleEntryService
         if ($amount <= 0) {
             return null;
         }
+
+        // Resolve the wallet's linked account
+        $cashAccountCode = static::resolveWalletAccountCode($loan->from_this_account);
 
         return static::createEntry([
             'entry_date' => $loan->loan_release_date ?? Carbon::today(),
@@ -116,10 +147,10 @@ class DoubleEntryService
                 'description' => "Principal disbursed for loan #{$loan->loan_number}",
             ],
             [
-                'account_code' => '1010',  // Cash / Bank
+                'account_code' => $cashAccountCode,
                 'type' => 'credit',
                 'amount' => $amount,
-                'description' => "Cash paid out for loan #{$loan->loan_number}",
+                'description' => "Cash paid from {$loan->from_this_account} for loan #{$loan->loan_number}",
             ],
         ]);
     }
@@ -127,9 +158,9 @@ class DoubleEntryService
     // -------------------------------------------------------------------------
     // LOAN REPAYMENT
     // When a repayment is recorded:
-    //   DR  Cash / Bank            (1010)  — asset increases (we received cash)
-    //   CR  Loans Receivable       (1200)  — asset decreases (principal portion)
-    //   CR  Interest Income        (4100)  — revenue (interest portion)
+    //   DR  Wallet Account         (1010-Wxx or 1010)  — cash increases
+    //   CR  Loans Receivable       (1200)  — principal portion
+    //   CR  Interest Income        (4100)  — interest portion
     // -------------------------------------------------------------------------
     public static function recordLoanRepayment(Repayments $repayment): ?JournalEntry
     {
@@ -142,6 +173,9 @@ class DoubleEntryService
         if ($totalPayment <= 0) {
             return null;
         }
+
+        // Resolve the wallet's linked account
+        $cashAccountCode = static::resolveWalletAccountCode($loan->from_this_account);
 
         // Calculate principal vs interest split
         $principal = (float) $loan->principal_amount;
@@ -159,10 +193,10 @@ class DoubleEntryService
 
         $lines = [
             [
-                'account_code' => '1010',  // Cash / Bank
+                'account_code' => $cashAccountCode,
                 'type' => 'debit',
                 'amount' => $totalPayment,
-                'description' => "Repayment received for loan #{$loan->loan_number}",
+                'description' => "Repayment received into {$loan->from_this_account} for loan #{$loan->loan_number}",
             ],
             [
                 'account_code' => '1200',  // Loans Receivable
@@ -194,8 +228,8 @@ class DoubleEntryService
     // -------------------------------------------------------------------------
     // EXPENSE
     // When an expense is recorded:
-    //   DR  Expense Account        (6xxx)  — expense increases
-    //   CR  Cash / Bank            (1010)  — asset decreases (cash paid)
+    //   DR  Expense Account        (6100)  — expense increases
+    //   CR  Wallet Account         (1010-Wxx or 1010)  — cash decreases
     // -------------------------------------------------------------------------
     public static function recordExpense(Expense $expense): ?JournalEntry
     {
@@ -204,8 +238,11 @@ class DoubleEntryService
             return null;
         }
 
-        // Try to resolve expense account from category, else fall back to generic
-        $expenseAccountCode = '6100'; // General Expenses (default)
+        // Resolve the wallet's linked account
+        $cashAccountCode = static::resolveWalletAccountCode($expense->from_this_account);
+
+        // Expense account (default to General Expenses)
+        $expenseAccountCode = '6100';
 
         return static::createEntry([
             'entry_date' => $expense->expense_date ?? Carbon::today(),
@@ -222,10 +259,10 @@ class DoubleEntryService
                 'description' => "Expense: {$expense->expense_name}",
             ],
             [
-                'account_code' => '1010',  // Cash / Bank
+                'account_code' => $cashAccountCode,
                 'type' => 'credit',
                 'amount' => $amount,
-                'description' => "Cash paid for expense: {$expense->expense_name}",
+                'description' => "Cash paid from {$expense->from_this_account} for: {$expense->expense_name}",
             ],
         ]);
     }
@@ -234,9 +271,9 @@ class DoubleEntryService
     // PAYROLL
     // When payroll is run (payslip):
     //   DR  Salaries Expense       (6200)  — expense increases
-    //   DR  Payroll Tax Expense    (6210)  — PAYE / Tax expense
-    //   CR  Salaries Payable       (2100)  — liability (amount owed to employees)
-    //   CR  Tax Payable            (2110)  — liability (tax owed to government)
+    //   CR  Salaries Payable       (2100)  — liability (net pay owed)
+    //   CR  PAYE Payable           (2110)  — tax owed to government
+    //   CR  NAPSA Payable          (2120)  — pension payable
     // -------------------------------------------------------------------------
     public static function recordPayroll(Payslip $payslip): ?JournalEntry
     {
@@ -249,7 +286,6 @@ class DoubleEntryService
             return null;
         }
 
-        $taxTotal = $paye + $pension;
         $salaryPayable = $netPay;
 
         $lines = [

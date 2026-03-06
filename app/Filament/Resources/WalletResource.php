@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\WalletResource\Pages;
 use App\Filament\Resources\WalletResource\RelationManagers;
+use App\Models\Account;
 use App\Models\Wallet;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,7 +21,9 @@ class WalletResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-wallet';
     protected static ?string $navigationGroup = 'Accounting';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationLabel = 'Bank / Cash Accounts';
+    protected static ?string $modelLabel = 'Bank / Cash Account';
+    protected static ?int $navigationSort = 0;
 
 
     public static function getNavigationBadge(): ?string
@@ -33,36 +36,65 @@ class WalletResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Wallet Name - Account Name')
-                    ->prefixIcon('fas-wallet')
-                    ->required(),
-                Forms\Components\Select::make('meta.currency')
-                    ->label('Currency')
-                    ->options([
-                        'ZMW' => 'ZMW - Zambian Kwacha',
+                Forms\Components\Section::make('Account Details')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Account Name')
+                            ->prefixIcon('fas-wallet')
+                            ->required()
+                            ->columnSpan(1),
+
+                        Forms\Components\Select::make('meta.currency')
+                            ->label('Currency')
+                            ->options([
+                                'ZMW' => 'ZMW - Zambian Kwacha',
+                            ])
+                            ->default('ZMW')
+                            ->required()
+                            ->prefixIcon('fas-money-bill')
+                            ->columnSpan(1),
+
+                        Forms\Components\TextInput::make('balance')
+                            ->label('Current Balance')
+                            ->placeholder(0.00)
+                            ->readonly()
+                            ->numeric()
+                            ->prefixIcon('fas-dollar-sign')
+                            ->columnSpan(1),
+
+                        Forms\Components\TextInput::make('amount')
+                            ->label('Add Funds')
+                            ->required()
+                            ->numeric()
+                            ->minValue(0)
+                            ->prefixIcon('fas-dollar-sign')
+                            ->columnSpan(1),
                     ])
-                    ->default('ZMW')
-                    ->required()
-                    ->prefixIcon('fas-money-bill'),
-                Forms\Components\TextInput::make('balance')
-                    ->label('Current Balance')
-                    ->placeholder(0.00)
-                    ->readonly()
-                    ->numeric()
-                    ->prefixIcon('fas-dollar-sign'),
-                Forms\Components\TextInput::make('amount')
-                    ->label('Add Funds')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->prefixIcon('fas-dollar-sign'),
+                    ->columns(2),
 
-
+                Forms\Components\Section::make('Chart of Accounts Link')
+                    ->description('Link this account to the Chart of Accounts for double-entry accounting. If left empty, a sub-account will be created automatically.')
+                    ->schema([
+                        Forms\Components\Select::make('account_id')
+                            ->label('Linked Chart of Accounts Entry')
+                            ->options(
+                                Account::withoutGlobalScopes()
+                                    ->where('is_active', true)
+                                    ->where('type', 'asset')
+                                    ->orderBy('code')
+                                    ->get()
+                                    ->mapWithKeys(fn($a) => [$a->id => "[{$a->code}] {$a->name}"])
+                            )
+                            ->searchable()
+                            ->nullable()
+                            ->placeholder('Auto-create sub-account under 1010 Cash & Bank')
+                            ->helperText('Choose an existing asset account, or leave blank to auto-create one.')
+                            ->columnSpanFull(),
+                    ]),
 
                 Forms\Components\RichEditor::make('description')
                     ->label('Description')
-                    ->columnSpan(2)
+                    ->columnSpan(2),
             ]);
     }
 
@@ -75,38 +107,51 @@ class WalletResource extends Resource
             ])
             ->recordUrl(null)
             ->columns([
-
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Account Name')
                     ->badge()
-
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->badge()
-
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('balance')
+                    ->label('Wallet Balance')
                     ->badge()
+                    ->color(fn($state) => $state > 0 ? 'success' : 'danger')
+                    ->money('ZMW')
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('account.code')
+                    ->label('Acct Code')
+                    ->badge()
+                    ->color('gray')
+                    ->placeholder('Not linked')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('account.name')
+                    ->label('Linked Account')
+                    ->placeholder('Not linked')
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('meta')
                     ->label('Currency')
                     ->badge()
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('description')
+                    ->limit(40)
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('created_at')
+                    ->date()
                     ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    //  Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
                 ]),
             ])

@@ -15,6 +15,12 @@ class StatementOfComprehensiveIncome extends Page
     protected static ?string $navigationLabel = 'Statement of Comprehensive Income';
     protected static bool $shouldRegisterNavigation = false;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->user()?->hasRole('super_admin')
+            || auth()->user()?->can('page_StatementOfComprehensiveIncome');
+    }
+
     public $interestIncome = 0;
     public $serviceFeeIncome = 0;
     public $totalIncome = 0;

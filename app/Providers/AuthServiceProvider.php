@@ -20,6 +20,8 @@ use App\Models\Messages;
 use App\Models\Repayments;
 use App\Models\ThirdParty;
 use App\Models\Transaction;
+use App\Models\Account;
+use App\Models\JournalEntry;
 
 use App\Policies\BranchesPolicy;
 use App\Policies\ActivityLogsPolicy;
@@ -36,6 +38,8 @@ use App\Policies\RolePolicy;
 use App\Policies\ThirdPartyPolicy;
 use App\Policies\TransactionPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\AccountPolicy;
+use App\Policies\JournalEntryPolicy;
 use App\Policies\WalletPolicy;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -65,6 +69,8 @@ class AuthServiceProvider extends ServiceProvider
         Transaction::class => TransactionPolicy::class,
         User::class => UserPolicy::class,
         Wallet::class => WalletPolicy::class,
+        Account::class => AccountPolicy::class,
+        JournalEntry::class => JournalEntryPolicy::class,
     ];
 
     /**

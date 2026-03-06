@@ -23,6 +23,12 @@ class TrialBalance extends Page implements HasForms
 
     protected static string $view = 'filament.pages.trial-balance';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('super_admin')
+            || auth()->user()?->can('page_TrialBalance');
+    }
+
     // Form-bound property
     public ?string $as_of_date = null;
 

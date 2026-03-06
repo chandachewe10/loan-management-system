@@ -2,49 +2,55 @@
 
 namespace App\Observers;
 
+use App\Models\Account;
 use App\Models\Wallet;
 
 class WalletObserver
 {
     /**
-     * Handle the BavixWalletModelsWallet "created" event.
+     * Handle the Wallet "created" event.
+     * Only sets org/branch. Account linking is handled by CreateWallet page.
      */
-    public function created(Wallet $bavixWalletModelsWallet): void
+    public function created(Wallet $wallet): void
     {
-         $bavixWalletModelsWallet->organization_id = auth()->user()->organization_id;
-         $bavixWalletModelsWallet->branch_id = auth()->user()->branch_id;
-         $bavixWalletModelsWallet->save();
+        // org/branch are set by CreateWallet page, but ensure they're present
+        if (auth()->check() && !$wallet->organization_id) {
+            $wallet->organization_id = auth()->user()->organization_id;
+            $wallet->branch_id = auth()->user()->branch_id;
+            $wallet->saveQuietly();
+        }
     }
 
     /**
-     * Handle the BavixWalletModelsWallet "updated" event.
+     * Handle the Wallet "updated" event.
+     * Keep the linked account name in sync.
      */
-    public function updated(Wallet $bavixWalletModelsWallet): void
+    public function updated(Wallet $wallet): void
     {
-        //
+        if ($wallet->wasChanged('name') && $wallet->account_id) {
+            $account = Account::withoutGlobalScopes()->find($wallet->account_id);
+            if ($account && $account->is_system) {
+                $account->update([
+                    'name' => $wallet->name,
+                    'description' => 'Linked to wallet: ' . $wallet->name,
+                ]);
+            }
+        }
     }
 
-    /**
-     * Handle the BavixWalletModelsWallet "deleted" event.
-     */
-    public function deleted(Wallet $bavixWalletModelsWallet): void
+    public function deleted(Wallet $wallet): void
     {
-        //
+        if ($wallet->account_id) {
+            Account::withoutGlobalScopes()
+                ->where('id', $wallet->account_id)
+                ->update(['is_active' => false]);
+        }
     }
 
-    /**
-     * Handle the BavixWalletModelsWallet "restored" event.
-     */
-    public function restored(Wallet $bavixWalletModelsWallet): void
+    public function restored(Wallet $wallet): void
     {
-        //
     }
-
-    /**
-     * Handle the BavixWalletModelsWallet "force deleted" event.
-     */
-    public function forceDeleted(Wallet $bavixWalletModelsWallet): void
+    public function forceDeleted(Wallet $wallet): void
     {
-        //
     }
 }

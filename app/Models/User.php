@@ -21,7 +21,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class User extends Authenticatable implements Wallet,MustVerifyEmail,HasMedia
+class User extends Authenticatable implements Wallet, HasMedia
 {
     use HasApiTokens;
     use HasFactory;
@@ -38,13 +38,13 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail,HasMedia
 
     public function branch()
     {
-        return $this->belongsTo(Branches::class, 'branch_id','id');
+        return $this->belongsTo(Branches::class, 'branch_id', 'id');
     }
 
-     public function getActivitylogOptions(): LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logExcept(['password']);
+            ->logExcept(['password']);
     }
 
     /**
@@ -97,13 +97,13 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail,HasMedia
     ];
 
 
-protected static function booted(): void
+    protected static function booted(): void
     {
         static::addGlobalScope('org', function (Builder $query) {
             if (auth()->hasUser()) {
                 $query->where('organization_id', auth()->user()->organization_id)
-               // ->where('branch_id', auth()->user()->branch_id)
-                ->orWhere('organization_id',"=",NULL);
+                    // ->where('branch_id', auth()->user()->branch_id)
+                    ->orWhere('organization_id', "=", NULL);
 
             }
         });

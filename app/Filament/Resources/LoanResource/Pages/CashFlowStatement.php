@@ -24,11 +24,17 @@ class CashFlowStatement extends Page implements HasTable
     protected static ?string $title = 'Cash Flow Statement';
     protected static bool $shouldRegisterNavigation = false;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->user()?->hasRole('super_admin')
+            || auth()->user()?->can('page_CashFlowStatement');
+    }
+
     public $wallets;
     public $totalBalance;
     public $consolidatedData;
 
-    
+
 
     public static function getNavigationBadge(): ?string
     {
@@ -44,7 +50,7 @@ class CashFlowStatement extends Page implements HasTable
         // Get all wallets
         $this->wallets = Wallet::where('holder_id', $user->id)->get();
         $this->totalBalance = $this->wallets->sum('balance');
-       
+
     }
 
     public function table(Table $table): Table
@@ -84,7 +90,7 @@ class CashFlowStatement extends Page implements HasTable
                     ->label('Currency')
 
                     ->badge()
-,
+                ,
 
                 TextColumn::make('wallet.description')
                     ->label('Description')
@@ -103,10 +109,10 @@ class CashFlowStatement extends Page implements HasTable
                     ]),
             ])
             ->actions([
-                
+
             ])
             ->bulkActions([
-                
+
             ]);
     }
 
@@ -126,5 +132,5 @@ class CashFlowStatement extends Page implements HasTable
 
 
 
-    
+
 }

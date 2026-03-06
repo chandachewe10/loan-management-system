@@ -40,6 +40,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->label('Email address')
                     ->required()
+                    ->rules(['email:rfc,dns'])
                     ->prefixIcon('heroicon-o-envelope')
                     ->email()
                     ->unique(User::class, 'email', ignoreRecord: true),

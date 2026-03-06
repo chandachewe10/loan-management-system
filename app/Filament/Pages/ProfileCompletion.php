@@ -25,24 +25,30 @@ class ProfileCompletion extends Page implements HasForms, HasActions
     use InteractsWithActions;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    
+
     protected static string $view = 'filament.pages.profile-completion';
-    
+
     protected static bool $shouldRegisterNavigation = false;
-    
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('super_admin')
+            || auth()->user()?->can('page_ProfileCompletion');
+    }
+
     public ?array $data = [];
-    
+
     public bool $showModal = false;
 
     public function mount(): void
     {
         $user = Auth::user();
-        
+
         // Check if profile is incomplete
         if ($user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
             $this->showModal = true;
         }
-        
+
         $this->form->fill([
             'name' => $user->name,
             'company_representative' => $user->company_representative,
@@ -51,7 +57,7 @@ class ProfileCompletion extends Page implements HasForms, HasActions
             'company_phone' => $user->company_phone,
             'company_address' => $user->company_address,
         ]);
-        
+
     }
 
     public function form(Form $form): Form
@@ -68,37 +74,37 @@ class ProfileCompletion extends Page implements HasForms, HasActions
                             ->disabled()
                             ->dehydrated()
                             ->columnSpan(2),
-                        
+
                         TextInput::make('company_representative')
                             ->label('Company Representative')
                             ->placeholder('Enter Name')
                             ->maxLength(255)
                             ->columnSpan(2),
-                        
+
                         TextInput::make('company_representative_phone')
                             ->label('Company Representative Phone Number')
                             ->placeholder('Enter representative phone number')
                             ->tel()
                             ->maxLength(255),
-                        
+
                         TextInput::make('company_representative_email')
                             ->label('Company Representative Email')
                             ->placeholder('Enter representative email')
                             ->email()
                             ->maxLength(255),
-                        
+
                         TextInput::make('company_phone')
                             ->label('Company Phone Number')
                             ->placeholder('Enter company phone number')
                             ->tel()
                             ->maxLength(255),
-                        
+
                         Textarea::make('company_address')
                             ->label('Company Address')
                             ->placeholder('Enter company address')
                             ->rows(3)
                             ->maxLength(500),
-                        
+
                         SpatieMediaLibraryFileUpload::make('company_logo')
                             ->label('Company Logo')
                             ->collection('company_logo')
@@ -119,7 +125,7 @@ class ProfileCompletion extends Page implements HasForms, HasActions
     {
         $data = $this->form->getState();
         $user = Auth::user();
-        
+
         $user->update([
             'name' => $data['name'],
             'company_representative' => $data['company_representative'] ?? null,
@@ -129,18 +135,18 @@ class ProfileCompletion extends Page implements HasForms, HasActions
             'company_address' => $data['company_address'] ?? null,
             'profile_completion_modal_shown' => true,
         ]);
-        
+
         // Handle logo upload if present - SpatieMediaLibraryFileUpload handles this automatically
         // The file is already uploaded when the form is submitted
-        
+
         Notification::make()
             ->success()
             ->title('Profile Updated')
             ->body('Your company profile has been updated successfully.')
             ->send();
-        
+
         $this->showModal = false;
-        
+
         // Redirect to dashboard
         $this->redirect(route('filament.admin.pages.dashboard'));
     }
@@ -151,15 +157,15 @@ class ProfileCompletion extends Page implements HasForms, HasActions
         $user->update([
             'profile_completion_modal_shown' => true,
         ]);
-        
+
         $this->showModal = false;
-        
+
         Notification::make()
             ->info()
             ->title('Profile Incomplete')
             ->body('You can complete your profile later from your profile settings.')
             ->send();
-        
+
         // Redirect to dashboard
         $this->redirect(route('filament.admin.pages.dashboard'));
     }
