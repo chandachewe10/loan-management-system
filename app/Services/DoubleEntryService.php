@@ -23,13 +23,22 @@ class DoubleEntryService
     {
         $year = Carbon::now()->format('Y');
         $month = Carbon::now()->format('m');
+        $prefix = "JE-{$year}{$month}-";
 
         $count = JournalEntry::withoutGlobalScopes()
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->count() + 1;
 
-        return "JE-{$year}{$month}-" . str_pad($count, 4, '0', STR_PAD_LEFT);
+        $entryNumber = $prefix . str_pad($count, 4, '0', STR_PAD_LEFT);
+
+        // Check for duplicates to prevent unique constraint violation
+        while (JournalEntry::withoutGlobalScopes()->where('entry_number', $entryNumber)->exists()) {
+            $count++;
+            $entryNumber = $prefix . str_pad($count, 4, '0', STR_PAD_LEFT);
+        }
+
+        return $entryNumber;
     }
 
     /**
