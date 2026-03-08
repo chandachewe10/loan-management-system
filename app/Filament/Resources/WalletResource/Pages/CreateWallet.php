@@ -73,6 +73,21 @@ class CreateWallet extends CreateRecord
         $slug = str_replace(' ', '-', $text);
         $slug = preg_replace('/[^A-Za-z0-9\-]/', '', $slug);
         $slug = strtolower($slug);
+
+        $originalSlug = $slug;
+        $counter = 1;
+
+        // Ensure the slug is unique for this user to avoid constraint violations
+        while (
+            Wallet::where('holder_id', auth()->id())
+                ->where('holder_type', get_class(auth()->user()))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
         return $slug;
     }
 
