@@ -330,4 +330,58 @@ class DoubleEntryService
             'reference' => $payslip->id,
         ], $lines);
     }
+
+    // -------------------------------------------------------------------------
+    // WALLET ADJUSTMENT
+    // When a wallet balance is manually adjusted:
+    //   Increase: DR  Wallet Account, CR Owner's Equity (3000)
+    //   Decrease: DR  Owner's Equity (3000), CR Wallet Account
+    // -------------------------------------------------------------------------
+    public static function recordWalletAdjustment(Wallet $wallet, float $difference): ?JournalEntry
+    {
+        if (abs($difference) < 0.01) {
+            return null;
+        }
+
+        $cashAccountCode = static::resolveWalletAccountCode($wallet->name);
+        $offsetAccountCode = '3000'; // Owner's Equity or Opening Balance Equity
+
+        $lines = [];
+        if ($difference > 0) {
+            $lines[] = [
+                'account_code' => $cashAccountCode,
+                'type' => 'debit',
+                'amount' => $difference,
+                'description' => "Manual balance adjustment (Increase) for {$wallet->name}",
+            ];
+            $lines[] = [
+                'account_code' => $offsetAccountCode,
+                'type' => 'credit',
+                'amount' => $difference,
+                'description' => "Offset for wallet adjustment",
+            ];
+        } else {
+            $lines[] = [
+                'account_code' => $offsetAccountCode,
+                'type' => 'debit',
+                'amount' => abs($difference),
+                'description' => "Offset for wallet adjustment",
+            ];
+            $lines[] = [
+                'account_code' => $cashAccountCode,
+                'type' => 'credit',
+                'amount' => abs($difference),
+                'description' => "Manual balance adjustment (Decrease) for {$wallet->name}",
+            ];
+        }
+
+        return static::createEntry([
+            'entry_date' => Carbon::today(),
+            'description' => "Manual balance adjustment for wallet: {$wallet->name}",
+            'source_type' => 'manual',
+            'source_id' => $wallet->id,
+            'source_model' => Wallet::class,
+            'reference' => 'Bal-Adj',
+        ], $lines);
+    }
 }

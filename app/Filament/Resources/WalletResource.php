@@ -55,20 +55,12 @@ class WalletResource extends Resource
                             ->columnSpan(1),
 
                         Forms\Components\TextInput::make('balance')
-                            ->label('Current Balance')
-                            ->placeholder(0.00)
-                            ->readonly()
+                            ->label('Wallet Balance')
+                            ->default(0)
                             ->numeric()
                             ->prefixIcon('fas-dollar-sign')
-                            ->columnSpan(1),
-
-                        Forms\Components\TextInput::make('amount')
-                            ->label('Add Funds')
-                            ->required()
-                            ->numeric()
-                            ->minValue(0)
-                            ->prefixIcon('fas-dollar-sign')
-                            ->columnSpan(1),
+                            ->columnSpan(1)
+                            ->helperText('Setting this will adjust the balance.'),
                     ])
                     ->columns(2),
 

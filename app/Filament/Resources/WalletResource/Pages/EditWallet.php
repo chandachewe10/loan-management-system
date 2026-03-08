@@ -5,7 +5,7 @@ namespace App\Filament\Resources\WalletResource\Pages;
 use App\Models\Account;
 use App\Filament\Resources\WalletResource;
 use Illuminate\Database\Eloquent\Model;
-use Bavix\Wallet\Models\Wallet;
+use App\Models\Wallet;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -18,7 +18,6 @@ class EditWallet extends EditRecord
         // Update basic wallet fields
         $record->update([
             'name' => $data['name'],
-            'amount' => 0,
             'meta' => $data['meta'],
             'description' => strip_tags($data['description'] ?? ''),
         ]);
@@ -51,11 +50,19 @@ class EditWallet extends EditRecord
             }
         }
 
-        // Deposit additional funds if provided
-        $amount = (float) ($data['amount'] ?? 0);
-        if ($amount > 0) {
-            $wallet = Wallet::find($record->id);
-            $wallet->deposit($amount, ['meta' => $data['description'] ?? 'Deposit']);
+        // Adjust balance if necessary
+        $wallet = Wallet::find($record->id);
+        $currentBalance = (float) $wallet->balance;
+        $newBalance = (float) ($data['balance'] ?? 0);
+        $difference = $newBalance - $currentBalance;
+
+        if (abs($difference) >= 0.01) {
+            if ($difference > 0) {
+                $wallet->deposit($difference, ['meta' => $data['description'] ?? 'Balance adjustment (Increase)']);
+            } else {
+                $wallet->withdraw(abs($difference), ['meta' => $data['description'] ?? 'Balance adjustment (Decrease)']);
+            }
+            \App\Services\DoubleEntryService::recordWalletAdjustment($wallet, $difference);
         }
 
         return $record;

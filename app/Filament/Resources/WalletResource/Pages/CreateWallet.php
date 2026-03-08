@@ -28,7 +28,7 @@ class CreateWallet extends CreateRecord
         ]);
 
         // 2. Deposit initial funds if provided
-        $amount = (float) ($data['amount'] ?? 0);
+        $amount = (float) ($data['balance'] ?? 0);
         if ($amount > 0) {
             $wallet->deposit($amount, ['meta' => 'Initial deposit']);
         }
@@ -58,6 +58,11 @@ class CreateWallet extends CreateRecord
                 $wallet->account_id = $account->id;
                 $wallet->save();
             }
+        }
+
+        // Record initial balance to Double Entry Service (After CoA Link)
+        if ($amount > 0) {
+            \App\Services\DoubleEntryService::recordWalletAdjustment($wallet, $amount);
         }
 
         return $wallet;
