@@ -27,6 +27,21 @@ class CreateJournalEntry extends CreateRecord
     {
         $record = $this->record;
 
+        // Sync with Wallet balances if posted
+        if ($record->status === 'posted') {
+            foreach ($record->lines as $line) {
+                $wallet = \App\Models\Wallet::withoutGlobalScopes()->where('account_id', $line->account_id)->first();
+                if ($wallet) {
+                    $amount = (float) $line->amount;
+                    if ($line->type === 'debit') {
+                        $wallet->deposit($amount, ['meta' => 'Manual Journal Entry: ' . $record->entry_number, 'journal_entry_id' => $record->id]);
+                    } else {
+                        $wallet->withdraw($amount, ['meta' => 'Manual Journal Entry: ' . $record->entry_number, 'journal_entry_id' => $record->id]);
+                    }
+                }
+            }
+        }
+
         // Validate that debit == credit
         if (!$record->isBalanced()) {
             Notification::make()

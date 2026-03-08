@@ -16,4 +16,24 @@ class EditJournalEntry extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $record = $this->record;
+
+        // If it was just changed to posted, sync to wallets
+        if ($record->wasChanged('status') && $record->status === 'posted') {
+            foreach ($record->lines as $line) {
+                $wallet = \App\Models\Wallet::withoutGlobalScopes()->where('account_id', $line->account_id)->first();
+                if ($wallet) {
+                    $amount = (float) $line->amount;
+                    if ($line->type === 'debit') {
+                        $wallet->deposit($amount, ['meta' => 'Manual Journal Entry: ' . $record->entry_number, 'journal_entry_id' => $record->id]);
+                    } else {
+                        $wallet->withdraw($amount, ['meta' => 'Manual Journal Entry: ' . $record->entry_number, 'journal_entry_id' => $record->id]);
+                    }
+                }
+            }
+        }
+    }
 }

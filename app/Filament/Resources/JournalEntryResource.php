@@ -307,14 +307,29 @@ class JournalEntryResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->visible(fn(JournalEntry $record) => $record->source_type === 'manual'),
+                    ->visible(fn(JournalEntry $record) => $record->source_type === 'manual' && $record->status === 'draft'),
                 Tables\Actions\Action::make('void')
                     ->label('Void')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn(JournalEntry $record) => $record->status === 'posted')
-                    ->action(fn(JournalEntry $record) => $record->update(['status' => 'voided'])),
+                    ->action(function (JournalEntry $record) {
+                        $record->update(['status' => 'voided']);
+
+                        // Reverse any associated wallet balances
+                        foreach ($record->lines as $line) {
+                            $wallet = \App\Models\Wallet::withoutGlobalScopes()->where('account_id', $line->account_id)->first();
+                            if ($wallet) {
+                                $amount = (float) $line->amount;
+                                if ($line->type === 'debit') {
+                                    $wallet->withdraw($amount, ['meta' => 'Reversal of voided entry: ' . $record->entry_number]);
+                                } else {
+                                    $wallet->deposit($amount, ['meta' => 'Reversal of voided entry: ' . $record->entry_number]);
+                                }
+                            }
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
