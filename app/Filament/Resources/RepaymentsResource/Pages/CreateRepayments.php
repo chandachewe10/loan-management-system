@@ -85,7 +85,7 @@ class CreateRepayments extends CreateRecord
                 $loan->is_early_settlement = 1;
                 $loan->save();
 
-                Log::info('Early Repayment detected. Applied ERS of ' . $early_repayment_percent . 
+                Log::info('Early Repayment detected. Applied ERS of ' . $early_repayment_percent .
                     '%. Interest reduced from ' . $interest_amount . ' to ' . $adjusted_interest);
             }
         }
@@ -111,16 +111,17 @@ class CreateRepayments extends CreateRecord
             'payments' => $payment_amount,
             'balance' => $new_balance,
             'payments_method' => $data['payments_method'],
-            'reference_number' => $data['reference_number'] ?? 
-            'No reference was entered by ' . auth()->user()->name . ' - ' . auth()->user()->email,
+            'reference_number' => $data['reference_number'] ??
+                'No reference was entered by ' . auth()->user()->name . ' - ' . auth()->user()->email,
             'loan_number' => $loan_number,
             'principal' => $principal_amount,
+            'repayment_date' => $data['repayment_date'] ?? Carbon::today()->toDateString(),
         ]);
 
         // Update wallet and create ledger entry
         $wallet->deposit($payment_amount, ['meta' => 'Loan repayment amount']);
-        
-    
+
+
 
         // Update loan status
         if ($new_balance <= 0) {
@@ -144,7 +145,7 @@ class CreateRepayments extends CreateRecord
 
         // Send notifications
         $borrower = Borrower::find($loan->borrower_id);
-        
+
         if ($borrower) {
             $this->sendSmsNotification($borrower, $loan, $payment_amount);
 
@@ -197,7 +198,7 @@ class CreateRepayments extends CreateRecord
         // Save document
         $current_year = date('Y');
         $path = public_path('LOAN_SETTLEMENT_FORMS/' . $current_year . '/DOCX');
-        
+
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
@@ -217,11 +218,11 @@ class CreateRepayments extends CreateRecord
             ->first();
 
         if (
-            $bulk_sms_config && 
-            $bulk_sms_config->is_active == "Active" && 
+            $bulk_sms_config &&
+            $bulk_sms_config->is_active == "Active" &&
             isset($borrower->mobile) &&
-            isset($bulk_sms_config->base_uri) && 
-            isset($bulk_sms_config->endpoint) && 
+            isset($bulk_sms_config->base_uri) &&
+            isset($bulk_sms_config->endpoint) &&
             isset($bulk_sms_config->token) &&
             isset($bulk_sms_config->sender_id)
         ) {
@@ -264,7 +265,7 @@ class CreateRepayments extends CreateRecord
                 number_format($loan->balance, 2) . '. Thank you for your payment.';
 
             $borrower->notify(new LoanStatusNotification($message));
-            
+
             Log::info('Email notification sent to ' . $borrower->email);
         } catch (\Exception $e) {
             Log::error('Failed to send email notification: ' . $e->getMessage());

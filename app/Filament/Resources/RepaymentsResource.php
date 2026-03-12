@@ -39,7 +39,7 @@ class RepaymentsResource extends Resource
                     ->preload()
                     ->live(onBlur: true)
                     ->required(function ($state, Set $set) {
-                       
+
                         if ($state) {
                             $balance = \App\Models\Loan::findOrFail($state)->balance;
                             $set('balance', $balance);
@@ -75,6 +75,14 @@ class RepaymentsResource extends Resource
                     ->prefixIcon('fas-dollar-sign')
                     ->columnSpan(2),
 
+                Forms\Components\DatePicker::make('repayment_date')
+                    ->label('Repayment Date')
+                    ->prefixIcon('heroicon-o-calendar')
+                    ->nullable()
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
+                    ->helperText('Optional. If not entered, today\'s date will be used as the repayment date.')
+                    ->columnSpan(2),
 
             ]);
     }
@@ -82,33 +90,40 @@ class RepaymentsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-           ->headerActions([
-            ExportAction::make()
-                ->exporter(RepaymentsExporter::class)
-        ])
-         ->recordUrl(null)
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(RepaymentsExporter::class)
+            ])
+            ->recordUrl(null)
             ->columns([
+                Tables\Columns\TextColumn::make('repayment_date')
+                    ->label('Repayment Date')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->searchable()
+                    ->description(fn($record) => $record->repayment_date ? null : 'Auto: ' . $record->created_at?->format('d M Y')),
                 Tables\Columns\TextColumn::make('created_at')
-                ->label('Payments Date')
-                    ->searchable(),
-                    Tables\Columns\TextColumn::make('reference_number')
+                    ->label('Recorded At')
+                    ->dateTime('d M Y H:i')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('reference_number')
                     ->label('Reference Number')
-                        ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_number.loan_status')
-                ->label('Loan Status')
-                ->badge()
+                    ->label('Loan Status')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payments')
                     ->searchable(),
-                    // Tables\Columns\TextColumn::make('loan_number.repayment_amount')
-                    // ->label('Total Repayments')
-                    // ->searchable(),
+                // Tables\Columns\TextColumn::make('loan_number.repayment_amount')
+                // ->label('Total Repayments')
+                // ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->searchable(),
-                   
-                  
+
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payments_method')

@@ -52,6 +52,12 @@ class RepaymentsImporter extends Importer
                 ->example('2025HK092KSQ123')
                 ->label('Reference Number')
                 ->requiredMapping(),
+
+            ImportColumn::make('repayment_date')
+                ->example('2026-03-12')
+                ->label('Repayment Date (YYYY-MM-DD)')
+                ->rules(['nullable', 'date'])
+                ->helperText('Optional. If not entered, today\'s date will be used as the repayment date.'),
         ];
     }
 
@@ -106,8 +112,8 @@ class RepaymentsImporter extends Importer
                 $loan->is_early_settlement = 1;
                 $loan->save();
 
-                Log::info('Early Repayment detected for loan ' . $loan_number . 
-                    '. Applied ERS of ' . $early_repayment_percent . 
+                Log::info('Early Repayment detected for loan ' . $loan_number .
+                    '. Applied ERS of ' . $early_repayment_percent .
                     '%. Interest reduced from ' . $interest_amount . ' to ' . $adjusted_interest);
             }
         }
@@ -136,6 +142,9 @@ class RepaymentsImporter extends Importer
             'payments_method' => $this->data['payments_method'],
             'reference_number' => $this->data['reference_number'] ?? Uuid::uuid4()->toString(),
             'loan_number' => $loan_number,
+            'repayment_date' => !empty($this->data['repayment_date'])
+                ? Carbon::parse($this->data['repayment_date'])->toDateString()
+                : Carbon::today()->toDateString(),
         ]);
 
         // Update wallet and create ledger entry

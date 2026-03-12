@@ -22,6 +22,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.0",
+        "nativephp/desktop": "^2.1",
         "owenvoke/blade-fontawesome": "^2.4",
         "phpoffice/phpword": "^1.1",
         "psr/simple-cache": "^2.0",
