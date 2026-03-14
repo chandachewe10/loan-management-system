@@ -91,6 +91,7 @@ class ProfileCompletion extends Page implements HasForms, HasActions
                             ->label('Company Representative Email')
                             ->placeholder('Enter representative email')
                             ->email()
+                            ->rules(['nullable', 'email:rfc,dns'])
                             ->maxLength(255),
 
                         TextInput::make('company_phone')

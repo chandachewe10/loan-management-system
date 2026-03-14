@@ -27,11 +27,22 @@ class Register extends BaseRegister
     protected function getNameFormComponent(): Component
     {
         return TextInput::make('name')
-                    ->label('Business Name')
-                    ->helperText('We will send you a verification email. Make sure to put a valid working email address and verify from the same device which is signing up')
-                    ->required()
-                    ->maxLength(255);
+            ->label('Business Name')
+            ->helperText('We will send you a verification email. Make sure to put a valid working email address and verify from the same device which is signing up')
+            ->required()
+            ->maxLength(255);
     }
+
+    protected function getEmailFormComponent(): Component
+    {
+        return TextInput::make('email')
+            ->label('Business Email')
+            ->required()
+            ->email()
+            ->rules(['nullable', 'email:rfc,dns'])
+            ->maxLength(255);
+    }
+
 
     /**
      * Get the URL that the user should be redirected to after registration.
@@ -42,13 +53,13 @@ class Register extends BaseRegister
         // If email is verified, then check profile completion
         if (Auth::check()) {
             $user = Auth::user();
-            
+
             // If email is verified and profile is incomplete, redirect to profile completion
             if ($user->hasVerifiedEmail() && $user->isProfileIncomplete() && !$user->profile_completion_modal_shown) {
                 return '/admin/profile-completion';
             }
         }
-        
+
         // Let Filament handle the default redirect (which will be email verification if needed)
         return parent::getRedirectUrl();
     }
