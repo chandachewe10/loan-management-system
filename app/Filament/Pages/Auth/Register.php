@@ -39,7 +39,7 @@ class Register extends BaseRegister
             ->label('Business Email')
             ->required()
             ->email()
-            ->rules(['nullable', 'email:rfc,dns'])
+            ->rules(['email:rfc,dns'])
             ->maxLength(255);
     }
 
