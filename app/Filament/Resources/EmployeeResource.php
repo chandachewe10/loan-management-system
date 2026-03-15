@@ -11,10 +11,32 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
-
 class EmployeeResource extends Resource
 {
+    /**
+     * Generate a unique employee number compatible with SQLite (NativePHP).
+     * Replaces haruncpi/laravel-id-generator which uses information_schema (MySQL/PG only).
+     */
+    protected static function generateEmployeeNumber(): string
+    {
+        $prefix = 'EMP-';
+        $length = 8; // total length including prefix
+
+        $lastRecord = \App\Models\Employee::withoutGlobalScopes()
+            ->where('employee_number', 'like', $prefix . '%')
+            ->orderBy('employee_number', 'desc')
+            ->first();
+
+        if ($lastRecord) {
+            $lastNumber = (int) substr($lastRecord->employee_number, strlen($prefix));
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        $numberLength = $length - strlen($prefix);
+        return $prefix . str_pad($nextNumber, $numberLength, '0', STR_PAD_LEFT);
+    }
     protected static ?string $model = Employee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -33,12 +55,7 @@ class EmployeeResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->prefixIcon('heroicon-o-identification')
-                            ->default(fn() => IdGenerator::generate([
-                                'table' => 'employees',
-                                'field' => 'employee_number',
-                                'length' => 8,
-                                'prefix' => 'EMP-'
-                            ])),
+                            ->default(fn() => self::generateEmployeeNumber()),
 
                         Forms\Components\TextInput::make('first_name')
                             ->required()

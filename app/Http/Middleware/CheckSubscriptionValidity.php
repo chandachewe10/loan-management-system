@@ -12,6 +12,13 @@ class CheckSubscriptionValidity
 {
     public function handle(Request $request, Closure $next)
     {
+        // Skip subscription check entirely when running as a NativePHP desktop app.
+        // Desktop installations don't use the SaaS subscription model.
+        // `nativephp-internal.running` is set to true only when the Electron runtime is active.
+        if (config('nativephp-internal.running')) {
+            return $next($request);
+        }
+
         // First check if user is authenticated
         if (!Auth::check()) {
             return $next($request);

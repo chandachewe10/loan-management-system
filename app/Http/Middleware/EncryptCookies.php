@@ -12,6 +12,6 @@ class EncryptCookies extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        '_php_native', // NativePHP security cookie — must not be encrypted
     ];
 }

@@ -19,6 +19,22 @@ class LoanType extends Model
         ->logAll();
     }
 
+    protected $fillable = [
+        'loan_name',
+        'interest_rate',
+        'interest_cycle',
+        'service_fee_type',
+        'service_fee_percentage',
+        'service_fee_custom_amount',
+        'penalty_fee_type',
+        'penalty_fee_percentage',
+        'penalty_fee_custom_amount',
+        'early_repayment_percent',
+        'service_fee',
+        'organization_id',
+        'branch_id',
+    ];
+
     public function loan()
     {
     return $this->hasMany(Loan::class, 'id','loan_type_id');

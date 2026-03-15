@@ -6,7 +6,7 @@ return [
      * It is used to determine if the app needs to be updated.
      * Increment this value every time you release a new version of your app.
      */
-    'version' => env('NATIVEPHP_APP_VERSION', '1.0.0'),
+    'version' => env('NATIVEPHP_APP_VERSION', '1.0.7'),
 
     /**
      * The ID of your application. This should be a unique identifier
@@ -51,7 +51,7 @@ return [
      * takes care of bootstrapping your application and configuring
      * any global hotkeys, menus, windows, etc.
      */
-    'provider' => \App\Providers\NativeAppServiceProvider::class,
+    'provider' => \App\Providers\NativeAppServiceProvider::class ,
 
     /**
      * A list of environment keys that should be removed from the
@@ -149,15 +149,10 @@ return [
 
     /**
      * The queue workers that get auto-started on your application start.
+     * Kept empty so that exports and jobs run synchronously (QUEUE_CONNECTION=sync).
+     * A background database worker is not needed for a desktop app.
      */
-    'queue_workers' => [
-        'default' => [
-            'queues' => ['default'],
-            'memory_limit' => 128,
-            'timeout' => 60,
-            'sleep' => 3,
-        ],
-    ],
+    'queue_workers' => [],
 
     /**
      * Define your own scripts to run before and after the build process.

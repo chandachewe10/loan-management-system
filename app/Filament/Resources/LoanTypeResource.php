@@ -74,13 +74,13 @@ class LoanTypeResource extends Resource
                 Forms\Components\TextInput::make('service_fee_percentage')
                     ->label('Enter Service Fee Percentage')
                     ->numeric()
-                    ->required()
+                    ->required(fn(Get $get) => $get('service_fee_type') === 'service_fee_percentage')
                     ->visible(fn(Get $get) => $get('service_fee_type') === 'service_fee_percentage'),
 
                 Forms\Components\TextInput::make('service_fee_custom_amount')
                     ->label('Enter Service Fee amount')
                     ->numeric()
-                    ->required()
+                    ->required(fn(Get $get) => $get('service_fee_type') === 'service_fee_custom_amount')
                     ->visible(fn(Get $get) => $get('service_fee_type') === 'service_fee_custom_amount'),
 
                 Forms\Components\Select::make('penalty_fee_type')
@@ -100,19 +100,18 @@ class LoanTypeResource extends Resource
                 Forms\Components\TextInput::make('penalty_fee_percentage')
                     ->label('Enter Penalty Percentage')
                     ->numeric()
-                    ->required()
+                    ->required(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_percentage')
                     ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_percentage'),
 
                 Forms\Components\TextInput::make('penalty_fee_custom_amount')
                     ->label('Enter penalty amount')
                     ->numeric()
-                    ->required()
+                    ->required(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_custom_amount')
                     ->visible(fn(Get $get) => $get('penalty_fee_type') === 'penalty_fee_custom_amount'),
 
                     Forms\Components\TextInput::make('early_repayment_percent')
                     ->label('Early Statement Reduction (ERS) %')
                     ->numeric()
-                    ->required()
                     ->helperText('Enter the percentage to reduce from the interest if a loan is paid off early. For example, if you enter 10, then 10% of the interest will be waived on early repayment.')
 
 

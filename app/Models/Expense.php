@@ -26,9 +26,9 @@ class Expense extends Model implements HasMedia
         'expense_name',
         'expense_amount',
         'expense_vendor',
-        'expense_attachment',
         'expense_date',
-
+        'from_this_account',
+        'category_id',
     ];
 
 

@@ -19,9 +19,11 @@ use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
 
-class User extends Authenticatable implements Wallet, HasMedia
+class User extends Authenticatable implements Wallet, HasMedia, FilamentUser
 {
     use HasApiTokens;
     use HasFactory;
@@ -136,6 +138,11 @@ class User extends Authenticatable implements Wallet, HasMedia
     public function isProfileIncomplete(): bool
     {
         return $this->profile_completeness < 100;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 
 }

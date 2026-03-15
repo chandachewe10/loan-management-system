@@ -75,6 +75,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // NativePHP's NativeServiceProvider::configureApp() hardcodes
+        // config(['queue.default' => 'database']) during the register phase.
+        // We override it back to 'sync' here so exports run immediately.
+        // This only applies when running inside the NativePHP desktop app.
+        if (config('nativephp-internal.running')) {
+            config(['queue.default' => 'sync']);
+        }
 
         $this->app->bind(LogoutResponseContract::class, CustomLogOutResponse::class);
         Model::unguard();

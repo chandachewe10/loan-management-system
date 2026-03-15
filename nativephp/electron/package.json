@@ -1,10 +1,10 @@
 {
     "name": "nativephp",
     "version": "2.0.0",
-    "description": "A NativePHP Electron application",
+    "description": "Lendfy Desktop Application",
     "main": "./out/main/index.js",
-    "author": "NativePHP",
-    "homepage": "https://nativephp.com",
+    "author": "MACROIT INFORMATION TECHNOLOGY",
+    "homepage": "https://macroit.org",
     "type": "module",
     "engines": {
         "node": ">=22.0.0"
